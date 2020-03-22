@@ -23,6 +23,9 @@ public class EmpalmeController extends HttpServlet {
             case "get-empalmes":
                 out.print(getEmpalmes());
                 break;
+            case "get-select-empalme":
+                out.print(getSelectEmpalme());
+                break;
         }
     }
 
@@ -50,6 +53,21 @@ public class EmpalmeController extends HttpServlet {
             salida.put("estado", "error");
             salida.put("error", ex);
         }
+        c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject getSelectEmpalme() {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_EMPALMES()";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDEMPALME", "NUMEMPALME");
+        salida.put("options", options);
+        salida.put("estado", "ok");
+        System.out.println(salida);
         c.cerrar();
         return salida;
     }

@@ -16,6 +16,10 @@
         <servlet-name>EmpalmeController</servlet-name>
         <servlet-class>controlador.EmpalmeController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RemarcadorController</servlet-name>
+        <servlet-class>controlador.RemarcadorController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UsuarioController</servlet-name>
         <url-pattern>/UsuarioController</url-pattern>
@@ -31,6 +35,10 @@
     <servlet-mapping>
         <servlet-name>EmpalmeController</servlet-name>
         <url-pattern>/EmpalmeController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RemarcadorController</servlet-name>
+        <url-pattern>/RemarcadorController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

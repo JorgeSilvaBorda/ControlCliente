@@ -21,12 +21,12 @@ public class RemarcadorController extends HttpServlet {
         JSONObject entrada = new JSONObject(request.getParameter("datos"));
         switch (entrada.getString("tipo")) {
             case "get-remarcadores":
-                out.print(getEmpalmes());
+                out.print(getRemarcadores());
                 break;
         }
     }
 
-    private JSONObject getEmpalmes() {
+    private JSONObject getRemarcadores() {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_REMARCADORES()";
         Conexion c = new Conexion();
@@ -44,7 +44,7 @@ public class RemarcadorController extends HttpServlet {
             salida.put("tabla", filas);
             salida.put("estado", "ok");
         } catch (JSONException | SQLException ex) {
-            System.out.println("Problemas en controlador.EmpalmeController.getEmpalmes().");
+            System.out.println("Problemas en controlador.RemarcadorController.getRemarcadores().");
             System.out.println(ex);
             ex.printStackTrace();
             salida.put("estado", "error");

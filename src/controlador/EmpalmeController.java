@@ -67,7 +67,6 @@ public class EmpalmeController extends HttpServlet {
         String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDEMPALME", "NUMEMPALME");
         salida.put("options", options);
         salida.put("estado", "ok");
-        System.out.println(salida);
         c.cerrar();
         return salida;
     }

@@ -40,11 +40,12 @@
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                         <a class="dropdown-item" onclick="cargarModulo('usuario');" href="#">Usuario</a> 
                                         <div class="dropdown-divider"></div> 
-                                        <a class="dropdown-item" href="#">Fase</a> 
-                                        <a class="dropdown-item" href="#">Parque</a>
-                                        <a class="dropdown-item" href="#">Empalme</a>
-                                        <a class="dropdown-item" href="#">Remarcador</a>
-                                        <a class="dropdown-item" href="#">Cliente</a>
+                                        <a class="dropdown-item" onclick="cargarModulo('fase');" href="#">Fase</a> 
+                                        <a class="dropdown-item" onclick="cargarModulo('parque');" href="#">Parque</a>
+                                        <a class="dropdown-item" onclick="cargarModulo('empalme');" href="#">Empalme</a>
+                                        <a class="dropdown-item" onclick="cargarModulo('remarcador');" href="#">Remarcador</a>
+                                        <a class="dropdown-item" onclick="cargarModulo('cliente');" href="#">Cliente</a>
+                                        <a class="dropdown-item" onclick="cargarModulo('tarifa');" href="#">Tarifa</a>
                                     </div>
                                 </li>
                             </ul>

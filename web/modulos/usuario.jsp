@@ -46,7 +46,7 @@
                     <input type="text" class="form-control form-control-sm small" maxlength="50" id="ap-materno" />
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-primary btn-sm" maxlength="50" id="btn-insert">Insertar</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
                 </div>
             </form>
         </div>

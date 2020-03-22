@@ -10,10 +10,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import modelo.Conexion;
 
-public class FaseController extends HttpServlet {
+public class ParqueController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -21,18 +20,15 @@ public class FaseController extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         JSONObject entrada = new JSONObject(request.getParameter("datos"));
         switch (entrada.getString("tipo")) {
-            case "get-fases":
-                out.print(getFases());
-                break;
-            case "get-select-fase":
-                out.print(getSelectFase());
+            case "get-parques":
+                out.print(getParques());
                 break;
         }
     }
 
-    private JSONObject getFases() {
+    private JSONObject getParques() {
         JSONObject salida = new JSONObject();
-        String query = "CALL SP_GET_FASES()";
+        String query = "CALL SP_GET_PARQUES()";
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -40,6 +36,7 @@ public class FaseController extends HttpServlet {
         try {
             while (rs.next()) {
                 filas += "<tr>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDFASE") + "' /><span>" + rs.getString("NOMFASE") + "</span></td>";
                 filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button></td>";
                 filas += "</tr>";
@@ -57,18 +54,4 @@ public class FaseController extends HttpServlet {
         return salida;
     }
 
-    private JSONObject getSelectFase() {
-        JSONObject salida = new JSONObject();
-        String query = "CALL SP_GET_FASES()";
-        Conexion c = new Conexion();
-        c.abrir();
-        ResultSet rs = c.ejecutarQuery(query);
-
-        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDFASE", "NOMFASE");
-        salida.put("options", options);
-        salida.put("estado", "ok");
-        System.out.println(salida);
-        c.cerrar();
-        return salida;
-    }
 }

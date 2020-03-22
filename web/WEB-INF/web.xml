@@ -8,6 +8,10 @@
         <servlet-name>FaseController</servlet-name>
         <servlet-class>controlador.FaseController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ParqueController</servlet-name>
+        <servlet-class>controlador.ParqueController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UsuarioController</servlet-name>
         <url-pattern>/UsuarioController</url-pattern>
@@ -15,6 +19,10 @@
     <servlet-mapping>
         <servlet-name>FaseController</servlet-name>
         <url-pattern>/FaseController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ParqueController</servlet-name>
+        <url-pattern>/ParqueController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

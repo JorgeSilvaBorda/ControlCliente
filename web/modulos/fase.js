@@ -11,7 +11,6 @@ function getFases() {
         success: function(resp){
             var obj = JSON.parse(resp);
             if(obj.estado === 'ok'){
-                //Pintar Usuarios
                 $('#tabla-fases tbody').html(obj.tabla);
             }
         },

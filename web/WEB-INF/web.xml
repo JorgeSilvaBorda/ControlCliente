@@ -4,9 +4,17 @@
         <servlet-name>UsuarioController</servlet-name>
         <servlet-class>controlador.UsuarioController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>FaseController</servlet-name>
+        <servlet-class>controlador.FaseController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UsuarioController</servlet-name>
         <url-pattern>/UsuarioController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FaseController</servlet-name>
+        <url-pattern>/FaseController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

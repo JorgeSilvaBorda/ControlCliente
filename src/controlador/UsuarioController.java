@@ -11,12 +11,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import modelo.Conexion;
 
 public class UsuarioController extends HttpServlet {
-
+    static Logger logger = Logger.getLogger(UsuarioController.class);
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PropertyConfigurator.configure(modelo.Util.getProperty("ruta.log4j.properties"));
+        System.out.println(modelo.Util.getProperty("ruta.log4j.properties"));
+        logger.info("Inicia request");
         PrintWriter out = response.getWriter();
         response.setContentType("text/html; charset=UTF-8");
         JSONObject entrada = new JSONObject(request.getParameter("datos"));

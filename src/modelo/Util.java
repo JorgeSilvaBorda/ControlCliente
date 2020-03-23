@@ -1,11 +1,15 @@
 package modelo;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class Util {
 
@@ -126,6 +130,23 @@ public class Util {
         }
         salida += "</tbody>";
         return salida;
+    }
+
+    public static String getProperty(String attr) {
+        String rutaProperties = System.getenv("RUTA_PROPERTIES"); //Habilitar para lectura desde variable de entorno
+        if (rutaProperties == null) {
+            return "";
+        }
+        try {
+            InputStream entrada = new FileInputStream(rutaProperties);
+            Properties prop = new Properties();
+            prop.load(entrada);
+            return prop.getProperty(attr);
+        } catch (IOException | NumberFormatException ex) {
+            System.out.println("Ocurrió un problema al obtener un valor del archivo properties.");
+            System.out.println(ex);
+            return "";
+        }
     }
 
 }

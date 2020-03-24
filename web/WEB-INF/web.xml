@@ -24,6 +24,10 @@
         <servlet-name>ClienteController</servlet-name>
         <servlet-class>controlador.ClienteController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TarifaController</servlet-name>
+        <servlet-class>controlador.TarifaController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UsuarioController</servlet-name>
         <url-pattern>/UsuarioController</url-pattern>
@@ -47,6 +51,10 @@
     <servlet-mapping>
         <servlet-name>ClienteController</servlet-name>
         <url-pattern>/ClienteController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TarifaController</servlet-name>
+        <url-pattern>/TarifaController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

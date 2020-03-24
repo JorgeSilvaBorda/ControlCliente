@@ -20,6 +20,10 @@
         <servlet-name>RemarcadorController</servlet-name>
         <servlet-class>controlador.RemarcadorController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ClienteController</servlet-name>
+        <servlet-class>controlador.ClienteController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UsuarioController</servlet-name>
         <url-pattern>/UsuarioController</url-pattern>
@@ -39,6 +43,10 @@
     <servlet-mapping>
         <servlet-name>RemarcadorController</servlet-name>
         <url-pattern>/RemarcadorController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ClienteController</servlet-name>
+        <url-pattern>/ClienteController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

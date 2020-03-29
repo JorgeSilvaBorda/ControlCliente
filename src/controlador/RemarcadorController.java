@@ -23,6 +23,9 @@ public class RemarcadorController extends HttpServlet {
             case "get-remarcadores":
                 out.print(getRemarcadores());
                 break;
+            case "ins-remarcador":
+                out.print(insRemarcador(entrada));
+                break;
         }
     }
 
@@ -55,4 +58,18 @@ public class RemarcadorController extends HttpServlet {
         return salida;
     }
 
+    private JSONObject insRemarcador(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_INS_REMARCADOR("
+                + "" + entrada.getInt("idempalme") + ","
+                + "" + entrada.getInt("idparque") + ","
+                + "'" + entrada.getString("numremarcador") + "'"
+                + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
+        return salida;
+    }
 }

@@ -27,6 +27,9 @@ public class ParqueController extends HttpServlet {
                 int idempalme = entrada.getInt("idempalme");
                 out.print(getSelectParqueEmpalme(idempalme));
                 break;
+            case "ins-parque":
+                out.print(insParque(entrada));
+                break;
         }
 
     }
@@ -70,6 +73,20 @@ public class ParqueController extends HttpServlet {
         salida.put("options", options);
         salida.put("estado", "ok");
         c.cerrar();
+        return salida;
+    }
+
+    private JSONObject insParque(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_INS_PARQUE("
+                + "'" + entrada.getInt("idfase") + "',"
+                + "'" + entrada.getString("nomparque") + "'"
+                + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
         return salida;
     }
 

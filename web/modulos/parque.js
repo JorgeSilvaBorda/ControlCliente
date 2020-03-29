@@ -45,3 +45,38 @@ function getSelectFase() {
         }
     });
 }
+function insParque(callback){
+    var idfase = $('#select-fase').val();
+    var nomparque = $('#nom-parque').val();
+    
+    var datos = {
+        tipo: 'ins-parque',
+        idfase: idfase, 
+        nomparque: nomparque
+    };
+
+    $.ajax({
+        url: 'ParqueController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function(res){
+            var obj = JSON.parse(res);
+            if(obj.estado === 'ok'){
+                limpiar();
+                callback();
+            }
+        },
+        error: function(a, b, c){
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function limpiar(){
+    $('#nom-parque').val('');
+    $('#select-fase').val('0');
+}

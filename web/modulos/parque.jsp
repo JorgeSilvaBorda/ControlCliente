@@ -1,4 +1,4 @@
-<script src="modulos/parque.js" type="text/javascript"></script>
+<script src="modulos/parque.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         getSelectFase();
@@ -20,7 +20,6 @@
                 <div class="form-group">
                     <label for="select-fase">Fase</label>
                     <select class="form-control-sm form-control small" id="select-fase">
-
                     </select>
                 </div>
                 <div class="form-group">
@@ -28,7 +27,7 @@
                     <input type="text" class="form-control form-control-sm small" maxlength="200" id="nom-parque" />
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
+                    <button onclick="insParque(getParques);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
                 </div>
             </form>
         </div>

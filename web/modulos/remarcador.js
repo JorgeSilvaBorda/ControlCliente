@@ -70,3 +70,42 @@ function getSelectParqueEmpalme(idempalme){
         }
     });
 }
+
+function insRemarcador(callback){
+    var idempalme = $('#select-empalme').val();
+    var idparque = $('#select-parque').val();
+    var numremarcador = $('#num-remarcador').val();
+    
+    var datos = {
+        tipo: 'ins-remarcador',
+        idempalme: idempalme, 
+        idparque: idparque,
+        numremarcador: numremarcador
+    };
+
+    $.ajax({
+        url: 'RemarcadorController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function(res){
+            var obj = JSON.parse(res);
+            if(obj.estado === 'ok'){
+                limpiar();
+                callback();
+            }
+        },
+        error: function(a, b, c){
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function limpiar(){
+    $('#num-remarcador').val('');
+    $('#select-empalme').val('0');
+    $('#select-parque').html('');
+}

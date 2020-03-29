@@ -1,4 +1,4 @@
-<script src="modulos/remarcador.js" type="text/javascript"></script>
+<script src="modulos/remarcador.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         getSelectEmpalme();
@@ -28,11 +28,11 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="num-empalme" >Número Remarcador</label>
+                    <label for="num-remarcador" >Número Remarcador</label>
                     <input type="text" class="form-control form-control-sm small" maxlength="11" id="num-remarcador" />
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
+                    <button onclick="insRemarcador(getRemarcadores);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
                 </div>
             </form>
         </div>

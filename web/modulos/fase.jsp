@@ -1,4 +1,4 @@
-<script src="modulos/fase.js" type="text/javascript"></script>
+<script src="modulos/fase.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         getFases();
@@ -21,7 +21,7 @@
                     <input type="text" class="form-control form-control-sm small" maxlength="200" id="nom-fase" />
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
+                    <button onclick="insFase(getFases);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
                 </div>
             </form>
         </div>

@@ -26,6 +26,9 @@ public class FaseController extends HttpServlet {
             case "get-select-fase":
                 out.print(getSelectFase());
                 break;
+            case "ins-fase":
+                out.print(insFase(entrada));
+                break;
         }
     }
 
@@ -67,6 +70,17 @@ public class FaseController extends HttpServlet {
         salida.put("options", options);
         salida.put("estado", "ok");
         c.cerrar();
+        return salida;
+    }
+
+    private JSONObject insFase(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_INS_FASE('"+ entrada.getString("nomfase") + "')";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
         return salida;
     }
 }

@@ -21,3 +21,39 @@ function getTarifas() {
         }
     });
 }
+
+function insTarifa(callback){
+    var nomtarifa = $('#nom-tarifa').val();
+    var valortarifa = $('#valor-tarifa').val();
+    
+    var datos = {
+        tipo: 'ins-tarifa',
+        nomtarifa: nomtarifa, 
+        valortarifa: valortarifa
+    };
+
+    $.ajax({
+        url: 'TarifaController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function(res){
+            var obj = JSON.parse(res);
+            if(obj.estado === 'ok'){
+                limpiar();
+                callback();
+            }
+        },
+        error: function(a, b, c){
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function limpiar(){
+    $('#nom-tarifa').val('');
+    $('#valor-tarifa').val('');
+}

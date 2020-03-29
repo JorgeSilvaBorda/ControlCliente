@@ -23,6 +23,9 @@ public class TarifaController extends HttpServlet {
             case "get-tarifas":
                 out.print(getTarifas());
                 break;
+            case "ins-tarifa":
+                out.print(insTarifa(entrada));
+                break;
         }
     }
 
@@ -51,6 +54,20 @@ public class TarifaController extends HttpServlet {
             salida.put("error", ex);
         }
         c.cerrar();
+        return salida;
+    }
+
+    private JSONObject insTarifa(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_INS_TARIFA("
+                + "'" + entrada.getString("nomtarifa") + "',"
+                + "" + entrada.getInt("valortarifa") + ""
+                + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
         return salida;
     }
 }

@@ -1,4 +1,4 @@
-<script src="modulos/tarifa.js" type="text/javascript"></script>
+<script src="modulos/tarifa.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         getTarifas();
@@ -25,7 +25,7 @@
                     <input type="number" class="form-control form-control-sm small" maxlength="200" id="valor-tarifa" />
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
+                    <button onclick="insTarifa(getTarifas);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
                 </div>
             </form>
         </div>

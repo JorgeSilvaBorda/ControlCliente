@@ -45,3 +45,39 @@ function getSelectFase() {
         }
     });
 }
+
+function insEmpalme(callback){
+    var idfase = $('#select-fase').val();
+    var numempalme = $('#num-empalme').val();
+    
+    var datos = {
+        tipo: 'ins-empalme',
+        idfase: idfase, 
+        numempalme: numempalme
+    };
+
+    $.ajax({
+        url: 'EmpalmeController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function(res){
+            var obj = JSON.parse(res);
+            if(obj.estado === 'ok'){
+                limpiar();
+                callback();
+            }
+        },
+        error: function(a, b, c){
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function limpiar(){
+    $('#num-empalme').val('');
+    $('#select-fase').val('0');
+}

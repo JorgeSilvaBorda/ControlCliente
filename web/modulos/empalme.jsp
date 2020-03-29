@@ -1,4 +1,4 @@
-<script src="modulos/empalme.js" type="text/javascript"></script>
+<script src="modulos/empalme.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         getSelectFase();
@@ -27,7 +27,7 @@
                     <input type="text" class="form-control form-control-sm small" maxlength="200" id="num-empalme" />
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
+                    <button onclick="insEmpalme(getEmpalmes);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
                 </div>
             </form>
         </div>

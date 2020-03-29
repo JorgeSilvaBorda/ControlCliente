@@ -26,6 +26,9 @@ public class EmpalmeController extends HttpServlet {
             case "get-select-empalme":
                 out.print(getSelectEmpalme());
                 break;
+            case "ins-empalme":
+                out.print(insEmpalme(entrada));
+                break;
         }
     }
 
@@ -56,7 +59,7 @@ public class EmpalmeController extends HttpServlet {
         c.cerrar();
         return salida;
     }
-    
+
     private JSONObject getSelectEmpalme() {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_EMPALMES()";
@@ -71,4 +74,17 @@ public class EmpalmeController extends HttpServlet {
         return salida;
     }
 
+    private JSONObject insEmpalme(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_INS_EMPALME("
+                + "'" + entrada.getInt("idfase") + "',"
+                + "'" + entrada.getString("numempalme") + "'"
+                + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
+        return salida;
+    }
 }

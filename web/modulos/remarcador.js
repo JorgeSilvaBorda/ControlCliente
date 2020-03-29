@@ -45,3 +45,28 @@ function getSelectEmpalme() {
         }
     });
 }
+
+function getSelectParqueEmpalme(idempalme){
+    var datos = {
+        tipo: 'get-select-parque-empalme',
+        idempalme: idempalme
+    };
+    $.ajax({
+        url: 'ParqueController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-parque').html(obj.options);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}

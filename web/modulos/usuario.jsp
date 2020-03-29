@@ -1,4 +1,4 @@
-<script src="modulos/usuario.js" type="text/javascript"></script>
+<script src="modulos/usuario.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $("input#rut-usuario").rut({
@@ -46,7 +46,7 @@
                     <input type="text" class="form-control form-control-sm small" maxlength="50" id="ap-materno" />
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
+                    <button onclick="insUsuario(getUsuarios);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
                 </div>
             </form>
         </div>

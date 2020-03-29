@@ -23,7 +23,12 @@ public class ParqueController extends HttpServlet {
             case "get-parques":
                 out.print(getParques());
                 break;
+            case "get-select-parque-empalme":
+                int idempalme = entrada.getInt("idempalme");
+                out.print(getSelectParqueEmpalme(idempalme));
+                break;
         }
+
     }
 
     private JSONObject getParques() {
@@ -50,6 +55,20 @@ public class ParqueController extends HttpServlet {
             salida.put("estado", "error");
             salida.put("error", ex);
         }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getSelectParqueEmpalme(int idempalme) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_SELECT_PARQUE_EMPALME(" + idempalme + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDPARQUE", "NOMPARQUE");
+        salida.put("options", options);
+        salida.put("estado", "ok");
         c.cerrar();
         return salida;
     }

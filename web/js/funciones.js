@@ -1,3 +1,4 @@
-function cargarModulo(nombre){
-    $('#contenido-principal').load(nombre + '.jsp');
-}
+String.prototype.replaceAll = function (search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};

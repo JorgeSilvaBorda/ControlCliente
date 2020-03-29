@@ -33,7 +33,7 @@ public class UsuarioController extends HttpServlet {
                 out.print(existeUsuario(entrada.getInt("rutusuario")));
                 break;
             case "ins-usuario":
-                out.print(insUsuario(entrada.getJSONObject("usuario")));
+                out.print(insUsuario(entrada));
                 break;
             case "upd-usuario":
                 out.print(updUsuario(entrada.getJSONObject("usuario")));
@@ -185,7 +185,6 @@ public class UsuarioController extends HttpServlet {
                 + "'" + usuario.getString("nombres") + "', "
                 + "'" + usuario.getString("appaterno") + "', "
                 + "'" + usuario.getString("apmaterno") + "', "
-                + usuario.getInt("idempresa") + ", "
                 + usuario.getInt("idtipousuario") + ")";
         Conexion c = new Conexion();
         c.abrir();

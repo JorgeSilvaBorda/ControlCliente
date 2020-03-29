@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="page-header">
-                <h1>Remarcadores<small> y sus Empalmes</small></h1>
+                <h1>Remarcadores<small> y Ubicaciones</small></h1>
             </div>
         </div>
     </div>
@@ -19,7 +19,12 @@
             <form class="form small"  role="form">
                 <div class="form-group">
                     <label for="select-empalme">Empalme</label>
-                    <select class="form-control-sm form-control small" id="select-empalme">
+                    <select onchange="getSelectParqueEmpalme($(this).val());" class="form-control-sm form-control small" id="select-empalme">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="select-parque">Parque</label>
+                    <select class="form-control-sm form-control small" id="select-parque">
                     </select>
                 </div>
                 <div class="form-group">
@@ -38,6 +43,7 @@
                     <tr>
                         <th># Remarcador</th>
                         <th># Empalme</th>
+                        <th>Parque</th>
                         <th>Acción</th>
                     </tr>
                 </thead>

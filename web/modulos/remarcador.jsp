@@ -27,7 +27,7 @@
                     <select class="form-control-sm form-control small" id="select-parque">
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group"><!-- Cambiar a ID Remarcador -->
                     <label for="num-remarcador" >Número Remarcador</label>
                     <input type="text" class="form-control form-control-sm small" maxlength="11" id="num-remarcador" />
                 </div>
@@ -41,7 +41,7 @@
             <table id="tabla-remarcadores" class="table table-condensed table-borderless table-striped table-hover table-sm small">
                 <thead>
                     <tr>
-                        <th># Remarcador</th>
+                        <th># Remarcador</th> <!-- Cambiar a ID Remarcador -->
                         <th># Empalme</th>
                         <th>Parque</th>
                         <th>Acción</th>

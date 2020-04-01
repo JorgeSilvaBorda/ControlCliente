@@ -23,6 +23,9 @@ public class ClienteController extends HttpServlet {
             case "get-clientes":
                 out.print(getClientes());
                 break;
+                case "ins-cliente":
+                out.print(insCliente(entrada));
+                break;
         }
     }
 
@@ -38,9 +41,14 @@ public class ClienteController extends HttpServlet {
                 filas += "<tr>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDCLIENTE") + "' /><span>" + modelo.Util.formatRut(rs.getString("RUTCLIENTE") + "-" + rs.getString("DVCLIENTE")) + "</span></td>";
                 filas += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
-                filas += "<td>" + rs.getString("DIRECCION1") + "</td>";
-                filas += "<td>" + rs.getString("DIRECCION2") + "</td>";
-                filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>º</td>";
+                filas += "<td>" + rs.getString("RAZONCLIENTE") + "</td>";
+                filas += "<td>" + rs.getString("DIRECCION") + "</td>";
+                filas += "<td>" + rs.getString("MODULOS") + "</td>";
+                filas += "<td>" + rs.getString("PERSONA") + "</td>";
+                filas += "<td>" + rs.getString("CARGO") + "</td>";
+                filas += "<td>" + rs.getInt("FONO") + "</td>";
+                filas += "<td>" + rs.getString("EMAIL") + "</td>";
+                filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button></td>";
                 filas += "</tr>";
             }
             salida.put("tabla", filas);
@@ -53,6 +61,28 @@ public class ClienteController extends HttpServlet {
             salida.put("error", ex);
         }
         c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject insCliente(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_INS_CLIENTE("
+                + "'" + entrada.getString("rutcliente") + "',"
+                + "'" + entrada.getString("dvcliente") + "',"
+                + "'" + entrada.getString("nomcliente") + "',"
+                + "'" + entrada.getString("razoncliente") + "',"
+                + "'" + entrada.getString("direccion") + "',"
+                + "'" + entrada.getString("modulos") + "',"
+                + "'" + entrada.getString("persona") + "',"
+                + "'" + entrada.getString("cargo") + "',"
+                + "" + entrada.getInt("fono") + ","
+                + "'" + entrada.getString("email") + "')";
+                
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
         return salida;
     }
 }

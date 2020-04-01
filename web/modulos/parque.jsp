@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="page-header">
-                <h1>Parques<small> y sus Fases</small></h1>
+                <h1>Parques<small> y sus Fases</small></h1> <!-- Bodega como cncepto -->
             </div>
         </div>
     </div>

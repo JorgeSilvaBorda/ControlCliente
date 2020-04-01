@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import modelo.Conexion;
 
 public class UsuarioController extends HttpServlet {
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
@@ -26,21 +27,28 @@ public class UsuarioController extends HttpServlet {
             case "get-usuarios":
                 out.print(getUsuarios());
                 break;
+            case "get-usuario-idusuario":
+                out.print(getUsuarioIdUsuario(entrada));
+                break;
             case "carga-select-tipousuario":
                 out.print(getTipoUsuarios());
                 break;
+            /*
             case "existe-usuario":
                 out.print(existeUsuario(entrada.getInt("rutusuario")));
                 break;
+             */
             case "ins-usuario":
                 out.print(insUsuario(entrada));
                 break;
             case "upd-usuario":
                 out.print(updUsuario(entrada.getJSONObject("usuario")));
                 break;
+            /*    
             case "del-usuario":
                 out.print(delUsuario(entrada.getInt("idusuario")));
                 break;
+             */
             case "reset-pass-usuario":
                 out.print(resetPassUsuario(entrada));
                 break;
@@ -140,6 +148,38 @@ public class UsuarioController extends HttpServlet {
         c.cerrar();
         return salida;
     }
+    
+    private JSONObject getUsuarioIdUsuario(JSONObject entrada) {
+        int idusuario = entrada.getInt("idusuario");
+        JSONObject salida = new JSONObject();
+        JSONObject usuario = new JSONObject();
+        String query = "CALL SP_GET_USUARIO_IDUSUARIO(" + idusuario + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        try {
+            while (rs.next()) {
+                usuario.put("idusuario", rs.getInt("IDUSUARIO"));
+                usuario.put("idtipousuario", rs.getInt("IDTIPOUSUARIO"));
+                usuario.put("nomtipousuario", rs.getString("NOMTIPOUSUARIO"));
+                usuario.put("rut", rs.getInt("RUT"));
+                usuario.put("dv", rs.getString("DV"));
+                usuario.put("nombres", rs.getString("NOMBRES"));
+                usuario.put("appaterno", rs.getString("APPATERNO"));
+                usuario.put("apmaterno", rs.getString("APMATERNO"));
+            }
+            salida.put("usuario", usuario);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.UsuarioController.getUsuarioIdUsuario().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
 
     private JSONObject getTipoUsuarios() {
         JSONObject salida = new JSONObject();
@@ -198,13 +238,12 @@ public class UsuarioController extends HttpServlet {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_UPD_USUARIO("
                 + usuario.getInt("idusuario") + ","
+                + usuario.getInt("idtipousuario") + ","
                 + usuario.getInt("rutusuario") + ","
                 + "'" + usuario.getString("dvusuario") + "',"
                 + "'" + usuario.getString("nombres") + "',"
                 + "'" + usuario.getString("appaterno") + "',"
-                + "'" + usuario.getString("apmaterno") + "',"
-                + usuario.getInt("idempresa") + ", "
-                + usuario.getInt("idtipousuario") + ")";
+                + "'" + usuario.getString("apmaterno") + "')";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

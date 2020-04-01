@@ -47,7 +47,7 @@
                 </div>
                 <div class="form-group">
                     <button onclick="insUsuario(getUsuarios);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
-                    <button onclick="saveUsuario(getUsuarios);" type="button" class="btn btn-secondary btn-sm hide" id="btn-guardar">Guardar</button>
+                    <button onclick="saveUsuario(getUsuarios);" hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
                     <button onclick="limpiar();" type="button" class="btn btn-default btn-sm" id="btn-limpiar">Limpiar</button>
                 </div>
             </form>

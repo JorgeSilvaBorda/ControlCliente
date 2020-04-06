@@ -12,7 +12,9 @@ function getTarifas() {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
+                $('.dataTable').DataTable().destroy();
                 $('#tabla-tarifas tbody').html(obj.tabla);
+                $('#tabla-tarifas').DataTable(OPCIONES_DATATABLES);
             }
         },
         error: function (a, b, c) {

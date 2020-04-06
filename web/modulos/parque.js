@@ -11,7 +11,9 @@ function getParques() {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
+                $('.dataTable').DataTable().destroy();
                 $('#tabla-parques tbody').html(obj.tabla);
+                $('#tabla-parques').DataTable(OPCIONES_DATATABLES);
             }
         },
         error: function (a, b, c) {

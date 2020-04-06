@@ -13,6 +13,7 @@ function getUsuarios() {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
+                $('.dataTable').DataTable().destroy();
                 $('#tabla-usuarios tbody').html(obj.tabla);
                 $('#tabla-usuarios').DataTable(OPCIONES_DATATABLES);
             }

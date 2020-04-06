@@ -11,7 +11,9 @@ function getEmpalmes() {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
+                $('.dataTable').DataTable().destroy();
                 $('#tabla-empalmes tbody').html(obj.tabla);
+                $('#tabla-empalmes').DataTable(OPCIONES_DATATABLES);
             }
         },
         error: function (a, b, c) {

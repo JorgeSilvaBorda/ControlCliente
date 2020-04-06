@@ -11,7 +11,9 @@ function getRemarcadores() {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
+                $('.dataTable').DataTable().destroy();
                 $('#tabla-remarcadores tbody').html(obj.tabla);
+                $('#tabla-remarcadores').DataTable(OPCIONES_DATATABLES);
             }
         },
         error: function (a, b, c) {

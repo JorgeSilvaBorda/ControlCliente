@@ -11,7 +11,9 @@ function getFases() {
         success: function(resp){
             var obj = JSON.parse(resp);
             if(obj.estado === 'ok'){
+                $('.dataTable').DataTable().destroy();
                 $('#tabla-fases tbody').html(obj.tabla);
+                $('#tabla-fases').DataTable(OPCIONES_DATATABLES);
             }
         },
         error: function(a, b, c){

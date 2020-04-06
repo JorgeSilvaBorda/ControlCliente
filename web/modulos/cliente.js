@@ -11,8 +11,9 @@ function getClientes() {
         success: function(resp){
             var obj = JSON.parse(resp);
             if(obj.estado === 'ok'){
-                //Pintar Usuarios
+                $('.dataTable').DataTable().destroy();
                 $('#tabla-clientes tbody').html(obj.tabla);
+                $('#tabla-clientes').DataTable(OPCIONES_DATATABLES);
             }
         },
         error: function(a, b, c){

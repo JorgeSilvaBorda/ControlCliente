@@ -33,6 +33,8 @@
                 </div>
                 <div class="form-group">
                     <button onclick="insRemarcador(getRemarcadores);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
+                    <button onclick="saveRemarcador(getRemarcadores);" hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
+                    <button onclick="limpiar();" type="button" class="btn btn-default btn-sm" id="btn-limpiar">Limpiar</button>
                 </div>
             </form>
         </div>

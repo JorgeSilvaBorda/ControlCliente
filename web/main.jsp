@@ -60,7 +60,7 @@
                                         <a class="dropdown-item" onclick="cargarModulo('usuario');" href="#">Usuario</a> 
                                         <div class="dropdown-divider"></div> 
                                         <a class="dropdown-item" onclick="cargarModulo('instalacion');" href="#">Instalación</a> 
-                                        <a class="dropdown-item" onclick="cargarModulo('parque');" href="#">Parque</a>
+                                        <a class="dropdown-item" onclick="cargarModulo('parque');" href="#">Bodega</a>
                                         <a class="dropdown-item" onclick="cargarModulo('empalme');" href="#">Empalme</a>
                                         <a class="dropdown-item" onclick="cargarModulo('remarcador');" href="#">Remarcador</a>
                                         <a class="dropdown-item" onclick="cargarModulo('cliente');" href="#">Cliente</a>

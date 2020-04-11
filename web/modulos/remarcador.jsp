@@ -23,12 +23,12 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="select-parque">Parque</label>
+                    <label for="select-parque">Bodega</label>
                     <select class="form-control-sm form-control small" id="select-parque">
                     </select>
                 </div>
                 <div class="form-group"><!-- Cambiar a ID Remarcador -->
-                    <label for="num-remarcador" >Número Remarcador</label>
+                    <label for="num-remarcador" >ID Remarcador</label>
                     <input type="text" class="form-control form-control-sm small" maxlength="11" id="num-remarcador" />
                 </div>
                 <div class="form-group">
@@ -43,9 +43,9 @@
             <table id="tabla-remarcadores" class="table table-condensed table-borderless table-striped table-hover table-sm small">
                 <thead>
                     <tr>
-                        <th># Remarcador</th> <!-- Cambiar a ID Remarcador -->
+                        <th>ID Remarcador</th> <!-- Cambiar a ID Remarcador -->
                         <th># Empalme</th>
-                        <th>Parque</th>
+                        <th>Bodega</th>
                         <th>Acción</th>
                     </tr>
                 </thead>

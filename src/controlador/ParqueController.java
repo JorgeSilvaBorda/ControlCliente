@@ -30,6 +30,12 @@ public class ParqueController extends HttpServlet {
             case "ins-parque":
                 out.print(insParque(entrada));
                 break;
+            case "get-parque-idparque":
+                out.print(getParqueIdParque(entrada));
+                break;
+            case "upd-parque":
+                out.print(updParque(entrada.getJSONObject("parque")));
+                break;
         }
 
     }
@@ -82,6 +88,48 @@ public class ParqueController extends HttpServlet {
                 + "'" + entrada.getInt("idinstalacion") + "',"
                 + "'" + entrada.getString("nomparque") + "'"
                 + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
+        return salida;
+    }
+
+    private JSONObject getParqueIdParque(JSONObject entrada) {
+        int idparque = entrada.getInt("idparque");
+        JSONObject salida = new JSONObject();
+        JSONObject parque = new JSONObject();
+        String query = "CALL SP_GET_PARQUE_IDPARQUE(" + idparque + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        try {
+            while (rs.next()) {
+                parque.put("idparque", rs.getInt("IDPARQUE"));
+                parque.put("idinstalacion", rs.getInt("IDINSTALACION"));
+                parque.put("nomparque", rs.getString("NOMPARQUE"));
+                parque.put("nominstalacion", rs.getString("NOMINSTALACION"));
+            }
+            salida.put("parque", parque);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.ParqueController.getParqueIdParque().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject updParque(JSONObject parque) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_UPD_PARQUE("
+                + parque.getInt("idparque") + ","
+                + parque.getInt("idinstalacion") + ","
+                + "'" + parque.getString("nomparque") + "')";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

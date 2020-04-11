@@ -17,13 +17,13 @@
         <div class="col-sm-3">
             <form class="form small"  role="form">
                 <div class="form-group">
-                    <label for="select-plogistico">P. Logï¿½stico</label>
+                    <label for="select-plogistico">P. Logístico</label>
                     <select disabled class="form-control-sm form-control small" id="select-plogistico">
-                        <option selected value="1">Parque Logï¿½stico Pudahuel</option>
+                        <option selected value="1">Parque Logístico Pudahuel</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="nom-instalacion" >Nombre Instalaciï¿½n</label>
+                    <label for="nom-instalacion" >Nombre Instalación</label>
                     <input type="text" class="form-control form-control-sm small" maxlength="200" id="nom-instalacion" />
                 </div>
                 <div class="form-group">
@@ -37,9 +37,9 @@
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>P. Logï¿½stico</th>
-                        <th>Direcciï¿½n</th>
-                        <th>Acciï¿½n</th>
+                        <th>P. Logístico</th>
+                        <th>Dirección</th>
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>

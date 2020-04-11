@@ -18,7 +18,7 @@
         <div class="col-sm-3">
             <form class="form small"  role="form">
                 <div class="form-group">
-                    <label for="select-instalacion">Instalación</label>
+                    <label for="select-instalacion">Instalaciï¿½n</label>
                     <select class="form-control-sm form-control small" id="select-instalacion">
                     </select>
                 </div>
@@ -37,8 +37,8 @@
                 <thead>
                     <tr>
                         <th>Parque</th>
-                        <th>Instalación</th>
-                        <th>Acción</th>
+                        <th>Instalaciï¿½n</th>
+                        <th>Acciï¿½n</th>
                     </tr>
                 </thead>
                 <tbody>

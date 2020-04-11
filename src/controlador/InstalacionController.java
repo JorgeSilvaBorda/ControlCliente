@@ -29,6 +29,12 @@ public class InstalacionController extends HttpServlet {
             case "ins-instalacion":
                 out.print(insInstalacion(entrada));
                 break;
+            case "get-instalacion-idinstalacion":
+                out.print(getInstalacionIdInstalacion(entrada));
+                break;
+            case "upd-instalacion":
+                out.print(updInstalacion(entrada.getJSONObject("instalacion")));
+                break;
         }
     }
 
@@ -77,7 +83,49 @@ public class InstalacionController extends HttpServlet {
 
     private JSONObject insInstalacion(JSONObject entrada) {
         JSONObject salida = new JSONObject();
-        String query = "CALL SP_INS_INSTALACION('"+ entrada.getString("nominstalacion") + "')";
+        String query = "CALL SP_INS_INSTALACION('" + entrada.getString("nominstalacion") + "')";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
+        return salida;
+    }
+
+    private JSONObject getInstalacionIdInstalacion(JSONObject entrada) {
+        int idinstalacion = entrada.getInt("idinstalacion");
+        JSONObject salida = new JSONObject();
+        JSONObject instalacion = new JSONObject();
+        String query = "CALL SP_GET_INSTALACION_IDINSTALACION(" + idinstalacion + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        try {
+            while (rs.next()) {
+                instalacion.put("idinstalacion", rs.getInt("IDINSTALACION"));
+                instalacion.put("idplogistico", rs.getInt("IDPLOGISTICO"));
+                instalacion.put("nominstalacion", rs.getString("NOMINSTALACION"));
+                instalacion.put("direccion", rs.getString("DIRECCION"));
+            }
+            salida.put("instalacion", instalacion);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.InstalacionController.getInstalacionIdInstalacion().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject updInstalacion(JSONObject instalacion) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_UPD_INSTALACION("
+                + instalacion.getInt("idinstalacion") + ","
+                + instalacion.getInt("idplogistico") + ","
+                + "'" + instalacion.getString("nominstalacion") + "')";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

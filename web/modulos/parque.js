@@ -98,7 +98,6 @@ function activarEdicion(boton) {
         },
         success: function (res) {
             var obj = JSON.parse(res);
-            console.log(obj);
             if (obj.estado === 'ok') {
                 armarParque(obj.parque);
             }

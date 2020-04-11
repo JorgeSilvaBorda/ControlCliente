@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="page-header">
-                <h1>Parques<small> y sus Instalaciones</small></h1> <!-- Bodega como cncepto -->
+                <h1>Bodegas<small> y sus Instalaciones</small></h1> <!-- Bodega como cncepto -->
             </div>
         </div>
     </div>
@@ -23,7 +23,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="nom-parque" >Nombre Parque</label>
+                    <label for="nom-parque" >Nombre Bodega</label>
                     <input type="text" class="form-control form-control-sm small" maxlength="200" id="nom-parque" />
                 </div>
                 <div class="form-group">

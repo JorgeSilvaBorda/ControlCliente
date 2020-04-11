@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="page-header">
-                <h1>Instalaciones</h1> <!-- CAmbiar nombre a Instalación -->
+                <h1>Instalaciones</h1>
             </div>
         </div>
     </div>

@@ -45,7 +45,7 @@ public class ParqueController extends HttpServlet {
             while (rs.next()) {
                 filas += "<tr>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
-                filas += "<td><input type='hidden' value='" + rs.getInt("IDFASE") + "' /><span>" + rs.getString("NOMFASE") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
                 filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button></td>";
                 filas += "</tr>";
             }
@@ -79,7 +79,7 @@ public class ParqueController extends HttpServlet {
     private JSONObject insParque(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_INS_PARQUE("
-                + "'" + entrada.getInt("idfase") + "',"
+                + "'" + entrada.getInt("idinstalacion") + "',"
                 + "'" + entrada.getString("nomparque") + "'"
                 + ")";
         Conexion c = new Conexion();

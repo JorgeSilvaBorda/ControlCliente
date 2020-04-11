@@ -5,8 +5,8 @@
         <servlet-class>controlador.UsuarioController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>FaseController</servlet-name>
-        <servlet-class>controlador.FaseController</servlet-class>
+        <servlet-name>InstalacionController</servlet-name>
+        <servlet-class>controlador.InstalacionController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ParqueController</servlet-name>
@@ -33,8 +33,8 @@
         <url-pattern>/UsuarioController</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>FaseController</servlet-name>
-        <url-pattern>/FaseController</url-pattern>
+        <servlet-name>InstalacionController</servlet-name>
+        <url-pattern>/InstalacionController</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ParqueController</servlet-name>

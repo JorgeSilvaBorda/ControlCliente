@@ -51,7 +51,7 @@
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink" data-toggle="dropdown">Operaciones</a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                        <a class="dropdown-item" href="#">Asignar remarcador a cliente</a> 
+                                        <a class="dropdown-item" onclick="cargarModulo('cliente-remarcador');" href="#">Asignar remarcador a cliente</a> 
                                     </div>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -59,7 +59,7 @@
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                         <a class="dropdown-item" onclick="cargarModulo('usuario');" href="#">Usuario</a> 
                                         <div class="dropdown-divider"></div> 
-                                        <a class="dropdown-item" onclick="cargarModulo('fase');" href="#">Fase</a> 
+                                        <a class="dropdown-item" onclick="cargarModulo('instalacion');" href="#">Instalación</a> 
                                         <a class="dropdown-item" onclick="cargarModulo('parque');" href="#">Parque</a>
                                         <a class="dropdown-item" onclick="cargarModulo('empalme');" href="#">Empalme</a>
                                         <a class="dropdown-item" onclick="cargarModulo('remarcador');" href="#">Remarcador</a>

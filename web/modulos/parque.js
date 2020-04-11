@@ -24,12 +24,12 @@ function getParques() {
     });
 }
 
-function getSelectFase() {
+function getSelectInstalacion() {
     var datos = {
-        tipo: 'get-select-fase'
+        tipo: 'get-select-instalacion'
     };
     $.ajax({
-        url: 'FaseController',
+        url: 'InstalacionController',
         type: 'post',
         data: {
             datos: JSON.stringify(datos)
@@ -37,7 +37,7 @@ function getSelectFase() {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
-                $('#select-fase').html(obj.options);
+                $('#select-instalacion').html(obj.options);
             }
         },
         error: function (a, b, c) {
@@ -48,12 +48,12 @@ function getSelectFase() {
     });
 }
 function insParque(callback){
-    var idfase = $('#select-fase').val();
+    var idinstalacion = $('#select-instalacion').val();
     var nomparque = $('#nom-parque').val();
     
     var datos = {
         tipo: 'ins-parque',
-        idfase: idfase, 
+        idinstalacion: idinstalacion, 
         nomparque: nomparque
     };
 
@@ -80,5 +80,5 @@ function insParque(callback){
 
 function limpiar(){
     $('#nom-parque').val('');
-    $('#select-fase').val('0');
+    $('#select-instalacion').val('0');
 }

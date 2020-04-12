@@ -17,6 +17,7 @@ $(document).ready(function () {
         return false;
     });
     $('#div-alert').fadeIn(500);
+    setTest();
 });
 
 
@@ -71,4 +72,14 @@ function login() {
        return true;
     }
     return false;
+}
+
+function setTest(){
+    $('#rut').val('163556626');
+    $('#rut').keyup();
+    $('#rut').blur();
+    $('#password').val('password');
+    $('#password').keyup();
+    $('#password').blur();
+    $('#btn-login').click();
 }

@@ -16,52 +16,52 @@ import modelo.Util;
 
 public class Login extends HttpServlet {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+
         PrintWriter out = response.getWriter();
-        JSONObject respuesta = loginUsuarioTest(request.getParameter("rut"), request.getParameter("password"), request);
-        if(respuesta.getInt("filas") == 1){
+        JSONObject respuesta = loginUsuario(request.getParameter("rut"), request.getParameter("password"), request);
+        if (respuesta.getInt("filas") == 1) {
             response.sendRedirect("main.jsp");
-        }else if(respuesta.getInt("filas") < 1){
+        } else if (respuesta.getInt("filas") < 1) {
             response.sendRedirect("login.jsp?status=badpass&rut=" + request.getParameter("rut"));
         }
     }
-    
-    private JSONObject loginUsuarioTest(String rutlogin, String passlogin, HttpServletRequest request){
+
+    private JSONObject loginUsuarioTest(String rutlogin, String passlogin, HttpServletRequest request) {
         JSONObject salida = new JSONObject();
-        if(Util.hashMD5(passlogin).equals(Util.hashMD5("password"))){
+        if (Util.hashMD5(passlogin).equals(Util.hashMD5("password"))) {
             JSONObject usuario = new JSONObject();
-                usuario.put("idusuario", 1);
-                usuario.put("idtipousuario", 1);
-                usuario.put("nomtipousuario", "Administrador");
-                usuario.put("rut", 16355662);
-                usuario.put("dv", "6");
-                usuario.put("nombres", "Jorge");
-                usuario.put("appaterno", "Silva");
-                usuario.put("apmaterno", "Borda");
-                salida.put("usuario", usuario);
-                salida.put("filas", 1);
-                HttpSession session = request.getSession();
-                session.setAttribute("idusuario", usuario.getInt("idusuario"));
-                session.setAttribute("idtipousuario", usuario.getInt("idtipousuario"));
-                session.setAttribute("nomtipousuario", usuario.getString("nomtipousuario"));
-                session.setAttribute("rut", usuario.getInt("rut"));
-                session.setAttribute("dv", usuario.getString("dv"));
-                session.setAttribute("nombres", usuario.getString("nombres"));
-                session.setAttribute("appaterno", usuario.getString("appaterno"));
-                session.setAttribute("apmaterno", usuario.getString("apmaterno"));
-                session.setAttribute("usuario.json", usuario.toString());
-        }else{
+            usuario.put("idusuario", 1);
+            usuario.put("idtipousuario", 1);
+            usuario.put("nomtipousuario", "Administrador");
+            usuario.put("rut", 16355662);
+            usuario.put("dv", "6");
+            usuario.put("nombres", "Jorge");
+            usuario.put("appaterno", "Silva");
+            usuario.put("apmaterno", "Borda");
+            salida.put("usuario", usuario);
+            salida.put("filas", 1);
+            HttpSession session = request.getSession();
+            session.setAttribute("idusuario", usuario.getInt("idusuario"));
+            session.setAttribute("idtipousuario", usuario.getInt("idtipousuario"));
+            session.setAttribute("nomtipousuario", usuario.getString("nomtipousuario"));
+            session.setAttribute("rut", usuario.getInt("rut"));
+            session.setAttribute("dv", usuario.getString("dv"));
+            session.setAttribute("nombres", usuario.getString("nombres"));
+            session.setAttribute("appaterno", usuario.getString("appaterno"));
+            session.setAttribute("apmaterno", usuario.getString("apmaterno"));
+            session.setAttribute("usuario.json", usuario.toString());
+        } else {
             salida.put("filas", 0);
         }
         return salida;
     }
 
     private JSONObject loginUsuario(String rutlogin, String passlogin, HttpServletRequest request) {
-        
+
         JSONObject salida = new JSONObject();
-        
+
         String rutsolo = rutlogin.split("-")[0];
         rutsolo = rutsolo.replaceAll("\\.", "");
         int rut = Integer.parseInt(rutsolo);
@@ -92,7 +92,7 @@ public class Login extends HttpServlet {
                 salida.put("estado", "no-valido");
                 salida.put("mensaje", "No se encuentra el registro de usuario/clave ingresados.");
                 request.getSession().invalidate();
-            }else if(cont > 1){
+            } else if (cont > 1) {
                 salida.put("estado", "no-valido");
                 salida.put("mensaje", "No se encuentra el registro de usuario/clave ingresados.");
                 System.out.println("[WRN] Se encuentra más de una combinación Usuario(rut)/password!");

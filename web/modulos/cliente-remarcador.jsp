@@ -1,7 +1,7 @@
-<script src="modulos/instalacion.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
+<script src="modulos/cliente-remarcador.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        getInstalaciones();
+        getClienteRemarcadores();
     });
 
 </script>
@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="page-header">
-                <h1>Instalaciones</h1>
+                <h1>Clientes con Remarcadores</h1>
             </div>
         </div>
     </div>

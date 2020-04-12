@@ -1,68 +1,49 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-
-<script type="text/javascript">
-    function login() {
-        
-        window.location.href = "main.jsp";
-        return false;
-        
-        var datos = {
-            tipo: 'login-usuario',
-            rutusuario: $('#rut').val(),
-            password: $('#password').val()
-        };
-        $.ajax({
-            url: 'UsuarioController',
-            type: 'post',
-            data: {
-                datos: JSON.stringify(datos)
-            },
-            success: function(response){
-                window.location.href = "main.jsp";
-            },
-            error: function(a, b, c){
-                console.log(a);
-                console.log(b);
-                console.log(c);
-            }
-        });
+<%
+    String rutProblemas = "";
+    if (request.getParameterMap().containsKey("status")) {
+        if (request.getParameter("status").equals("badpass")) {
+            rutProblemas = request.getParameter("rut");
+        }
     }
-</script>
+%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <br />
-            <br />
-            <br />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-5">
-        </div>
-        <div class="col-sm-2 mx-auto">
-            <form role="form" class="sombra-caja-1">
-                <div class="form-group-sm">
-                    <label for="rut" class="small">
-                        Rut Usuario
-                    </label>
-                    <input type="text" class="form-control form-control-sm" id="rut" />
-                </div>
-                <div class="form-group-sm">
-                    <label for="password" class="small">
-                        Password
-                    </label>
-                    <input type="password" class="form-control form-control-sm" id="password" />
-                </div>
-                <div class="form-group form-group-sm">
-                    <br />
-                    <button type="button" onclick="login();" class="btn btn-primary btn-sm">
-                        Ingresar
-                    </button>
-                </div>
+        <title>Login</title>
+        <link href="css/bootstrap.css?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" rel="stylesheet" type="text/css"/>
+        <link href="signin.css?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" rel="stylesheet">
+        <link href="iconic/font/css/open-iconic-bootstrap.css?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" rel="stylesheet" type="text/css"/>
+        <script src="js/jquery-3.4.1.min.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
+        <script src="js/jquery.rut.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
+        <script src="js/funciones.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
+        <script src="login.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
+    </head>
+
+    <body class="text-center">
+        <div class="container-fluid">
+            <form name="form" id="form" action="Login" method="post" class="form-signin" >
+                <h1 class="mb-4 oi oi-lock-locked text-center d-flex justify-content-center"></h1>
+                <h1 class="h3 mb-3 font-weight-normal">Por favor ingrese</h1>
+                <label for="rut" class="sr-only">Usuario</label>
+                <input type="text" class="form-control" id="rut" name="rut" placeholder="Ej: 12345678-9" maxlength="12" autofocus required value="<% out.print(rutProblemas); %>">
+                <label for="password" class="sr-only">Password</label>
+                <input type="password" class="form-control" id="password" name="password"  maxlength="20" required placeholder="Password">
+                <button class="btn btn-lg btn-primary btn-block" id="btn-login" onclick="login();" type="submit">Ingresar</button>
+                <%
+                    if (request.getParameterMap().containsKey("status")) {
+                        if (request.getParameter("status").equals("badpass")) {
+                            out.print("<br /><div id='div-alert' class='alert alert-danger' style='display:none;' role='alert'>Usuario o contraseña equivocados.</div>");
+                        }
+                    }
+                %>
+                <p class="mt-5 mb-3 text-muted">Bodenor 2020</p>
             </form>
         </div>
-        <div class="col-sm-5">
-        </div>
-    </div>
-</div>
+    </body>
+</html>

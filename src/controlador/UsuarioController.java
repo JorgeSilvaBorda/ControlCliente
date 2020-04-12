@@ -21,9 +21,11 @@ public class UsuarioController extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         JSONObject entrada = new JSONObject(request.getParameter("datos"));
         switch (entrada.getString("tipo")) {
+            /*
             case "login":
-                out.print(loginUsuario(entrada.getJSONObject("credenciales"), request));
+                out.print(loginUsuario(entrada.getJSONObject("usuario"), request));
                 break;
+                */
             case "get-usuarios":
                 out.print(getUsuarios());
                 break;
@@ -60,10 +62,11 @@ public class UsuarioController extends HttpServlet {
 
     private JSONObject loginUsuario(JSONObject credenciales, HttpServletRequest request) {
         JSONObject salida = new JSONObject();
-        int rut = Integer.parseInt(credenciales.getString("rutusuario"));
+        int rut = Integer.parseInt(credenciales.getString("rut").replace("\\.", "").replace("\\.", ""));
         String password = credenciales.getString("password");
 
         String query = "CALL SP_VALIDA_USUARIO(" + rut + ", '" + modelo.Util.hashMD5(password) + "')";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -73,17 +76,12 @@ public class UsuarioController extends HttpServlet {
                 JSONObject usuario = new JSONObject();
                 usuario.put("idusuario", rs.getInt("IDUSUARIO"));
                 usuario.put("idtipousuario", rs.getInt("IDTIPOUSUARIO"));
-                usuario.put("rutusuario", rs.getInt("RUTUSUARIO"));
-                usuario.put("dvusuario", rs.getString("DVUSUARIO"));
-                usuario.put("desctipousuario", rs.getString("DESCTIPOUSUARIO"));
-                usuario.put("nombre", rs.getString("NOMUSUARIO"));
+                usuario.put("nomtipousuario", rs.getString("NOMTIPOUSUARIO"));
+                usuario.put("rut", rs.getInt("RUT"));
+                usuario.put("dv", rs.getString("DV"));
+                usuario.put("nombres", rs.getString("NOMBRES"));
                 usuario.put("appaterno", rs.getString("APPATERNO"));
                 usuario.put("apmaterno", rs.getString("APMATERNO"));
-                usuario.put("idempresa", rs.getInt("IDEMPRESA"));
-                usuario.put("rutempresa", rs.getInt("RUTEMPRESA"));
-                usuario.put("dvempresa", rs.getString("DVEMPRESA"));
-                usuario.put("idusuario", rs.getInt("IDUSUARIO"));
-                usuario.put("empresa", rs.getString("EMPRESA"));
                 cont++;
                 salida.put("usuario", usuario);
             }
@@ -91,22 +89,26 @@ public class UsuarioController extends HttpServlet {
             if (cont < 1) {
                 salida.put("estado", "no-valido");
                 salida.put("mensaje", "No se encuentra el registro de usuario/clave ingresados.");
+                request.getSession().invalidate();
+            }else if(cont > 1){
+                salida.put("estado", "no-valido");
+                salida.put("mensaje", "No se encuentra el registro de usuario/clave ingresados.");
+                System.out.println("[WRN] Se encuentra más de una combinación Usuario(rut)/password!");
+                System.out.println("    Rut: " + rut);
+                request.getSession().invalidate();
             } else {
                 salida.put("estado", "ok");
                 HttpSession session = request.getSession();
                 JSONObject usuario = salida.getJSONObject("usuario");
                 session.setAttribute("idusuario", usuario.getInt("idusuario"));
-                session.setAttribute("rutusuario", usuario.getInt("rutusuario"));
-                session.setAttribute("dvusuario", usuario.getString("dvusuario"));
-                session.setAttribute("nombre", usuario.getString("nombre"));
                 session.setAttribute("idtipousuario", usuario.getInt("idtipousuario"));
-                session.setAttribute("desctipousuario", usuario.getString("desctipousuario"));
+                session.setAttribute("nomtipousuario", usuario.getString("nomtipousuario"));
+                session.setAttribute("rut", usuario.getInt("rut"));
+                session.setAttribute("dv", usuario.getString("dv"));
+                session.setAttribute("nombres", usuario.getString("nombres"));
                 session.setAttribute("appaterno", usuario.getString("appaterno"));
                 session.setAttribute("apmaterno", usuario.getString("apmaterno"));
-                session.setAttribute("rutempresa", usuario.getInt("rutempresa"));
-                session.setAttribute("dvempresa", usuario.getString("dvempresa"));
-                session.setAttribute("empresa", usuario.getString("empresa"));
-                session.setAttribute("idempresa", usuario.getInt("idempresa"));
+                session.setAttribute("usuario.json", usuario.toString());
             }
         } catch (JSONException | SQLException ex) {
             System.out.println("Problemas en  controlador.UsuarioControler.loginUsuario()");

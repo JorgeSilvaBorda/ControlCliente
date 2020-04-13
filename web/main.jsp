@@ -67,7 +67,7 @@
                                                     + "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
                                                     + "<a onclick='cargarModulo(\"emision-boleta\");' class='dropdown-item' href='#'>Emisión Boleta</a> \n"
                                                     + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> \n"
-                                                    + "<a onclick='cargarModulo(\"consumo-total-cliente\");' class='dropdown-item' href='#'>Consumo Total Cliente</a> \n"
+                                                    + "<a onclick='cargarModulo(\"resumen-mes-cliente\");' class='dropdown-item' href='#'>Resumen Mes Cliente</a> \n"
                                                     + "</div>\n"
                                                     + "</li>");
                                         } else if (Integer.parseInt(idtipousuario) == 1) {
@@ -76,7 +76,7 @@
                                                     + "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
                                                     + "<a onclick='cargarModulo(\"emision-boleta\");' class='dropdown-item' href='#'>Emisión Boleta</a> \n"
                                                     + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> \n"
-                                                    + "<a onclick='cargarModulo(\"consumo-total-cliente\");' class='dropdown-item' href='#'>Consumo Total Cliente</a> \n"
+                                                    + "<a onclick='cargarModulo(\"resumen-mes-cliente\");' class='dropdown-item' href='#'>Resumen Mes Cliente</a> \n"
                                                     + "</div>\n"
                                                     + "</li>");
                                             out.print("<li class='nav-item dropdown'>\n"

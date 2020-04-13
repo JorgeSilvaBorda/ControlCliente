@@ -66,7 +66,6 @@ public class UsuarioController extends HttpServlet {
         String password = credenciales.getString("password");
 
         String query = "CALL SP_VALIDA_USUARIO(" + rut + ", '" + modelo.Util.hashMD5(password) + "')";
-        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);

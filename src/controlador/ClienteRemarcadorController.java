@@ -36,7 +36,6 @@ public class ClienteRemarcadorController extends HttpServlet {
         int idcliente = entrada.getInt("idcliente");
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_REMARCADORES_ASIGNADOS_IDCLIENTE(" + idcliente + ")";
-        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);

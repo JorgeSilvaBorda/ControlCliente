@@ -17,7 +17,7 @@ $(document).ready(function () {
         return false;
     });
     $('#div-alert').fadeIn(500);
-    setTest();
+    //setTest();
 });
 
 
@@ -35,43 +35,6 @@ function validarCampos() {
         return false;
     }
     return true;
-}
-
-function login() {
-    if (validarCampos()) {
-
-        var rut = $('#rut').val().replaceAll("\\.", "").split("-")[0];
-        var dv = $('#rut').val().split("-")[1];
-        var password = $('#password').val();
-        
-        var datos = {
-            tipo: 'login',
-            usuario: {
-                rut: rut,
-                dv: dv,
-                password: password
-            }
-        };
-        /**
-        $.ajax({
-            type: 'post',
-            url: 'UsuarioController',
-            data:{
-                datos: JSON.stringify(datos)
-            },
-            success: function(resp){
-                console.log(resp);
-            },
-            error: function(a, b, c){
-                console.log(a);
-                console.log(b);
-                console.log(c);
-            }
-        });
-        */
-       return true;
-    }
-    return false;
 }
 
 function setTest(){

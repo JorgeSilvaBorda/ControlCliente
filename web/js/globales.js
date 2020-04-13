@@ -11,9 +11,11 @@ var OPCIONES_DATATABLES = {
             "previous": "Anterior",
             "next": "Siguiente"
         },
+        
         "search": "Buscar"
     },
     "paging": true,
+    "pageLength": 10,
     "ordering": true,
     "drawCallback": function () {
         $('.dataTables_paginate > .pagination').addClass('pagination-sm');

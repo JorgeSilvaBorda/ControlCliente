@@ -32,6 +32,10 @@
         <servlet-name>Login</servlet-name>
         <servlet-class>controlador.Login</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ClienteRemarcadorController</servlet-name>
+        <servlet-class>controlador.ClienteRemarcadorController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UsuarioController</servlet-name>
         <url-pattern>/UsuarioController</url-pattern>
@@ -63,6 +67,10 @@
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/Login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ClienteRemarcadorController</servlet-name>
+        <url-pattern>/ClienteRemarcadorController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -23,6 +23,9 @@ public class RemarcadorController extends HttpServlet {
             case "get-remarcadores":
                 out.print(getRemarcadores());
                 break;
+            case "get-remarcadores-libres":
+                out.print(getRemarcadoresLibres());
+                break;
             case "ins-remarcador":
                 out.print(insRemarcador(entrada));
                 break;
@@ -49,6 +52,36 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
                 filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button></td>";
+                filas += "</tr>";
+            }
+            salida.put("tabla", filas);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.RemarcadorController.getRemarcadores().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getRemarcadoresLibres() {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_REMARCADORES_LIBRES()";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String filas = "";
+        try {
+            while (rs.next()) {
+                filas += "<tr>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
+                filas += "<td><a href='#' style='color:#669900; font-size:12px;' class='oi oi-check success' onclick='asignar(" + rs.getInt("IDREMARCADOR") + ")'></a></td>";
                 filas += "</tr>";
             }
             salida.put("tabla", filas);
@@ -126,4 +159,5 @@ public class RemarcadorController extends HttpServlet {
         salida.put("estado", "ok");
         return salida;
     }
+
 }

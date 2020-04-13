@@ -23,6 +23,9 @@ public class ClienteController extends HttpServlet {
             case "get-clientes":
                 out.print(getClientes());
                 break;
+            case "get-select-clientes":
+                out.print(getSelectClientes());
+                break;
             case "ins-cliente":
                 out.print(insCliente(entrada));
                 break;
@@ -147,6 +150,19 @@ public class ClienteController extends HttpServlet {
         c.ejecutar(query);
         c.cerrar();
         salida.put("estado", "ok");
+        return salida;
+    }
+
+    private JSONObject getSelectClientes() {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_SELECT_CLIENTES()";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDCLIENTE", "RAZONCLIENTE");
+        c.cerrar();
+        salida.put("estado", "ok");
+        salida.put("options", options);
         return salida;
     }
 }

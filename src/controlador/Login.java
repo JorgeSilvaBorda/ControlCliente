@@ -61,14 +61,12 @@ public class Login extends HttpServlet {
     private JSONObject loginUsuario(String rutlogin, String passlogin, HttpServletRequest request) {
 
         JSONObject salida = new JSONObject();
-
         String rutsolo = rutlogin.split("-")[0];
         rutsolo = rutsolo.replaceAll("\\.", "");
         int rut = Integer.parseInt(rutsolo);
         String password = passlogin;
 
         String query = "CALL SP_VALIDA_USUARIO(" + rut + ", '" + modelo.Util.hashMD5(password) + "')";
-        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -113,7 +111,7 @@ public class Login extends HttpServlet {
                 session.setAttribute("usuario.json", usuario.toString());
             }
         } catch (JSONException | SQLException ex) {
-            System.out.println("Problemas en  controlador.UsuarioControler.loginUsuario()");
+            System.out.println("Problemas en controlador.UsuarioControler.loginUsuario()");
             System.out.println(ex);
             salida.put("estado", "error");
             salida.put("mensaje", ex);

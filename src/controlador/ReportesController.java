@@ -47,6 +47,8 @@ public class ReportesController extends HttpServlet {
             dataset.put("data", datasetData);
             dataset.put("label", "Remarcador Nº: " + entrada.getInt("idremarcador"));
             dataset.put("borderColor", "#3e95cd");
+            dataset.put("pointRadius", 1);
+            dataset.put("pointHoverRadius", 2);
             dataset.put("fill", "false");
             datasets.put(dataset);
             JSONObject data = new JSONObject();

@@ -22,14 +22,14 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="select-remarcador" >Cliente</label>
+                    <label for="select-remarcador" >Remarcador</label>
                     <select onchange="graficar($(this).val());" class="form-control form-control-sm small" id="select-remarcador" >
                     </select>
                 </div>
             </form>
         </div>
         <div class="col-sm-9">
-            <canvas id="line-chart" width="800" height="450"></canvas>
+            <canvas id="line-chart" width="600" height="300"></canvas>
         </div>
     </div>
     <div class='row'>

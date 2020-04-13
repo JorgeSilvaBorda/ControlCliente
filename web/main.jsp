@@ -32,7 +32,7 @@
         <script src="js/datatables/pdfmake-0.1.36/pdfmake.js" type="text/javascript"></script>
         <script src="js/datatables/pdfmake-0.1.36/vfs_fonts.js" type="text/javascript"></script>
         <script src="js/pivot.min.js" type="text/javascript"></script>
-
+        <script src="js/Chart.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 
     </head>
     <body>

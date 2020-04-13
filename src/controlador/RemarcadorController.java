@@ -26,6 +26,9 @@ public class RemarcadorController extends HttpServlet {
             case "get-remarcadores-libres":
                 out.print(getRemarcadoresLibres());
                 break;
+            case "get-select-remarcadores-cliente":
+                out.print(getSelectRemarcadoresCliente(entrada));
+                break;
             case "ins-remarcador":
                 out.print(insRemarcador(entrada));
                 break;
@@ -157,6 +160,20 @@ public class RemarcadorController extends HttpServlet {
         c.ejecutar(query);
         c.cerrar();
         salida.put("estado", "ok");
+        return salida;
+    }
+
+    private JSONObject getSelectRemarcadoresCliente(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_SELECT_REMARCADORES_CLIENTE(" + entrada.getInt("idcliente") + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDREMARCADOR", "NUMREMARCADOR");
+        salida.put("options", options);
+        salida.put("estado", "ok");
+        c.cerrar();
         return salida;
     }
 

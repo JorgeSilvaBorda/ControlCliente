@@ -1,0 +1,40 @@
+<script src="modulos/consumo-cliente-remarcador.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        getSelectClientes();
+    });
+
+</script>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header">
+                <h1>Consumo de cliente</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <form class="form small"  role="form">
+                <div class="form-group">
+                    <label for="select-cliente" >Cliente</label>
+                    <select onchange="getSelectRemarcadoresCliente($(this).val())" class="form-control form-control-sm small" id="select-cliente" >
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="select-remarcador" >Cliente</label>
+                    <select onchange="graficar($(this).val());" class="form-control form-control-sm small" id="select-remarcador" >
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-9">
+            <canvas id="line-chart" width="800" height="450"></canvas>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm-12'>
+
+        </div>
+    </div>
+</div>

@@ -32,7 +32,6 @@ function insCliente(callback) {
     var nomcliente = $('#nomcliente').val();
     var razoncliente = $('#razoncliente').val();
     var direccion = $('#direccion').val();
-    var modulos = $('#modulos').val();
     var persona = $('#persona').val();
     var cargo = $('#cargo').val();
     var fono = $('#fono').val();
@@ -45,7 +44,6 @@ function insCliente(callback) {
         nomcliente: nomcliente,
         razoncliente: razoncliente,
         direccion: direccion,
-        modulos: modulos,
         persona: persona,
         cargo: cargo,
         fono: fono,
@@ -106,7 +104,6 @@ function armarCliente(cliente) {
     var nomcliente = cliente.nomcliente;
     var razoncliente = cliente.razoncliente;
     var direccion = cliente.direccion;
-    var modulos = cliente.modulos;
     var persona = cliente.persona;
     var cargo = cliente.cargo;
     var fono = cliente.fono;
@@ -116,7 +113,6 @@ function armarCliente(cliente) {
     $('#nomcliente').val(nomcliente);
     $('#razoncliente').val(razoncliente);
     $('#direccion').val(direccion);
-    $('#modulos').val(modulos);
     $('#persona').val(persona);
     $('#cargo').val(cargo);
     $('#fono').val(fono);
@@ -132,7 +128,6 @@ function saveCliente(callback) {
     var nomcliente = $('#nomcliente').val();
     var razoncliente = $('#razoncliente').val();
     var direccion = $('#direccion').val();
-    var modulos = $('#modulos').val();
     var persona = $('#persona').val();
     var cargo = $('#cargo').val();
     var fono = $('#fono').val();
@@ -147,7 +142,6 @@ function saveCliente(callback) {
             nomcliente: nomcliente,
             razoncliente: razoncliente,
             direccion: direccion,
-            modulos: modulos,
             persona: persona,
             cargo: cargo,
             fono: fono,
@@ -182,7 +176,6 @@ function limpiar() {
     $('#nomcliente').val('');
     $('#razoncliente').val('');
     $('#direccion').val('');
-    $('#modulos').val('');
     $('#persona').val('');
     $('#cargo').val('');
     $('#fono').val('');

@@ -34,7 +34,7 @@
                 <input type="text" class="form-control" id="rut" name="rut" placeholder="Ej: 12345678-9" maxlength="12" autofocus required value="<% out.print(rutProblemas); %>">
                 <label for="password" class="sr-only">Password</label>
                 <input type="password" class="form-control" id="password" name="password"  maxlength="20" required placeholder="Password">
-                <button class="btn btn-lg btn-primary btn-block" id="btn-login" onclick="login();" type="submit">Ingresar</button>
+                <button class="btn btn-lg btn-primary btn-block" id="btn-login" onclick="return validarCampos();" type="submit">Ingresar</button>
                 <%
                     if (request.getParameterMap().containsKey("status")) {
                         if (request.getParameter("status").equals("badpass")) {

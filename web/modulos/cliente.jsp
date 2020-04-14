@@ -45,14 +45,14 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <!-- div class="row">
             <div class="col-sm-2">
                 <div class="form-group">
                     <label for="modulos" >Módulos</label>
                     <input type="text" class="form-control form-control-sm small" maxlength="200" id="modulos" />
                 </div>
             </div>
-        </div>
+        </div -->
         <div class="row">
             <div class="col-sm-2">
                 <div class="form-group">
@@ -99,7 +99,7 @@
                         <th>Nombre</th>
                         <th>R. Social</th>
                         <th>Dirección</th>
-                        <th>Módulos</th>
+                        <!-- th>Módulos</th -->
                         <th>Contacto</th>
                         <th>Cargo</th>
                         <th>Fono</th>

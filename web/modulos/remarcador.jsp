@@ -27,9 +27,13 @@
                     <select class="form-control-sm form-control small" id="select-parque">
                     </select>
                 </div>
-                <div class="form-group"><!-- Cambiar a ID Remarcador -->
+                <div class="form-group">
                     <label for="num-remarcador" >ID Remarcador</label>
                     <input type="text" class="form-control form-control-sm small" maxlength="11" id="num-remarcador" />
+                </div>
+                <div class="form-group">
+                    <label for="modulos" >Módulos</label>
+                    <input type="text" class="form-control form-control-sm small" maxlength="11" id="modulos" />
                 </div>
                 <div class="form-group">
                     <button onclick="insRemarcador(getRemarcadores);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
@@ -43,9 +47,10 @@
             <table id="tabla-remarcadores" class="table table-condensed table-borderless table-striped table-hover table-sm small">
                 <thead>
                     <tr>
-                        <th>ID Remarcador</th> <!-- Cambiar a ID Remarcador -->
+                        <th>ID Remarcador</th>
                         <th># Empalme</th>
                         <th>Bodega</th>
+                        <th>Módulos</th>
                         <th>Acción</th>
                     </tr>
                 </thead>

@@ -79,12 +79,14 @@ function insRemarcador(callback) {
     var idempalme = $('#select-empalme').val();
     var idparque = $('#select-parque').val();
     var numremarcador = $('#num-remarcador').val();
-
+    var modulos = $('#modulos').val();
+    
     var datos = {
         tipo: 'ins-remarcador',
         idempalme: idempalme,
         idparque: idparque,
-        numremarcador: numremarcador
+        numremarcador: numremarcador,
+        modulos: modulos
     };
 
     $.ajax({
@@ -144,6 +146,7 @@ function saveRemarcador(callback) {
     var idempalme = $('#select-empalme').val();
     var idparque = $('#select-parque').val();
     var numremarcador = $('#num-remarcador').val();
+    var modulos = $('#modulos').val();
 
     var datos = {
         tipo: 'upd-remarcador',
@@ -151,7 +154,8 @@ function saveRemarcador(callback) {
             idremarcador: idremarcador,
             idempalme: idempalme,
             idparque: idparque,
-            numremarcador: numremarcador
+            numremarcador: numremarcador,
+            modulos: modulos
         }
     };
 
@@ -180,6 +184,7 @@ function armarRemarcador(remarcador) {
     ID_REMARCADOR_EDICION = remarcador.idremarcador;
     $('#num-remarcador').val(remarcador.numremarcador);
     $('#select-empalme').val(remarcador.idempalme);
+    $('#modulos').val(remarcador.modulos);
     $('#select-empalme').change();
     $('#btn-insert').attr("hidden", "hidden");
     $('#btn-guardar').removeAttr("hidden");
@@ -189,6 +194,7 @@ function limpiar() {
     ID_REMARCADOR_EDICION = null;
     $('#num-remarcador').val('');
     $('#select-empalme').val('0');
+    $('#modulos').val('');
     $('#select-parque').html('');
     $('#btn-guardar').attr("hidden", "hidden");
     $('#btn-insert').removeAttr("hidden");

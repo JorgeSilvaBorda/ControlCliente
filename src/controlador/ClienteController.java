@@ -52,7 +52,6 @@ public class ClienteController extends HttpServlet {
                 filas += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
                 filas += "<td>" + rs.getString("RAZONCLIENTE") + "</td>";
                 filas += "<td>" + rs.getString("DIRECCION") + "</td>";
-                filas += "<td>" + rs.getString("MODULOS") + "</td>";
                 filas += "<td>" + rs.getString("PERSONA") + "</td>";
                 filas += "<td>" + rs.getString("CARGO") + "</td>";
                 filas += "<td>" + rs.getInt("FONO") + "</td>";
@@ -81,7 +80,6 @@ public class ClienteController extends HttpServlet {
                 + "'" + entrada.getString("nomcliente") + "',"
                 + "'" + entrada.getString("razoncliente") + "',"
                 + "'" + entrada.getString("direccion") + "',"
-                + "'" + entrada.getString("modulos") + "',"
                 + "'" + entrada.getString("persona") + "',"
                 + "'" + entrada.getString("cargo") + "',"
                 + "" + entrada.getInt("fono") + ","
@@ -112,7 +110,6 @@ public class ClienteController extends HttpServlet {
                 cliente.put("nomcliente", rs.getString("NOMCLIENTE"));
                 cliente.put("razoncliente", rs.getString("RAZONCLIENTE"));
                 cliente.put("direccion", rs.getString("DIRECCION"));
-                cliente.put("modulos", rs.getString("MODULOS"));
                 cliente.put("persona", rs.getString("PERSONA"));
                 cliente.put("cargo", rs.getString("CARGO"));
                 cliente.put("fono", rs.getInt("FONO"));
@@ -140,7 +137,6 @@ public class ClienteController extends HttpServlet {
                 + "'" + cliente.getString("nomcliente") + "',"
                 + "'" + cliente.getString("razoncliente") + "',"
                 + "'" + cliente.getString("direccion") + "',"
-                + "'" + cliente.getString("modulos") + "',"
                 + "'" + cliente.getString("persona") + "',"
                 + "'" + cliente.getString("cargo") + "',"
                 + "" + cliente.getInt("fono") + ","

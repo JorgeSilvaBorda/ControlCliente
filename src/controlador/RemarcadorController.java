@@ -54,6 +54,7 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
+                filas += "<td><span>" + rs.getString("MODULOS") + "</span></td>";
                 filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button></td>";
                 filas += "</tr>";
             }
@@ -105,7 +106,8 @@ public class RemarcadorController extends HttpServlet {
         String query = "CALL SP_INS_REMARCADOR("
                 + "" + entrada.getInt("idempalme") + ","
                 + "" + entrada.getInt("idparque") + ","
-                + "'" + entrada.getString("numremarcador") + "'"
+                + "'" + entrada.getString("numremarcador") + "',"
+                + "'" + entrada.getString("modulos") + "'"
                 + ")";
         Conexion c = new Conexion();
         c.abrir();
@@ -130,6 +132,7 @@ public class RemarcadorController extends HttpServlet {
                 remarcador.put("idempalme", rs.getInt("IDEMPALME"));
                 remarcador.put("idequipomodbus", rs.getInt("IDEQUIPOMODBUS"));
                 remarcador.put("numremarcador", rs.getInt("NUMREMARCADOR"));
+                remarcador.put("modulos", rs.getString("MODULOS"));
                 remarcador.put("idinstalacion", rs.getInt("IDINSTALACION"));
                 remarcador.put("numempalme", rs.getString("NUMEMPALME"));
                 remarcador.put("nomparque", rs.getString("NOMPARQUE"));
@@ -154,7 +157,8 @@ public class RemarcadorController extends HttpServlet {
                 + remarcador.getInt("idremarcador") + ","
                 + remarcador.getInt("idempalme") + ","
                 + remarcador.getInt("idparque") + ","
-                + remarcador.getInt("numremarcador") + ")";
+                + remarcador.getInt("numremarcador") + ","
+                + "'" + remarcador.getString("modulos") + "')";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

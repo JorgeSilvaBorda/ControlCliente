@@ -3,6 +3,7 @@
     $(document).ready(function () {
         getTarifas();
         getSelectComunas();
+        getTarifasConceptos();
     });
 
 </script>
@@ -29,7 +30,7 @@
                     </div>
                 </div>
             </form>
-            <div id="contenedor-tarifas" class="small float-left">
+            <div id="contenedor-tarifas" class="float-left">
                 <table id="tabla-tarifas" class="table table-condensed table-borderless table-striped table-hover table-sm small">
                     <thead>
                         <tr>
@@ -56,8 +57,8 @@
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <label for="concepto">Concepto</label>
-                                    <input id="concepto" type="text" class="form-control form-control-sm" placeholder="Ej.: Cargo Fijo Mensual" aria-label="Concepto">
+                                    <label for="nomconcepto">Concepto</label>
+                                    <input id="nomconcepto" type="text" class="form-control form-control-sm" placeholder="Ej.: Cargo Fijo Mensual" aria-label="Concepto">
                                 </div>
                             </td>
                             <td>
@@ -66,13 +67,43 @@
                                     <select id="select-comuna" class="form-control form-control-sm"></select>
                                 </div>
                             </td>
+                            <td>
+                                <div class="form-group">
+                                    <label for="umedida">U. Medida</label>
+                                    <input id="umedida" type="text" class="form-control form-control-sm" placeholder="Ej.: kWh" aria-label="UnidadMedida">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <label for="valorneto">$ Neto</label>
+                                    <input id="valorneto" type="text" class="form-control form-control-sm" placeholder="Ej.: 1220.421" aria-label="ValorNeto">
+                                </div>
+                            </td>
+                            <td class="small">
+                                <div class="form-group small">
+                                    <br /><br />
+                                    <button onclick="insTarifaConcepto(getTarifasConceptos);" type="button" class="btn btn-sm btn-primary form-control form-control-sm" id="btn-ins-tarifa-concepto">Insertar</button>
+                                    <button onclick="saveConcepto(getTarifasConceptos);" hidden="hidden" type="button" class="btn btn-sm btn-success form-control form-control-sm" id="btn-save-tarifa-concepto">Guardar</button>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </form>
+            <div id="contenedor-tarifas-conceptos" class="small">
+                <table id="tabla-tarifas-conceptos" class="table table-sm table-condensed table-striped table-hover">
+                    <thead>
+                    <th>Concepto</th>
+                    <th>Tarifa</th>
+                    <th>Comuna</th>
+                    <th>U. Medida</th>
+                    <th>$ Neto</th>
+                    <th>Acción</th>
+                    </thead>
+                    <tbody>
+                </tbody>
+                </table>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        
     </div>
 </div>

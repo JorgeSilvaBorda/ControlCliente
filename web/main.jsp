@@ -60,7 +60,6 @@
                                 <%
                                     String idtipousuario = session.getAttribute("idtipousuario").toString();
                                     if (idtipousuario != null) {
-                                        System.out.println(Integer.parseInt(idtipousuario));
                                         if (Integer.parseInt(idtipousuario) == 2) {
                                             out.print("<li class='nav-item dropdown'>\n"
                                                     + "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Reportes</a>\n"

@@ -1,7 +1,6 @@
 package modelo;
 
 import clases.json.JSONException;
-import clases.json.JSONObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -17,9 +16,13 @@ public class Remarcador {
     private int numremarcador;
     private String modulos;
     private int idinstalacion;
+    private int idplogistico;
+    private String nomplogistico;
+    private String direccion;
     
     public int diffperiodo;
-    
+    public int lecturaactual;
+    public int lecturaanterior;
 
     public Remarcador(int idremarcador) {
         this.idremarcador = idremarcador;
@@ -28,6 +31,7 @@ public class Remarcador {
     
     private void setParametros(int idremarcador){
         String query = "CALL SP_GET_REMARCADOR_IDREMARCADOR(" + idremarcador + ")";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -42,6 +46,9 @@ public class Remarcador {
                 this.numempalme = rs.getString("NUMEMPALME");  
                 this.nomparque = rs.getString("NOMPARQUE");  
                 this.nominstalacion = rs.getString("NOMINSTALACION");
+                this.idplogistico = rs.getInt("IDPLOGISTICO");  
+                this.nomplogistico = rs.getString("NOMPLOGISTICO");
+                this.direccion = rs.getString("DIRECCION");
             }
         } catch (SQLException ex) {
             System.out.println("No se puede obtener los datos para instanciar un remarcador.");
@@ -50,17 +57,19 @@ public class Remarcador {
         c.cerrar();
     }
 
-    public int getSetDiferencia(String fechaIni, String fechaFin) {
+    public void getSetDiferencia(String fechaIni, String fechaFin) {
         int lecturaAnterior = getLecturaDia(fechaIni);
         int lecturaActual = getLecturaDia(fechaFin);
         int diferencia = lecturaActual - lecturaAnterior;
         this.diffperiodo = diferencia;
-        return diferencia;
+        this.lecturaactual = lecturaActual;
+        this.lecturaanterior = lecturaAnterior;
     }
 
     private int getLecturaDia(String fecha) {
         String query = "CALL SP_GET_LECTURA_DIA_REMARCADOR(" + this.idremarcador + ", '" + fecha + "')";
         Conexion c = new Conexion();
+        System.out.println(query);
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         try {
@@ -115,5 +124,19 @@ public class Remarcador {
     public int getIdinstalacion() {
         return idinstalacion;
     }
+
+    public int getIdplogistico() {
+        return idplogistico;
+    }
+
+    public String getNomplogistico() {
+        return nomplogistico;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+    
+    
 
 }

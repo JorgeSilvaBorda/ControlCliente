@@ -48,6 +48,8 @@ function buscar(){
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
                 console.log(obj.preboleta);
+                cabeceraBoleta(obj.preboleta);
+                remarcadoresBoleta(obj.preboleta);
             }
         },
         error: function (a, b, c) {
@@ -56,5 +58,24 @@ function buscar(){
             console.log(c);
         }
     });
+}
+
+function cabeceraBoleta(boleta){
+    $('#boleta-fecha-ini').html(boleta.fechaini);
+    $('#boleta-fecha-fin').html(boleta.fechafin);
+    $('#boleta-rut-cliente').html(boleta.rutfullcliente);
+    $('#boleta-nom-cliente').html(boleta.nomcliente);
+    $('#boleta-direccion').html(boleta.direccion);
+    $('#boleta-persona').html(boleta.persona);
+    $('#boleta-fono').html(boleta.fono);
+    $('#boleta-email').html(boleta.email);
+    $('#contenido-remarcadores').show();
+    $('#tabla-cabecera-boleta').show();
+    $('#contenido-cabecera-boleta').show();
+}
+
+function remarcadoresBoleta(boleta){
+    $('#contenido-remarcadores').html(boleta.tablaremarcadores);
+    $('#contenido-boleta').show();
 }
 

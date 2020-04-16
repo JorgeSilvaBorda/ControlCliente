@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.Boleta;
 import modelo.Remarcador;
+import modelo.Util;
 
 public class BoletaController extends HttpServlet {
 
@@ -40,6 +41,7 @@ public class BoletaController extends HttpServlet {
         bjson.put("nomcliente", boleta.getRazoncliente());
         bjson.put("rutcliente", boleta.getRutcliente());
         bjson.put("dvcliente", boleta.getDvcliente());
+        bjson.put("rutfullcliente", Util.formatRut(boleta.getRutcliente() + boleta.getDvcliente()));
         bjson.put("direccion", boleta.getDireccion());
         bjson.put("persona", boleta.getPersona());
         bjson.put("cargo", boleta.getCargo());
@@ -58,12 +60,43 @@ public class BoletaController extends HttpServlet {
             remarcador.put("nominstalacion", r.getNominstalacion());
             remarcador.put("modulos", r.getModulos());
             remarcador.put("idinstalacion", r.getIdinstalacion());
-            remarcador.put("diferencia", r.getSetDiferencia(fechaini, fechafin));
+            remarcador.put("diferencia", r.diffperiodo);
+            remarcador.put("lecturaactual", r.lecturaactual);
+            remarcador.put("lecturaanterior", r.lecturaanterior);
             remarcadores.put(remarcador);
         }
         bjson.put("remarcadores", remarcadores);
+        bjson.put("tablaremarcadores", armarTablaRemarcadores(boleta));
         salida.put("estado", "ok");
         salida.put("preboleta", bjson);
         return salida;
+    }
+    
+    private String armarTablaRemarcadores(Boleta b){
+        if(b.getRemarcadores().size() < 1){
+            return "";
+        }
+        String  tabla = "<h4>Detalle de Consumo por Remarcador</h4>";
+        tabla += "<table class='table table-sm table-striped table-hover small'>"
+                + "<thead>"
+                + "<tr>"
+                + "<th>Nº Remarcador</th>"
+                + "<th>Dirección</th>"
+                + "<th>Lectura Anterior</th>"
+                + "<th>Lectura Actual</th>"
+                + "<th>Consumo (kWh)</th>"
+                + "</thead>"
+                + "<tbody>";
+        for(Remarcador r : b.getRemarcadores()){
+            tabla +="<tr>";
+            tabla +="<td>" + r.getNumremarcador() + "</td>";            
+            tabla +="<td>" + r.getNomplogistico() + ". " + r.getDireccion() + " " + r.getModulos() + "</td>";            
+            tabla +="<td>" + r.lecturaanterior + "</td>";            
+            tabla +="<td>" + r.lecturaactual + "</td>";            
+            tabla +="<td>" + r.diffperiodo + "</td>";            
+            tabla +="</tr>";
+        }
+        tabla += "</tbody></table>";
+        return tabla;
     }
 }

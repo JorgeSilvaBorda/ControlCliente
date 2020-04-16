@@ -15,6 +15,57 @@ function getTarifas() {
                 $('.dataTable').DataTable().destroy();
                 $('#tabla-tarifas tbody').html(obj.tabla);
                 $('#tabla-tarifas').DataTable(OPCIONES_DATATABLES);
+                getSelectTarifas();
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function getSelectTarifas() {
+    var datos = {
+        tipo: 'get-select-tarifas'
+    };
+
+    $.ajax({
+        url: 'TarifaController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-tarifa').html(obj.options);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function getSelectComunas() {
+    var datos = {
+        tipo: 'get-select-comunas'
+    };
+
+    $.ajax({
+        url: 'ParametrosController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-comuna').html(obj.options);
             }
         },
         error: function (a, b, c) {
@@ -27,12 +78,10 @@ function getTarifas() {
 
 function insTarifa(callback) {
     var nomtarifa = $('#nom-tarifa').val();
-    var valortarifa = $('#valor-tarifa').val();
 
     var datos = {
         tipo: 'ins-tarifa',
-        nomtarifa: nomtarifa,
-        valortarifa: valortarifa
+        nomtarifa: nomtarifa
     };
 
     $.ajax({
@@ -88,7 +137,6 @@ function activarEdicion(boton) {
 function armarTarifa(tarifa) {
     ID_TARIFA_EDICION = tarifa.idtarifa;
     $('#nom-tarifa').val(tarifa.nomtarifa);
-    $('#valor-tarifa').val(tarifa.valortarifa);
 
     $('#btn-insert').attr("hidden", "hidden");
     $('#btn-guardar').removeAttr("hidden");

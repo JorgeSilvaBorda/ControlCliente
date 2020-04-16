@@ -32,6 +32,9 @@ public class TarifaController extends HttpServlet {
             case "upd-tarifa":
                 out.print(updTarifa(entrada.getJSONObject("tarifa")));
                 break;
+            case "get-select-tarifas":
+                out.print(getSelectTarifas());
+                break;
         }
     }
 
@@ -46,7 +49,6 @@ public class TarifaController extends HttpServlet {
             while (rs.next()) {
                 filas += "<tr>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDTARIFA") + "' /><span>" + rs.getString("NOMTARIFA") + "</span></td>";
-                filas += "<td><span>" + rs.getString("VALORTARIFA") + "</span></td>";
                 filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button></td>";
                 filas += "</tr>";
             }
@@ -63,11 +65,24 @@ public class TarifaController extends HttpServlet {
         return salida;
     }
 
+    private JSONObject getSelectTarifas() {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_TARIFAS()";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDTARIFA", "NOMTARIFA");
+        salida.put("options", options);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+
     private JSONObject insTarifa(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_INS_TARIFA("
-                + "'" + entrada.getString("nomtarifa") + "',"
-                + "" + entrada.getInt("valortarifa") + ""
+                + "'" + entrada.getString("nomtarifa") + "'"
                 + ")";
         Conexion c = new Conexion();
         c.abrir();
@@ -89,7 +104,6 @@ public class TarifaController extends HttpServlet {
             while (rs.next()) {
                 tarifa.put("idtarifa", rs.getInt("IDTARIFA"));
                 tarifa.put("nomtarifa", rs.getString("NOMTARIFA"));
-                tarifa.put("valortarifa", rs.getInt("VALORTARIFA"));
             }
             salida.put("tarifa", tarifa);
             salida.put("estado", "ok");
@@ -108,8 +122,7 @@ public class TarifaController extends HttpServlet {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_UPD_TARIFA("
                 + tarifa.getInt("idtarifa") + ","
-                + "'" + tarifa.getString("nomtarifa") + "',"
-                + tarifa.getInt("valortarifa") + ")";
+                + "'" + tarifa.getString("nomtarifa") + "')";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

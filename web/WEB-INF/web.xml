@@ -44,6 +44,10 @@
         <servlet-name>BoletaController</servlet-name>
         <servlet-class>controlador.BoletaController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ParametrosController</servlet-name>
+        <servlet-class>controlador.ParametrosController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UsuarioController</servlet-name>
         <url-pattern>/UsuarioController</url-pattern>
@@ -87,6 +91,10 @@
     <servlet-mapping>
         <servlet-name>BoletaController</servlet-name>
         <url-pattern>/BoletaController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ParametrosController</servlet-name>
+        <url-pattern>/ParametrosController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

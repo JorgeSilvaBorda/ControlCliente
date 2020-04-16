@@ -40,7 +40,7 @@ public class Boleta {
         try{
             while(rs.next()){
                 this.rutcliente = rs.getInt("RUTCLIENTE");
-                this.dvcliente = rs.getString("RUTCLIENTE");
+                this.dvcliente = rs.getString("DVCLIENTE");
                 this.nomcliente = rs.getString("NOMCLIENTE");
                 this.razoncliente = rs.getString("RAZONCLIENTE");
                 this.direccion = rs.getString("DIRECCION");
@@ -58,6 +58,7 @@ public class Boleta {
     
     private void cargarRemarcadores(int idcliente){
         String query = "CALL SP_GET_REMARCADORES_ASIGNADOS_IDCLIENTE(" + idcliente + ")";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);

@@ -41,6 +41,7 @@
                         <th>Nombre</th>
                         <th>P. Logístico</th>
                         <th>Dirección</th>
+                        <th>Comuna</th>
                         <th>Acción</th>
                     </tr>
                 </thead>

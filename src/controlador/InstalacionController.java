@@ -51,6 +51,7 @@ public class InstalacionController extends HttpServlet {
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPLOGISTICO") + "' /><span>" + rs.getString("NOMPLOGISTICO") + "</span></td>";
                 filas += "<td><span>" + rs.getString("DIRECCION") + "</span></td>";
+                filas += "<td><span>" + rs.getString("NOMCOMUNA") + "</span></td>";
                 filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button></td>";
                 filas += "</tr>";
             }
@@ -106,6 +107,9 @@ public class InstalacionController extends HttpServlet {
                 instalacion.put("idplogistico", rs.getInt("IDPLOGISTICO"));
                 instalacion.put("nominstalacion", rs.getString("NOMINSTALACION"));
                 instalacion.put("direccion", rs.getString("DIRECCION"));
+                instalacion.put("nomcomuna", rs.getString("NOMCOMUNA"));
+                instalacion.put("idcomuna", rs.getInt("IDCOMUNA"));
+                
             }
             salida.put("instalacion", instalacion);
             salida.put("estado", "ok");

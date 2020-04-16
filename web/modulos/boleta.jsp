@@ -13,7 +13,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Para la búsqueda ------------------------------------------------------>
     <div class="row">
         <div class="col-sm-4">
@@ -51,13 +51,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <br />
-    
-    <!-- Para los cargos adicionales ------------------------------------------->
-    <div class="row">
-        <div class="col-sm-4">
+            <br />
             <div class="card">
                 <div class="card-header">
                     <strong>Cargos adicionales</strong>
@@ -94,9 +88,100 @@
                     </table> 
                 </div>
                 <div class="card-body small" id="cargos-extra">
-                    
+
                 </div>
             </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Detalle</strong>
+                </div>
+                <div class="card-body small">
+                    <div id="contenido-cabecera-boleta" style="display: none;">
+                        <table id="tabla-cabecera-boleta" style="display: none;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span><strong>Inicio Período:</strong></span>
+                                    </td>
+                                    <td>
+                                        <span id="boleta-fecha-ini"></span>
+                                    </td>
+                                    <td>
+                                        <span><strong>Fin Período:</strong></span>
+                                    </td>
+                                    <td>
+                                        <span id="boleta-fecha-fin"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span><strong>Rut:</strong></span>
+                                    </td>
+                                    <td>
+                                        <span id="boleta-rut-cliente"></span>
+                                    </td>
+                                    <td>
+                                        <span><strong>Nombre:</strong></span>
+                                    </td>
+                                    <td>
+                                        <span id="boleta-nom-cliente"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span><strong>Dirección:</strong></span>
+                                    </td>
+                                    <td colspan="3">
+                                        <span id="boleta-direccion"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span><strong>Contacto:</strong></span>
+                                    </td>
+                                    <td>
+                                        <span id="boleta-persona"></span>
+                                    </td>
+                                    <td>
+                                        <span><strong>Cargo:</strong></span>
+                                    </td>
+                                    <td>
+                                        <span id="boleta-cargo"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span><strong>Fono:</strong></span>
+                                    </td>
+                                    <td>
+                                        <span id="boleta-fono"></span>
+                                    </td>
+                                    <td>
+                                        <span><strong>Email:</strong></span>
+                                    </td>
+                                    <td>
+                                        <span id="boleta-email"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br />
+                    <div style="display: none;" id="contenido-remarcadores"></div>
+                    <br />
+                    <div style="display: none;" id="contenido-boleta"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <!-- Para los cargos adicionales ------------------------------------------->
+    <div class="row">
+        <div class="col-sm-4">
+
         </div>
     </div>
 </div>

@@ -1,5 +1,4 @@
 var ID_INSTALACION_EDICION = null;
-var VALIDO = false;
 function existeInstalacion(callback) {
     var nominstalacion = $('#nom-instalacion').val();
     var datos = {
@@ -32,7 +31,7 @@ function existeInstalacion(callback) {
 }
 
 function validarCampos(esvalido) {
-    if(!esvalido){
+    if (!esvalido) {
         return false;
     }
     var nominstalacion = $('#nom-instalacion').val();
@@ -52,6 +51,27 @@ function validarCampos(esvalido) {
         return false;
     }
     insInstalacion(getInstalaciones);
+}
+
+function validarCamposUpdate() {
+
+    var nominstalacion = $('#nom-instalacion').val();
+    var idcomuna = $('#select-comuna').val();
+    var direccion = $('#direccion').val();
+
+    if (nominstalacion.length < 3) { //Mínimo 3 caracteres para el nombre
+        alert("Debe indicar un nombre de instalación válido (Mínimo 3 caracteres).");
+        return false;
+    }
+    if (direccion.length < 3) {
+        alert("Debe indicar una dirección válida (Mínimo 3 caracteres).");
+        return false;
+    }
+    if (idcomuna === '0') {
+        alert("Debe seleccionar una comuna del listado.");
+        return false;
+    }
+    return true;
 }
 
 function getInstalaciones() {
@@ -179,40 +199,73 @@ function armarInstalacion(instalacion) {
 }
 
 function saveInstalacion(callback) {
-    var idinstalacion = ID_INSTALACION_EDICION;
-    var nominstalacion = $('#nom-instalacion').val();
-    var direccion = $('#direccion').val();
-    var idcomuna = $('#select-comuna').val();
+    if (validarCamposUpdate()) {
+        var idinstalacion = ID_INSTALACION_EDICION;
+        var nominstalacion = $('#nom-instalacion').val();
+        var direccion = $('#direccion').val();
+        var idcomuna = $('#select-comuna').val();
+
+        var datos = {
+            tipo: 'upd-instalacion',
+            instalacion: {
+                idinstalacion: idinstalacion,
+                nominstalacion: nominstalacion,
+                direccion: direccion,
+                idcomuna: idcomuna
+            }
+        };
+
+        $.ajax({
+            url: 'InstalacionController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (res) {
+                var obj = JSON.parse(res);
+                if (obj.estado === 'ok') {
+                    limpiar();
+                    callback();
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            }
+        });
+    }
+}
+
+function eliminar(boton) {
+    var fila = $(boton).parent().parent();
+    var idinstalacion = $(fila).children(0).children(0).val();
 
     var datos = {
-        tipo: 'upd-instalacion',
-        instalacion: {
-            idinstalacion: idinstalacion,
-            nominstalacion: nominstalacion,
-            direccion: direccion,
-            idcomuna: idcomuna
-        }
+        tipo: 'del-instalacion',
+        idinstalacion: idinstalacion
     };
 
-    $.ajax({
-        url: 'InstalacionController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (res) {
-            var obj = JSON.parse(res);
-            if (obj.estado === 'ok') {
-                limpiar();
-                callback();
+    if (confirm("Está seguro que desea eliminar la instalación seleccionada?")) {
+        $.ajax({
+            url: 'InstalacionController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (res) {
+                var obj = JSON.parse(res);
+                if (obj.estado === 'ok') {
+                    getInstalaciones();
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
             }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
+        });
+    }
 }
 
 function limpiar() {

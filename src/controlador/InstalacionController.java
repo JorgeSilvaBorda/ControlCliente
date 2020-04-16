@@ -29,6 +29,9 @@ public class InstalacionController extends HttpServlet {
             case "ins-instalacion":
                 out.print(insInstalacion(entrada));
                 break;
+                case "del-instalacion":
+                out.print(delInstalacion(entrada));
+                break;
             case "get-instalacion-idinstalacion":
                 out.print(getInstalacionIdInstalacion(entrada));
                 break;
@@ -54,7 +57,10 @@ public class InstalacionController extends HttpServlet {
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
                 filas += "<td><span>" + rs.getString("DIRECCION") + "</span></td>";
                 filas += "<td><span>" + rs.getString("NOMCOMUNA") + "</span></td>";
-                filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button></td>";
+                filas += "<td style='width: 15%;'>"
+                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
+                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>"
+                        + "</td>";
                 filas += "</tr>";
             }
             salida.put("tabla", filas);
@@ -91,6 +97,18 @@ public class InstalacionController extends HttpServlet {
                 + "'" + entrada.getString("direccion") + "', "
                 + "" + entrada.getString("idcomuna") + ""
                 + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
+        return salida;
+    }
+    
+    private JSONObject delInstalacion(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_DEL_INSTALACION("
+                + entrada.getInt("idinstalacion") + ")";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

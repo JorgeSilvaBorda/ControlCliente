@@ -39,13 +39,12 @@
                         </tr>
                     </thead>
                     <tbody>
-
                     </tbody>
                 </table>
             </div>
         </div>
         <div class="col-sm-9">
-            <form class="form small"  role="form">
+            <form class="form small" role="form">
                 <table>
                     <tbody>
                         <tr>
@@ -76,14 +75,14 @@
                             <td>
                                 <div class="form-group">
                                     <label for="valorneto">$ Neto</label>
-                                    <input id="valorneto" type="text" class="form-control form-control-sm" placeholder="Ej.: 1220.421" aria-label="ValorNeto">
-                                </div>
-                            </td>
-                            <td class="small">
-                                <div class="form-group small">
-                                    <br /><br />
-                                    <button onclick="insTarifaConcepto(getTarifasConceptos);" type="button" class="btn btn-sm btn-primary form-control form-control-sm" id="btn-ins-tarifa-concepto">Insertar</button>
-                                    <button onclick="saveConcepto(getTarifasConceptos);" hidden="hidden" type="button" class="btn btn-sm btn-success form-control form-control-sm" id="btn-save-tarifa-concepto">Guardar</button>
+                                    <div class="input-group mb-3">
+                                        <input id="valorneto" type="text" class="form-control form-control-sm" placeholder="Ej.: 1220.421" aria-label="ValorNeto">
+                                        <div class="input-group-append">
+                                            <button onclick="insTarifaConcepto(getTarifasConceptos);" type="button" class="btn btn-sm btn-primary form-control form-control-sm" id="btn-ins-tarifa-concepto">Insertar</button>
+                                            <button onclick="saveConcepto(getTarifasConceptos);" hidden="hidden" type="button" class="btn btn-sm btn-success form-control form-control-sm" id="btn-save-tarifa-concepto">Guardar</button>
+                                        </div>
+                                        <button onclick="limpiar();" type="button" class="btn btn-default btn-sm" id="btn-limpiar">Limpiar</button>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -91,7 +90,7 @@
                 </table>
             </form>
             <div id="contenedor-tarifas-conceptos" class="small">
-                <table id="tabla-tarifas-conceptos" class="table table-sm table-condensed table-striped table-hover">
+                <table id="tabla-tarifas-conceptos" class="table table-sm table-condensed table-striped table-hover small">
                     <thead>
                     <th>Concepto</th>
                     <th>Tarifa</th>
@@ -101,7 +100,7 @@
                     <th>Acción</th>
                     </thead>
                     <tbody>
-                </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>

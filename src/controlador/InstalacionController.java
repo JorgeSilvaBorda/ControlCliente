@@ -35,6 +35,9 @@ public class InstalacionController extends HttpServlet {
             case "upd-instalacion":
                 out.print(updInstalacion(entrada.getJSONObject("instalacion")));
                 break;
+            case "existe-instalacion":
+                out.print(existeInstalacion(entrada));
+                break;
         }
     }
 
@@ -49,7 +52,6 @@ public class InstalacionController extends HttpServlet {
             while (rs.next()) {
                 filas += "<tr>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
-                filas += "<td><input type='hidden' value='" + rs.getInt("IDPLOGISTICO") + "' /><span>" + rs.getString("NOMPLOGISTICO") + "</span></td>";
                 filas += "<td><span>" + rs.getString("DIRECCION") + "</span></td>";
                 filas += "<td><span>" + rs.getString("NOMCOMUNA") + "</span></td>";
                 filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button></td>";
@@ -84,7 +86,11 @@ public class InstalacionController extends HttpServlet {
 
     private JSONObject insInstalacion(JSONObject entrada) {
         JSONObject salida = new JSONObject();
-        String query = "CALL SP_INS_INSTALACION('" + entrada.getString("nominstalacion") + "')";
+        String query = "CALL SP_INS_INSTALACION("
+                + "'" + entrada.getString("nominstalacion") + "', "
+                + "'" + entrada.getString("direccion") + "', "
+                + "" + entrada.getString("idcomuna") + ""
+                + ")";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);
@@ -104,12 +110,11 @@ public class InstalacionController extends HttpServlet {
         try {
             while (rs.next()) {
                 instalacion.put("idinstalacion", rs.getInt("IDINSTALACION"));
-                instalacion.put("idplogistico", rs.getInt("IDPLOGISTICO"));
                 instalacion.put("nominstalacion", rs.getString("NOMINSTALACION"));
                 instalacion.put("direccion", rs.getString("DIRECCION"));
                 instalacion.put("nomcomuna", rs.getString("NOMCOMUNA"));
                 instalacion.put("idcomuna", rs.getInt("IDCOMUNA"));
-                
+
             }
             salida.put("instalacion", instalacion);
             salida.put("estado", "ok");
@@ -128,8 +133,10 @@ public class InstalacionController extends HttpServlet {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_UPD_INSTALACION("
                 + instalacion.getInt("idinstalacion") + ","
-                + instalacion.getInt("idplogistico") + ","
-                + "'" + instalacion.getString("nominstalacion") + "')";
+                + "'" + instalacion.getString("nominstalacion") + "', "
+                + "'" + instalacion.getString("direccion") + "', "
+                + "" + instalacion.getInt("idcomuna") + ""
+                + ")";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);
@@ -138,4 +145,28 @@ public class InstalacionController extends HttpServlet {
         return salida;
     }
     
+    private JSONObject existeInstalacion(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_EXISTE_INSTALACION('" + entrada.getString("nominstalacion") + "')";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        int cantidad = 0;
+        try {
+            while (rs.next()) {
+                cantidad = rs.getInt("CANTIDAD");
+            }
+            salida.put("cantidad", cantidad);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.InstalacionController.existeInstalacion().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
 }

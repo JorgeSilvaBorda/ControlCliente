@@ -50,13 +50,13 @@ function getSelectInstalacion() {
     });
 }
 
-function insParque(callback){
+function insParque(callback) {
     var idinstalacion = $('#select-instalacion').val();
     var nomparque = $('#nom-parque').val();
-    
+
     var datos = {
         tipo: 'ins-parque',
-        idinstalacion: idinstalacion, 
+        idinstalacion: idinstalacion,
         nomparque: nomparque
     };
 
@@ -66,14 +66,14 @@ function insParque(callback){
         data: {
             datos: JSON.stringify(datos)
         },
-        success: function(res){
+        success: function (res) {
             var obj = JSON.parse(res);
-            if(obj.estado === 'ok'){
+            if (obj.estado === 'ok') {
                 limpiar();
                 callback();
             }
         },
-        error: function(a, b, c){
+        error: function (a, b, c) {
             console.log(a);
             console.log(b);
             console.log(c);
@@ -122,7 +122,7 @@ function saveParque(callback) {
     var idparque = ID_PARQUE_EDICION;
     var idinstalacion = $('#select-instalacion').val();
     var nomparque = $('#nom-parque').val();
-    
+
     var datos = {
         tipo: 'upd-parque',
         parque: {
@@ -153,7 +153,38 @@ function saveParque(callback) {
     });
 }
 
-function limpiar(){
+function eliminar(boton) {
+    var fila = $(boton).parent().parent();
+    var idparque = $(fila).children(0).children(0).val();
+
+    var datos = {
+        tipo: 'del-parque',
+        idparque: idparque
+    };
+
+    if (confirm("Está seguro que desea eliminar el parque seleccionado?")) {
+        $.ajax({
+            url: 'ParqueController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (res) {
+                var obj = JSON.parse(res);
+                if (obj.estado === 'ok') {
+                    getParques();
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            }
+        });
+    }
+}
+
+function limpiar() {
     ID_PARQUE_EDICION = null;
     $('#nom-parque').val('');
     $('#select-instalacion').val('0');

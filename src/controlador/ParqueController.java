@@ -24,8 +24,7 @@ public class ParqueController extends HttpServlet {
                 out.print(getParques());
                 break;
             case "get-select-parque-empalme":
-                int idempalme = entrada.getInt("idempalme");
-                out.print(getSelectParqueEmpalme(idempalme));
+                out.print(getSelectParqueEmpalme(entrada.getInt("idempalme")));
                 break;
             case "ins-parque":
                 out.print(insParque(entrada));
@@ -35,6 +34,9 @@ public class ParqueController extends HttpServlet {
                 break;
             case "upd-parque":
                 out.print(updParque(entrada.getJSONObject("parque")));
+                break;
+            case "del-parque":
+                out.print(delParque(entrada));
                 break;
         }
 
@@ -52,7 +54,10 @@ public class ParqueController extends HttpServlet {
                 filas += "<tr>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
-                filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button></td>";
+                filas += "<td style='width: 15%;'>"
+                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
+                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>"
+                        + "</td>";
                 filas += "</tr>";
             }
             salida.put("tabla", filas);
@@ -135,6 +140,17 @@ public class ParqueController extends HttpServlet {
         c.ejecutar(query);
         c.cerrar();
         salida.put("estado", "ok");
+        return salida;
+    }
+    
+    private JSONObject delParque(JSONObject parque) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_DEL_PARQUE(" + parque.getInt("idparque") + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        salida.put("estado", "ok");
+        c.cerrar();
         return salida;
     }
 

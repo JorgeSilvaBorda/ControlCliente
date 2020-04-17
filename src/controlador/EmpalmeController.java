@@ -35,6 +35,9 @@ public class EmpalmeController extends HttpServlet {
             case "upd-empalme":
                 out.print(updEmpalme(entrada.getJSONObject("empalme")));
                 break;
+            case "del-empalme":
+                out.print(delEmpalme(entrada));
+                break;
         }
     }
 
@@ -50,7 +53,10 @@ public class EmpalmeController extends HttpServlet {
                 filas += "<tr>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
-                filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button></td>";
+                filas += "<td style='width: 15%;'>"
+                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
+                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>"
+                        + "</td>";
                 filas += "</tr>";
             }
             salida.put("tabla", filas);
@@ -128,6 +134,17 @@ public class EmpalmeController extends HttpServlet {
                 + empalme.getInt("idempalme") + ","
                 + empalme.getInt("idinstalacion") + ","
                 + "'" + empalme.getString("numempalme") + "')";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
+        return salida;
+    }
+    
+    private JSONObject delEmpalme(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_DEL_EMPALME(" + entrada.getInt("idempalme") + ")";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

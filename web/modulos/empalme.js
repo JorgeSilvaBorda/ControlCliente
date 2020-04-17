@@ -50,13 +50,13 @@ function getSelectInstalacion() {
     });
 }
 
-function insEmpalme(callback){
+function insEmpalme(callback) {
     var idinstalacion = $('#select-instalacion').val();
     var numempalme = $('#num-empalme').val();
-    
+
     var datos = {
         tipo: 'ins-empalme',
-        idinstalacion: idinstalacion, 
+        idinstalacion: idinstalacion,
         numempalme: numempalme
     };
 
@@ -66,14 +66,14 @@ function insEmpalme(callback){
         data: {
             datos: JSON.stringify(datos)
         },
-        success: function(res){
+        success: function (res) {
             var obj = JSON.parse(res);
-            if(obj.estado === 'ok'){
+            if (obj.estado === 'ok') {
                 limpiar();
                 callback();
             }
         },
-        error: function(a, b, c){
+        error: function (a, b, c) {
             console.log(a);
             console.log(b);
             console.log(c);
@@ -122,7 +122,7 @@ function saveEmpalme(callback) {
     var idempalme = ID_EMPALME_EDICION;
     var idinstalacion = $('#select-instalacion').val();
     var numempalme = $('#num-empalme').val();
-    
+
     var datos = {
         tipo: 'upd-empalme',
         empalme: {
@@ -153,8 +153,37 @@ function saveEmpalme(callback) {
     });
 }
 
+function eliminar(boton) {
+    var fila = $(boton).parent().parent();
+    var idempalme = $(fila).children(0).children(0).val();
 
-function limpiar(){
+    var datos = {
+        tipo: 'del-empalme',
+        idempalme: idempalme
+    };
+    if (confirm("Está seguro que desea eliminar el Empalme seleccionado?")) {
+        $.ajax({
+            url: 'EmpalmeController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (res) {
+                var obj = JSON.parse(res);
+                if (obj.estado === 'ok') {
+                    getEmpalmes();
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            }
+        });
+    }
+}
+
+function limpiar() {
     ID_EMPALME_EDICION = null;
     $('#num-empalme').val('');
     $('#select-instalacion').val('0');

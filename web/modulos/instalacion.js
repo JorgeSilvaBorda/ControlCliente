@@ -1,5 +1,6 @@
 var ID_INSTALACION_EDICION = null;
-function existeInstalacion(callback) {
+var INSTALACION_EDIT = null;
+function existeInstalacion(callback1) {
     var nominstalacion = $('#nom-instalacion').val();
     var datos = {
         tipo: 'existe-instalacion',
@@ -16,6 +17,38 @@ function existeInstalacion(callback) {
             if (obj.estado === 'ok') {
                 if (obj.cantidad > 0) {
                     alert("El nombre de la instalación que desea ingresar, ya existe.");
+                } else {
+                    callback1(validarCampos);
+                }
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function existeDireccionInstalacion(callback) {
+    var direccion = $('#direccion').val();
+    var idcomuna = $('#select-comuna').val();
+    var datos = {
+        tipo: 'existe-direccion-instalacion',
+        direccion: direccion,
+        idcomuna: idcomuna
+    };
+    $.ajax({
+        url: 'InstalacionController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                if (obj.cantidad > 0) {
+                    alert("La dirección de la instalación que desea ingresar, ya existe.");
                     callback(false);
                 } else {
                     callback(true);
@@ -53,8 +86,86 @@ function validarCampos(esvalido) {
     insInstalacion(getInstalaciones);
 }
 
-function validarCamposUpdate() {
+function existeInstalacionUpdate(callback1) {
+    var nominstalacion = $('#nom-instalacion').val();
+    var idcomuna = $('#select-comuna').val();
+    var direccion = $('#direccion').val();
+    INSTALACION_EDIT.newnominstalacion = nominstalacion;
+    INSTALACION_EDIT.newidcomuna = idcomuna;
+    INSTALACION_EDIT.newdireccion = direccion;
+    var datos = {
+        tipo: 'existe-instalacion-update',
+        idinstalacion: ID_INSTALACION_EDICION,
+        nominstalacion: INSTALACION_EDIT.nominstalacion,
+        newnominstalacion: nominstalacion
+    };
 
+    $.ajax({
+        url: 'InstalacionController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                if (obj.cantidad > 0) {
+                    alert("El nombre de la instalación que desea ingresar, ya se encuentra en uso por otra.");
+                } else {
+                    callback1(validarCamposUpdate);
+                }
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function existeDireccionInstalacionUpdate(callback) {
+    var direccion = $('#direccion').val();
+    var idcomuna = $('#select-comuna').val();
+    INSTALACION_EDIT.newidcomuna = idcomuna;
+    INSTALACION_EDIT.newdireccion = direccion;
+    var datos = {
+        tipo: 'existe-direccion-instalacion-update',
+        idinstalacion: ID_INSTALACION_EDICION,
+        direccion: INSTALACION_EDIT.direccion,
+        idcomuna: INSTALACION_EDIT.idcomuna,
+        newdireccion: direccion,
+        newidcomuna: idcomuna
+    };
+    $.ajax({
+        url: 'InstalacionController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                if (obj.cantidad > 0) {
+                    alert("La dirección de la instalación que desea ingresar, ya se encuentra en uso por otra.");
+                    callback(false);
+                } else {
+                    callback(true);
+                }
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function validarCamposUpdate(esvalido) {
+    if (!esvalido) {
+        return false;
+    }
     var nominstalacion = $('#nom-instalacion').val();
     var idcomuna = $('#select-comuna').val();
     var direccion = $('#direccion').val();
@@ -71,7 +182,7 @@ function validarCamposUpdate() {
         alert("Debe seleccionar una comuna del listado.");
         return false;
     }
-    return true;
+    saveInstalacion(getInstalaciones);
 }
 
 function getInstalaciones() {
@@ -196,45 +307,46 @@ function armarInstalacion(instalacion) {
     $('#select-comuna').val(instalacion.idcomuna);
     $('#btn-insert').attr("hidden", "hidden");
     $('#btn-guardar').removeAttr("hidden");
+    INSTALACION_EDIT = instalacion;
 }
 
 function saveInstalacion(callback) {
-    if (validarCamposUpdate()) {
-        var idinstalacion = ID_INSTALACION_EDICION;
-        var nominstalacion = $('#nom-instalacion').val();
-        var direccion = $('#direccion').val();
-        var idcomuna = $('#select-comuna').val();
 
-        var datos = {
-            tipo: 'upd-instalacion',
-            instalacion: {
-                idinstalacion: idinstalacion,
-                nominstalacion: nominstalacion,
-                direccion: direccion,
-                idcomuna: idcomuna
-            }
-        };
+    var idinstalacion = ID_INSTALACION_EDICION;
+    var nominstalacion = $('#nom-instalacion').val();
+    var direccion = $('#direccion').val();
+    var idcomuna = $('#select-comuna').val();
 
-        $.ajax({
-            url: 'InstalacionController',
-            type: 'post',
-            data: {
-                datos: JSON.stringify(datos)
-            },
-            success: function (res) {
-                var obj = JSON.parse(res);
-                if (obj.estado === 'ok') {
-                    limpiar();
-                    callback();
-                }
-            },
-            error: function (a, b, c) {
-                console.log(a);
-                console.log(b);
-                console.log(c);
+    var datos = {
+        tipo: 'upd-instalacion',
+        instalacion: {
+            idinstalacion: idinstalacion,
+            nominstalacion: nominstalacion,
+            direccion: direccion,
+            idcomuna: idcomuna
+        }
+    };
+
+    $.ajax({
+        url: 'InstalacionController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (res) {
+            var obj = JSON.parse(res);
+            if (obj.estado === 'ok') {
+                limpiar();
+                callback();
             }
-        });
-    }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+
 }
 
 function eliminar(boton) {
@@ -270,6 +382,7 @@ function eliminar(boton) {
 
 function limpiar() {
     ID_INSTALACION_EDICION = null;
+    INSTALACION_EDIT = null;
     $('#nom-instalacion').val('');
     $('#direccion').val('');
     $('#select-comuna').val('0');

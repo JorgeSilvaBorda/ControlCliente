@@ -32,8 +32,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <button onclick="existeInstalacion(validarCampos);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
-                    <button onclick="saveInstalacion(getInstalaciones);" hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
+                    <button onclick="existeInstalacion(existeDireccionInstalacion);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
+                    <button onclick="existeInstalacionUpdate(existeDireccionInstalacionUpdate);" hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
                     <button onclick="limpiar();" type="button" class="btn btn-default btn-sm" id="btn-limpiar">Limpiar</button>
                 </div>
             </form>

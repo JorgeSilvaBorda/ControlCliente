@@ -29,7 +29,7 @@ public class InstalacionController extends HttpServlet {
             case "ins-instalacion":
                 out.print(insInstalacion(entrada));
                 break;
-                case "del-instalacion":
+            case "del-instalacion":
                 out.print(delInstalacion(entrada));
                 break;
             case "get-instalacion-idinstalacion":
@@ -40,6 +40,15 @@ public class InstalacionController extends HttpServlet {
                 break;
             case "existe-instalacion":
                 out.print(existeInstalacion(entrada));
+                break;
+            case "existe-instalacion-update":
+                out.print(existeInstalacionUpdate(entrada));
+                break;
+            case "existe-direccion-instalacion":
+                out.print(existeDireccionInstalacion(entrada));
+                break;
+            case "existe-direccion-instalacion-update":
+                out.print(existeDireccionInstalacionUpdate(entrada));
                 break;
         }
     }
@@ -104,7 +113,7 @@ public class InstalacionController extends HttpServlet {
         salida.put("estado", "ok");
         return salida;
     }
-    
+
     private JSONObject delInstalacion(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_DEL_INSTALACION("
@@ -162,7 +171,7 @@ public class InstalacionController extends HttpServlet {
         salida.put("estado", "ok");
         return salida;
     }
-    
+
     private JSONObject existeInstalacion(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_EXISTE_INSTALACION('" + entrada.getString("nominstalacion") + "')";
@@ -178,6 +187,90 @@ public class InstalacionController extends HttpServlet {
             salida.put("estado", "ok");
         } catch (JSONException | SQLException ex) {
             System.out.println("Problemas en controlador.InstalacionController.existeInstalacion().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject existeInstalacionUpdate(JSONObject entrada) {
+
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_EXISTE_INSTALACION_UPDATE("
+                + entrada.getInt("idinstalacion") + ", "
+                + "'" + entrada.getString("nominstalacion") + "', "
+                + "'" + entrada.getString("newnominstalacion") + "'"
+                + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        int cantidad = 0;
+        try {
+            while (rs.next()) {
+                cantidad = rs.getInt("CANTIDAD");
+            }
+            salida.put("cantidad", cantidad);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.InstalacionController.existeInstalacion().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject existeDireccionInstalacion(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_EXISTE_DIRECCION_INSTALACION('" + entrada.getString("direccion") + "', " + entrada.getInt("idcomuna") + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        int cantidad = 0;
+        try {
+            while (rs.next()) {
+                cantidad = rs.getInt("CANTIDAD");
+            }
+            salida.put("cantidad", cantidad);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.InstalacionController.existeDireccionInstalacion().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject existeDireccionInstalacionUpdate(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_EXISTE_DIRECCION_INSTALACION_UPDATE("
+                + "" + entrada.getInt("idinstalacion") + ", "
+                + "" + entrada.getInt("idcomuna") + ", "
+                + "" + entrada.getInt("newidcomuna") + ", "
+                + "'" + entrada.getString("direccion") + "', "
+                + "'" + entrada.getString("newdireccion") + "'"
+                + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        int cantidad = 0;
+        try {
+            while (rs.next()) {
+                cantidad = rs.getInt("CANTIDAD");
+            }
+            salida.put("cantidad", cantidad);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.InstalacionController.existeDireccionInstalacionUpdate().");
             System.out.println(ex);
             ex.printStackTrace();
             salida.put("estado", "error");

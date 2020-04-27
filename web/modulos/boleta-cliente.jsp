@@ -1,4 +1,4 @@
-<script src="modulos/boleta.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
+<script src="modulos/boleta-cliente.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         getSelectClientes();

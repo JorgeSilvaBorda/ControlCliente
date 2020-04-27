@@ -1,5 +1,3 @@
-
-
 function getSelectClientes() {
     var datos = {
         tipo: 'get-select-clientes'
@@ -32,7 +30,7 @@ function buscar(){
     var fechafin = $('#fecha-fin').val();
     
     var datos = {
-        tipo: 'armar-pre-boleta',
+        tipo: 'armar-pre-boleta-cliente',
         idcliente: idcliente,
         fechaini: fechaini,
         fechafin: fechafin

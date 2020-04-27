@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
-public class Boleta {
+public class BoletaCliente {
 
     private final int idcliente;
     private String nomcliente;
@@ -22,7 +22,7 @@ public class Boleta {
     private LinkedList<CargoAdicional> cargosadicionales;
     
 
-    public Boleta(int idcliente, String fechaini, String fechafin) {
+    public BoletaCliente(int idcliente, String fechaini, String fechafin) {
         this.idcliente = idcliente;
         this.remarcadores = new LinkedList();
         this.cargosadicionales = new LinkedList();

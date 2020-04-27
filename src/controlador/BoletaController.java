@@ -8,7 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import modelo.Boleta;
+import modelo.BoletaCliente;
 import modelo.Remarcador;
 import modelo.Util;
 
@@ -20,19 +20,19 @@ public class BoletaController extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         JSONObject entrada = new JSONObject(request.getParameter("datos"));
         switch(entrada.getString("tipo")){
-            case "armar-pre-boleta":
-                out.print(armarPreBoleta(entrada));
+            case "armar-pre-boleta-cliente":
+                out.print(armarPreBoletaCliente(entrada));
                 break;
         }
     }
     
-    private JSONObject armarPreBoleta(JSONObject entrada){
+    private JSONObject armarPreBoletaCliente(JSONObject entrada){
         JSONObject salida = new JSONObject();
         int idcliente = entrada.getInt("idcliente");
         String fechaini = entrada.getString("fechaini");
         String fechafin = entrada.getString("fechafin");
         
-        Boleta boleta = new Boleta(idcliente, fechaini, fechafin);
+        BoletaCliente boleta = new BoletaCliente(idcliente, fechaini, fechafin);
         JSONObject bjson = new JSONObject();
         bjson.put("idcliente", entrada.getInt("idcliente"));
         bjson.put("fechaini", entrada.getString("fechaini"));
@@ -72,7 +72,7 @@ public class BoletaController extends HttpServlet {
         return salida;
     }
     
-    private String armarTablaRemarcadores(Boleta b){
+    private String armarTablaRemarcadores(BoletaCliente b){
         if(b.getRemarcadores().size() < 1){
             return "";
         }

@@ -19,7 +19,12 @@
             <form class="form small"  role="form">
                 <div class="form-group">
                     <label for="select-instalacion">Instalación</label>
-                    <select class="form-control-sm form-control small" id="select-instalacion">
+                    <select onchange="getSelectBodegasInstalacion();" class="form-control-sm form-control small" id="select-instalacion">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="select-bodega">Bodega</label>
+                    <select class="form-control-sm form-control small" id="select-bodega">
                     </select>
                 </div>
                 <div class="form-group">
@@ -40,6 +45,7 @@
                     <tr>
                         <th># Empalme</th>
                         <th>Instalación</th>
+                        <th>Bodega</th>
                         <th>Acción</th>
                     </tr>
                 </thead>

@@ -12,7 +12,7 @@ function getTarifas() {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
-                $('.dataTable').DataTable().destroy();
+                $('#tabla-tarifas.dataTable').DataTable().destroy();
                 $('#tabla-tarifas tbody').html(obj.tabla);
                 $('#tabla-tarifas').DataTable(OPCIONES_DATATABLES);
                 getSelectTarifas();
@@ -39,7 +39,7 @@ function getTarifasConceptos() {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
-                $('.dataTable').DataTable().destroy();
+                $('#tabla-tarifas-conceptos.dataTable').DataTable().destroy();
                 $('#tabla-tarifas-conceptos tbody').html(obj.tabla);
                 $('#tabla-tarifas-conceptos').DataTable(OPCIONES_DATATABLES);
                 getSelectTarifas();
@@ -317,18 +317,48 @@ function saveConcepto(callback) {
     });
 }
 
+function eliminarConcepto(boton) {
+    var fila = $(boton).parent().parent();
+    var idconcepto = $(fila).children(0).children(0).val();
+
+    var datos = {
+        tipo: 'del-concepto',
+        idconcepto: idconcepto
+    };
+    if (confirm("Está seguro que desea eliminar el concepto?")) {
+        $.ajax({
+            url: 'TarifaController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (res) {
+                var obj = JSON.parse(res);
+                if (obj.estado === 'ok') {
+                    getTarifasConceptos();
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            }
+        });
+    }
+}
+
 function limpiar() {
     ID_TARIFA_EDICION = null;
     ID_CONCEPTO_EDICION = null;
     $('#nom-tarifa').val('');
     $('#valor-tarifa').val('');
-    
+
     $('#select-tarifa').val('0');
     $('#select-comuna').val('0');
     $('#nomconcepto').val('');
     $('#umedida').val('');
     $('#valorneto').val('');
-    
+
     $('#btn-guardar').attr("hidden", "hidden");
     $('#btn-insert').removeAttr("hidden");
     $('#btn-ins-tarifa-concepto').removeAttr("hidden");

@@ -149,4 +149,15 @@ public class Util {
         }
     }
 
+    public static String capitalizarString(String frase) {
+        frase = frase.toLowerCase();
+        String[] palabras = frase.split("\\s");
+        String capitalizada = "";
+        for (String palabra : palabras) {
+            String first = palabra.substring(0, 1);
+            String afterfirst = palabra.substring(1);
+            capitalizada += first.toUpperCase() + afterfirst + " ";
+        }
+        return capitalizada.trim();
+    }
 }

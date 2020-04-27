@@ -29,6 +29,12 @@ public class EmpalmeController extends HttpServlet {
             case "ins-empalme":
                 out.print(insEmpalme(entrada));
                 break;
+            case "existe-empalme-instalacion":
+                out.print(existeEmpalmeInstalacion(entrada));
+                break;
+            case "existe-empalme-instalacion-update":
+                out.print(existeEmpalmeInstalacionUpdate(entrada));
+                break;
             case "get-empalme-idempalme":
                 out.print(getEmpalmeIdEmpalme(entrada));
                 break;
@@ -53,6 +59,7 @@ public class EmpalmeController extends HttpServlet {
                 filas += "<tr>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
                 filas += "<td style='width: 15%;'>"
                         + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
                         + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>"
@@ -86,10 +93,65 @@ public class EmpalmeController extends HttpServlet {
         return salida;
     }
 
+    private JSONObject existeEmpalmeInstalacion(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_EXISTE_EMPALME_EN_INSTALACION(" + entrada.getInt("numempalme") + ", " + entrada.getInt("idinstalacion") + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        int cantidad = 0;
+        try {
+            while (rs.next()) {
+                cantidad = rs.getInt("CANTIDAD");
+            }
+            salida.put("cantidad", cantidad);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.EmpalmeController.existeEmpalmeInstalacion().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject existeEmpalmeInstalacionUpdate(JSONObject entrada) {
+
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_EXISTE_EMPALME_EN_INSTALACION_UPDATE("
+                + "'" + entrada.getString("numempalme") + "', "
+                + "'" + entrada.getString("newnumempalme") + "', "
+                + entrada.getInt("newidinstalacion") + ", "
+                + entrada.getInt("idinstalacion") + ""
+                + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        int cantidad = 0;
+        try {
+            while (rs.next()) {
+                cantidad = rs.getInt("CANTIDAD");
+            }
+            salida.put("cantidad", cantidad);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.EmpalmeController.existeEmpalmeInstalacionUpdate().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
     private JSONObject insEmpalme(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_INS_EMPALME("
                 + "'" + entrada.getInt("idinstalacion") + "',"
+                + "'" + entrada.getInt("idparque") + "',"
                 + "'" + entrada.getString("numempalme") + "'"
                 + ")";
         Conexion c = new Conexion();
@@ -114,6 +176,8 @@ public class EmpalmeController extends HttpServlet {
                 empalme.put("idinstalacion", rs.getInt("IDINSTALACION"));
                 empalme.put("numempalme", rs.getString("NUMEMPALME"));
                 empalme.put("nominstalacion", rs.getString("NOMINSTALACION"));
+                empalme.put("idparque", rs.getInt("IDPARQUE"));
+                empalme.put("nomparque", rs.getString("NOMPARQUE"));
             }
             salida.put("empalme", empalme);
             salida.put("estado", "ok");
@@ -133,6 +197,7 @@ public class EmpalmeController extends HttpServlet {
         String query = "CALL SP_UPD_EMPALME("
                 + empalme.getInt("idempalme") + ","
                 + empalme.getInt("idinstalacion") + ","
+                + empalme.getInt("idparque") + ","
                 + "'" + empalme.getString("numempalme") + "')";
         Conexion c = new Conexion();
         c.abrir();
@@ -141,7 +206,7 @@ public class EmpalmeController extends HttpServlet {
         salida.put("estado", "ok");
         return salida;
     }
-    
+
     private JSONObject delEmpalme(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_DEL_EMPALME(" + entrada.getInt("idempalme") + ")";

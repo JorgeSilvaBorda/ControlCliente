@@ -47,6 +47,9 @@ public class TarifaController extends HttpServlet {
             case "get-tarifas-conceptos":
                 out.print(getTarifasConceptos());
                 break;
+            case "del-concepto":
+                out.print(delConcepto(entrada));
+                break;
         }
     }
 
@@ -92,7 +95,10 @@ public class TarifaController extends HttpServlet {
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDCOMUNA") + "' /><span>" + rs.getString("NOMCOMUNA") + "</span></td>";
                 filas += "<td><span>" + rs.getString("UNIDADMEDIDA") + "</span></td>";
                 filas += "<td><span>" + rs.getString("VALORNETO") + "</span></td>";
-                filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicionConcepto(this)'>Editar</button></td>";
+                filas += "<td style='width:12%'>"
+                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicionConcepto(this)'>Editar</button>"
+                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminarConcepto(this)'>Eliminar</button>"
+                        + "</td>";
                 filas += "</tr>";
             }
             salida.put("tabla", filas);
@@ -230,6 +236,17 @@ public class TarifaController extends HttpServlet {
                 + "'" + concepto.getString("nomconcepto") + "',"
                 + "'" + concepto.getString("umedida") + "',"
                 + "'" + concepto.getBigDecimal("valorneto") + "')";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
+        return salida;
+    }
+    
+    private JSONObject delConcepto(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_DEL_CONCEPTO(" + entrada.getInt("idconcepto") + ")";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

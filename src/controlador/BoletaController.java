@@ -76,7 +76,7 @@ public class BoletaController extends HttpServlet {
         if(b.getRemarcadores().size() < 1){
             return "";
         }
-        String  tabla = "<h4>Detalle de Consumo por Remarcador</h4>";
+        String  tabla = "<h4>Resumen de Consumo por Remarcador</h4>";
         tabla += "<table class='table table-sm table-striped table-hover small'>"
                 + "<thead>"
                 + "<tr>"
@@ -90,7 +90,7 @@ public class BoletaController extends HttpServlet {
         for(Remarcador r : b.getRemarcadores()){
             tabla +="<tr>";
             tabla +="<td>" + r.getNumremarcador() + "</td>";            
-            tabla +="<td>" + r.getNomplogistico() + ". " + r.getDireccion() + " " + r.getModulos() + "</td>";            
+            tabla +="<td>" + r.getDireccion() + " " + r.getModulos() + "</td>";            
             tabla +="<td>" + r.lecturaanterior + "</td>";            
             tabla +="<td>" + r.lecturaactual + "</td>";            
             tabla +="<td>" + r.diffperiodo + "</td>";            
@@ -99,4 +99,5 @@ public class BoletaController extends HttpServlet {
         tabla += "</tbody></table>";
         return tabla;
     }
+    
 }

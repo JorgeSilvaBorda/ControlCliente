@@ -1,4 +1,120 @@
-ID_EMPALME_EDICION = null;
+var ID_EMPALME_EDICION = null;
+var EMPALME_EDIT = null;
+function existeEmpalmeInstalacion(callback1) {
+    var numempalme = $('#num-empalme').val();
+    var idinstalacion = $('#select-instalacion').val();
+    var datos = {
+        tipo: 'existe-empalme-instalacion',
+        idinstalacion: idinstalacion,
+        numempalme: numempalme
+    };
+    $.ajax({
+        url: 'EmpalmeController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                if (obj.cantidad > 0) {
+                    alert("El número de empalme que desea ingresar ya existe en la instalación.");
+                } else {
+                    callback1(validarCampos);
+                }
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function existeEmpalmeInstalacionUpdate(callback1) {
+    var idinstalacion = $('#select-instalacion').val();
+    var newnumempalme = $('#num-empalme').val();
+    EMPALME_EDIT.newidinstalacion = idinstalacion;
+    EMPALME_EDIT.newnumempalme = newnumempalme;
+    var datos = {
+        tipo: 'existe-empalme-instalacion-update',
+        idempalme: ID_EMPALME_EDICION,
+        newidinstalacion: idinstalacion,
+        idinstalacion: EMPALME_EDIT.idinstalacion,
+        numempalme: EMPALME_EDIT.numempalme,
+        newnumempalme: EMPALME_EDIT.newnumempalme
+    };
+
+    $.ajax({
+        url: 'EmpalmeController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                if (obj.cantidad > 0) {
+                    alert("El número de empalme que desea ingresar, ya se encuentra en otra instalación.");
+                } else {
+                    callback1(validarCamposUpdate);
+                }
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function validarCampos(esvalido) {
+    if (!esvalido) {
+        return false;
+    }
+    var idinstalacion = $('#select-instalacion').val();
+    var idparque = $('#select-bodega').val();
+    var numempalme = $('#num-empalme').val();
+
+    if (idinstalacion === '0') {
+        alert("Debe seleccionar una instalacion del listado.");
+        return false;
+    }
+    if (idparque === '0') {
+        alert("Debe seleccionar una bodega del listado.");
+        return false;
+    }
+    if (numempalme.length < 3) { //Mínimo 3 caracteres para el número del empalme
+        alert("Debe indicar un número de empalme válido (Mínimo 3 caracteres).");
+        return false;
+    }
+    insEmpalme(getEmpalmes);
+}
+
+function validarCamposUpdate(esvalido) {
+    if (!esvalido) {
+        return false;
+    }
+    var idinstalacion = $('#select-instalacion').val();
+    var idparque = $('#select-bodega').val();
+    var numempalme = $('#num-empalme').val();
+
+    if (idinstalacion === '0') {
+        alert("Debe seleccionar una instalacion del listado.");
+        return false;
+    }
+    if (idparque === '0') {
+        alert("Debe seleccionar una bodega del listado.");
+        return false;
+    }
+    if (numempalme.length < 3) { //Mínimo 3 caracteres para el número del empalme
+        alert("Debe indicar un número de empalme válido (Mínimo 3 caracteres).");
+        return false;
+    }
+    saveEmpalme(getEmpalmes);
+}
 
 function getEmpalmes() {
     var datos = {
@@ -50,13 +166,41 @@ function getSelectInstalacion() {
     });
 }
 
+function getSelectBodegasInstalacion() {
+    var idinstalacion = $('#select-instalacion').val();
+    var datos = {
+        tipo: 'get-select-bodegas-instalacion',
+        idinstalacion: idinstalacion
+    };
+    $.ajax({
+        url: 'ParqueController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-bodega').html(obj.options);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
 function insEmpalme(callback) {
     var idinstalacion = $('#select-instalacion').val();
+    var idparque = $('#select-bodega').val();
     var numempalme = $('#num-empalme').val();
 
     var datos = {
         tipo: 'ins-empalme',
         idinstalacion: idinstalacion,
+        idparque: idparque,
         numempalme: numempalme
     };
 
@@ -84,7 +228,7 @@ function insEmpalme(callback) {
 function activarEdicion(boton) {
     var fila = $(boton).parent().parent();
     var idempalme = $(fila).children(0).children(0).val();
-
+    IDEMPALME_EDICION = idempalme;
     var datos = {
         tipo: 'get-empalme-idempalme',
         idempalme: idempalme
@@ -99,7 +243,7 @@ function activarEdicion(boton) {
         success: function (res) {
             var obj = JSON.parse(res);
             if (obj.estado === 'ok') {
-                armarEmpalme(obj.empalme);
+                armarEmpalme(obj.empalme); 
             }
         },
         error: function (a, b, c) {
@@ -113,14 +257,17 @@ function activarEdicion(boton) {
 function armarEmpalme(empalme) {
     ID_EMPALME_EDICION = empalme.idinstalacion;
     $('#select-instalacion').val(empalme.idinstalacion);
+    $('#select-instalacion').change();
     $('#num-empalme').val(empalme.numempalme);
     $('#btn-insert').attr("hidden", "hidden");
     $('#btn-guardar').removeAttr("hidden");
+    EMPALME_EDIT = empalme;
 }
 
 function saveEmpalme(callback) {
     var idempalme = ID_EMPALME_EDICION;
     var idinstalacion = $('#select-instalacion').val();
+    var idparque = $('#select-bodega').val();
     var numempalme = $('#num-empalme').val();
 
     var datos = {
@@ -128,6 +275,7 @@ function saveEmpalme(callback) {
         empalme: {
             idempalme: idempalme,
             idinstalacion: idinstalacion,
+            idparque: idparque,
             numempalme: numempalme
         }
     };
@@ -185,8 +333,10 @@ function eliminar(boton) {
 
 function limpiar() {
     ID_EMPALME_EDICION = null;
+    EMPALME_EDIT = null;
     $('#num-empalme').val('');
     $('#select-instalacion').val('0');
+    $('#select-bodega').html('');
     $('#btn-guardar').attr("hidden", "hidden");
     $('#btn-insert').removeAttr("hidden");
 }

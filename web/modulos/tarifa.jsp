@@ -76,12 +76,12 @@
                                 <div class="form-group">
                                     <label for="valorneto">$ Neto</label>
                                     <div class="input-group mb-3">
-                                        <input id="valorneto" type="text" class="form-control form-control-sm" placeholder="Ej.: 1220.421" aria-label="ValorNeto">
+                                        <input id="valorneto" type="number" step="0.001" min="0.000" lang="es-CL" class="form-control form-control-sm" placeholder="Ej.: 1,275.25" aria-label="ValorNeto">
                                         <div class="input-group-append">
                                             <button onclick="insTarifaConcepto(getTarifasConceptos);" type="button" class="btn btn-sm btn-primary form-control form-control-sm" id="btn-ins-tarifa-concepto">Insertar</button>
                                             <button onclick="saveConcepto(getTarifasConceptos);" hidden="hidden" type="button" class="btn btn-sm btn-success form-control form-control-sm" id="btn-save-tarifa-concepto">Guardar</button>
                                         </div>
-                                        <button onclick="limpiar();" type="button" class="btn btn-default btn-sm" id="btn-limpiar">Limpiar</button>
+                                        <button onclick="limpiar();" type="button" class="btn btn-default btn-sm">Limpiar</button>
                                     </div>
                                 </div>
                             </td>

@@ -79,3 +79,6 @@ function remarcadoresBoleta(boleta){
     $('#contenido-boleta').show();
 }
 
+function cargosBoleta(){
+    
+}

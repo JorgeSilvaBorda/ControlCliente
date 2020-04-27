@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.Conexion;
+import modelo.Util;
 
 public class InstalacionController extends HttpServlet {
 
@@ -102,7 +103,7 @@ public class InstalacionController extends HttpServlet {
     private JSONObject insInstalacion(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_INS_INSTALACION("
-                + "'" + entrada.getString("nominstalacion") + "', "
+                + "'" + Util.capitalizarString(entrada.getString("nominstalacion")) + "', "
                 + "'" + entrada.getString("direccion") + "', "
                 + "" + entrada.getString("idcomuna") + ""
                 + ")";
@@ -160,7 +161,7 @@ public class InstalacionController extends HttpServlet {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_UPD_INSTALACION("
                 + instalacion.getInt("idinstalacion") + ","
-                + "'" + instalacion.getString("nominstalacion") + "', "
+                + "'" + Util.capitalizarString(instalacion.getString("nominstalacion")) + "', "
                 + "'" + instalacion.getString("direccion") + "', "
                 + "" + instalacion.getInt("idcomuna") + ""
                 + ")";

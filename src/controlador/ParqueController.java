@@ -26,6 +26,9 @@ public class ParqueController extends HttpServlet {
             case "get-select-parque-empalme":
                 out.print(getSelectParqueEmpalme(entrada.getInt("idempalme")));
                 break;
+            case "get-select-bodegas-instalacion":
+                out.print(getSelectBodegasInstalacion(entrada));
+                break;
             case "ins-parque":
                 out.print(insParque(entrada));
                 break;
@@ -38,6 +41,7 @@ public class ParqueController extends HttpServlet {
             case "del-parque":
                 out.print(delParque(entrada));
                 break;
+
         }
 
     }
@@ -76,6 +80,20 @@ public class ParqueController extends HttpServlet {
     private JSONObject getSelectParqueEmpalme(int idempalme) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_SELECT_PARQUE_EMPALME(" + idempalme + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDPARQUE", "NOMPARQUE");
+        salida.put("options", options);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getSelectBodegasInstalacion(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_SELECT_BODEGAS_INSTALACION(" + entrada.getInt("idinstalacion") + ")";
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -142,7 +160,7 @@ public class ParqueController extends HttpServlet {
         salida.put("estado", "ok");
         return salida;
     }
-    
+
     private JSONObject delParque(JSONObject parque) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_DEL_PARQUE(" + parque.getInt("idparque") + ")";

@@ -3,6 +3,7 @@ package modelo;
 import clases.json.JSONException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 
 public class Remarcador {
 
@@ -16,13 +17,13 @@ public class Remarcador {
     private int numremarcador;
     private String modulos;
     private int idinstalacion;
-    private int idplogistico;
-    private String nomplogistico;
     private String direccion;
     
     public int diffperiodo;
     public int lecturaactual;
     public int lecturaanterior;
+    
+    public LinkedList<CargoRemarcador> cargos;
 
     public Remarcador(int idremarcador) {
         this.idremarcador = idremarcador;
@@ -46,8 +47,6 @@ public class Remarcador {
                 this.numempalme = rs.getString("NUMEMPALME");  
                 this.nomparque = rs.getString("NOMPARQUE");  
                 this.nominstalacion = rs.getString("NOMINSTALACION");
-                this.idplogistico = rs.getInt("IDPLOGISTICO");  
-                this.nomplogistico = rs.getString("NOMPLOGISTICO");
                 this.direccion = rs.getString("DIRECCION");
             }
         } catch (SQLException ex) {
@@ -83,6 +82,10 @@ public class Remarcador {
         }
         c.cerrar();
         return -1;
+    }
+    
+    public void setCargos(){
+        
     }
 
     public int getIdremarcador() {
@@ -123,14 +126,6 @@ public class Remarcador {
 
     public int getIdinstalacion() {
         return idinstalacion;
-    }
-
-    public int getIdplogistico() {
-        return idplogistico;
-    }
-
-    public String getNomplogistico() {
-        return nomplogistico;
     }
 
     public String getDireccion() {

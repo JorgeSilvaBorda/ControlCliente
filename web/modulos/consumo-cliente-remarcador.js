@@ -51,10 +51,12 @@ function getSelectRemarcadoresCliente(idcliente) {
 
 function graficar(idremarcador) {
     var idcliente = $('#select-cliente').val();
+    var numremarcador = $( "#select-remarcador option:selected" ).text();
     var datos = {
         tipo: 'consumo-cliente-remarcador',
         idcliente: idcliente,
-        idremarcador: idremarcador
+        idremarcador: idremarcador,
+        numremarcador: numremarcador
     };
 
     $.ajax({
@@ -66,13 +68,13 @@ function graficar(idremarcador) {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
-                new Chart(document.getElementById("line-chart"), {
-                    type: 'line',
+                new Chart(document.getElementById("grafico"), {
+                    type: 'bar',
                     data: obj.data,
                     options: {
                         title: {
                             display: true,
-                            text: 'Últimos 100 registros del remarcador'
+                            text: 'Últimos 12 meses de consumo'
                         }
                     }
                 });

@@ -19,7 +19,12 @@
             <form class="form small"  role="form">
                 <div class="form-group">
                     <label for="select-instalacion">Instalación</label>
-                    <select class="form-control-sm form-control small" id="select-instalacion">
+                    <select onchange="getSelectBodegasInstalacion();" class="form-control-sm form-control small" id="select-instalacion">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="select-bodega">Bodega</label>
+                    <select class="form-control-sm form-control small" id="select-bodega">
                     </select>
                 </div>
                 <div class="form-group">
@@ -27,8 +32,8 @@
                     <input type="text" class="form-control form-control-sm small" maxlength="200" id="num-empalme" />
                 </div>
                 <div class="form-group">
-                    <button onclick="insEmpalme(getEmpalmes);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
-                    <button onclick="saveEmpalme(getEmpalmes);" hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
+                    <button onclick="existeEmpalmeInstalacion(validarCampos);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
+                    <button onclick="existeEmpalmeInstalacionUpdate(validarCamposUpdate);" hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
                     <button onclick="limpiar();" type="button" class="btn btn-default btn-sm" id="btn-limpiar">Limpiar</button>
                 </div>
             </form>
@@ -40,6 +45,7 @@
                     <tr>
                         <th># Empalme</th>
                         <th>Instalación</th>
+                        <th>Bodega</th>
                         <th>Acción</th>
                     </tr>
                 </thead>

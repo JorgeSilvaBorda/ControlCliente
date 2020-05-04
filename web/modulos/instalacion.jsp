@@ -2,6 +2,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         getInstalaciones();
+        getSelectComunas();
     });
 
 </script>
@@ -17,18 +18,22 @@
         <div class="col-sm-3">
             <form class="form small"  role="form">
                 <div class="form-group">
-                    <label for="select-plogistico">P. Logístico</label>
-                    <select disabled class="form-control-sm form-control small" id="select-plogistico">
-                        <option selected value="1">Parque Logístico Pudahuel</option>
-                    </select>
-                </div>
-                <div class="form-group">
                     <label for="nom-instalacion" >Nombre Instalación</label>
                     <input type="text" class="form-control form-control-sm small" maxlength="200" id="nom-instalacion" />
                 </div>
                 <div class="form-group">
-                    <button onclick="insInstalacion(getInstalaciones);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
-                    <button onclick="saveInstalacion(getInstalaciones);" hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
+                    <label for="direccion" >Dirección</label>
+                    <input type="text" class="form-control form-control-sm small" maxlength="200" id="direccion" />
+                </div>
+                <div class="form-group">
+                    <label for="comuna" >Comuna</label>
+                    <select id="select-comuna" class="form-control form-control-sm smal">
+                        
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button onclick="existeInstalacion(existeDireccionInstalacion);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
+                    <button onclick="existeInstalacionUpdate(existeDireccionInstalacionUpdate);" hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
                     <button onclick="limpiar();" type="button" class="btn btn-default btn-sm" id="btn-limpiar">Limpiar</button>
                 </div>
             </form>
@@ -39,8 +44,8 @@
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>P. Logístico</th>
                         <th>Dirección</th>
+                        <th>Comuna</th>
                         <th>Acción</th>
                     </tr>
                 </thead>

@@ -60,12 +60,12 @@
                                 <%
                                     String idtipousuario = session.getAttribute("idtipousuario").toString();
                                     if (idtipousuario != null) {
-                                        System.out.println(Integer.parseInt(idtipousuario));
                                         if (Integer.parseInt(idtipousuario) == 2) {
                                             out.print("<li class='nav-item dropdown'>\n"
                                                     + "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Reportes</a>\n"
                                                     + "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
-                                                    + "<a onclick='cargarModulo(\"emision-boleta\");' class='dropdown-item' href='#'>Emisión Boleta</a> \n"
+                                                    + "<a onclick='cargarModulo(\"boleta-remarcador\");' class='dropdown-item' href='#'>Emisión Boleta Remarcador</a> \n"
+                                                    // + "<a onclick='cargarModulo(\"boleta-cliente\");' class='dropdown-item' href='#'>Emisión Boleta Cliente</a> \n"
                                                     + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-mes-cliente\");' class='dropdown-item' href='#'>Resumen Mes Cliente</a> \n"
                                                     + "</div>\n"
@@ -74,7 +74,8 @@
                                             out.print("<li class='nav-item dropdown'>\n"
                                                     + "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Reportes</a>\n"
                                                     + "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
-                                                    + "<a onclick='cargarModulo(\"emision-boleta\");' class='dropdown-item' href='#'>Emisión Boleta</a> \n"
+                                                    + "<a onclick='cargarModulo(\"boleta-remarcador\");' class='dropdown-item' href='#'>Emisión Boleta Remarcador</a> \n"
+                                                    + "<a onclick='cargarModulo(\"boleta-cliente\");' class='dropdown-item' href='#'>Emisión Boleta Cliente</a> \n"
                                                     + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-mes-cliente\");' class='dropdown-item' href='#'>Resumen Mes Cliente</a> \n"
                                                     + "</div>\n"

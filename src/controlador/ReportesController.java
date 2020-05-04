@@ -15,6 +15,7 @@ import modelo.Conexion;
 
 public class ReportesController extends HttpServlet {
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
@@ -32,7 +33,7 @@ public class ReportesController extends HttpServlet {
     private JSONObject consumoClienteRemarcador(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         //Obtener Labels remarcadores
-        String query = "CALL SP_GET_ULTIMOS_100_REGISTROS_REMARCADOR(" + entrada.getInt("idremarcador") + ")";
+        String query = "CALL SP_GET_CONSUMO_13_MESES_REMARCADOR(" + entrada.getInt("numremarcador") + ", NOW())";
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -42,13 +43,13 @@ public class ReportesController extends HttpServlet {
 
         try {
             while (rs.next()) {
-                labels.put(rs.getString("TIMESTAMP"));
-                datasetData.put(rs.getInt("EAC_KVAH"));
+                labels.put(rs.getString("FECHA"));
+                datasetData.put(rs.getInt("CONSUMO"));
             }
 
             JSONObject dataset = new JSONObject();
             dataset.put("data", datasetData);
-            dataset.put("label", "Remarcador Nº: " + entrada.getInt("idremarcador"));
+            dataset.put("label", "Remarcador Nº: " + entrada.getInt("numremarcador"));
             dataset.put("borderColor", "#3e95cd");
             dataset.put("pointRadius", 1);
             dataset.put("pointHoverRadius", 2);

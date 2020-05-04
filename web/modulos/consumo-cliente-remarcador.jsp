@@ -29,7 +29,7 @@
             </form>
         </div>
         <div class="col-sm-9">
-            <canvas id="line-chart" width="600" height="300"></canvas>
+            <canvas id="grafico" width="600" height="300"></canvas>
         </div>
     </div>
     <div class='row'>

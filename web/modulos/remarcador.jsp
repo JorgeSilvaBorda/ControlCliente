@@ -1,7 +1,8 @@
 <script src="modulos/remarcador.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        getSelectEmpalme();
+        //getSelectEmpalme();
+        getSelectInstalacion();
         getRemarcadores();
     });
 
@@ -18,15 +19,21 @@
         <div class="col-sm-3">
             <form class="form small"  role="form">
                 <div class="form-group">
-                    <label for="select-empalme">Empalme</label>
-                    <select onchange="getSelectParqueEmpalme($(this).val());" class="form-control-sm form-control small" id="select-empalme">
+                    <label for="select-instalación">Instalación</label>
+                    <select onchange="getSelectBodegaIdInstalacion($(this).val());" class="form-control-sm form-control small" id="select-instalacion">
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="select-parque">Bodega</label>
-                    <select class="form-control-sm form-control small" id="select-parque">
+                    <select onchange="getSelectEmpalmeIdParque($(this).val());"class="form-control-sm form-control small" id="select-parque">
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="select-empalme">Empalme</label>
+                    <select class="form-control-sm form-control small" id="select-empalme">
+                    </select>
+                </div>
+                
                 <div class="form-group">
                     <label for="num-remarcador" >ID Remarcador</label>
                     <input type="text" class="form-control form-control-sm small" maxlength="11" id="num-remarcador" />

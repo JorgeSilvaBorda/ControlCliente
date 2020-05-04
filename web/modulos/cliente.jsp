@@ -40,7 +40,7 @@
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label for="direccion">Dirección</label>
+                    <label for="direccion">Dirección Comercial</label>
                     <input type="text" class="form-control form-control-sm small" maxlength="50" id="direccion" />
                 </div>
             </div>

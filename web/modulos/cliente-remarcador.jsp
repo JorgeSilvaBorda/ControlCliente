@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="page-header">
-                <h1>Clientes con Remarcadores</h1>
+                <h1>Asignar Remarcador a Cliente</h1>
             </div>
         </div>
     </div>
@@ -34,6 +34,7 @@
                         <th>ID Remarcador</th>
                         <th># Empalme</th>
                         <th>Bodega</th>
+                        <th>Módulos</th>
                         <th>Instalacion</th>
                         <th>Asignar</th>
                     </tr>

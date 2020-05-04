@@ -34,6 +34,7 @@ public class ReportesController extends HttpServlet {
         JSONObject salida = new JSONObject();
         //Obtener Labels remarcadores
         String query = "CALL SP_GET_CONSUMO_13_MESES_REMARCADOR(" + entrada.getInt("numremarcador") + ", NOW())";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -79,6 +80,8 @@ public class ReportesController extends HttpServlet {
         JSONObject data = new JSONObject();
 
         String query = "CALL SP_GET_DIAS_MES_CURSO()";
+        System.out.println(query);
+        
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -97,6 +100,7 @@ public class ReportesController extends HttpServlet {
 
         //Obtener Remarcadores asociados al cliente ----------------------------
         query = "CALL SP_GET_SELECT_REMARCADORES_CLIENTE(" + entrada.getInt("idcliente") + ")";
+        System.out.println(query);
         c = new Conexion();
         c.abrir();
 

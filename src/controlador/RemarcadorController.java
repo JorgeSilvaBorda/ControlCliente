@@ -144,6 +144,8 @@ public class RemarcadorController extends HttpServlet {
                 remarcador.put("numempalme", rs.getString("NUMEMPALME"));
                 remarcador.put("nomparque", rs.getString("NOMPARQUE"));
                 remarcador.put("nominstalacion", rs.getString("NOMINSTALACION"));
+                remarcador.put("direccion", rs.getString("DIRECCION"));
+                remarcador.put("nomcomuna", rs.getString("NOMCOMUNA"));
             }
             salida.put("remarcador", remarcador);
             salida.put("estado", "ok");

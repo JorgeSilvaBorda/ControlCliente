@@ -38,6 +38,9 @@ public class RemarcadorController extends HttpServlet {
             case "upd-remarcador":
                 out.print(updRemarcador(entrada.getJSONObject("remarcador")));
                 break;
+                case "del-remarcador":
+                out.print(delRemarcador(entrada));
+                break;
         }
     }
 
@@ -55,7 +58,10 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
                 filas += "<td><span>" + rs.getString("MODULOS") + "</span></td>";
-                filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button></td>";
+                filas += "<td style='width: 15%;'>"
+                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
+                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>"
+                        + "</td>";
                 filas += "</tr>";
             }
             salida.put("tabla", filas);
@@ -177,6 +183,17 @@ public class RemarcadorController extends HttpServlet {
 
         String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDREMARCADOR", "NUMREMARCADOR");
         salida.put("options", options);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject delRemarcador(JSONObject remarador) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_DEL_REMARCADOR(" + remarador.getInt("idremarcador") + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
         salida.put("estado", "ok");
         c.cerrar();
         return salida;

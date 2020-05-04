@@ -35,6 +35,9 @@ public class ParqueController extends HttpServlet {
             case "get-parque-idparque":
                 out.print(getParqueIdParque(entrada));
                 break;
+                case "get-select-parque-idinstalacion":
+                out.print(getSelectParqueIdInstalacion(entrada));
+                break;
             case "upd-parque":
                 out.print(updParque(entrada.getJSONObject("parque")));
                 break;
@@ -116,6 +119,20 @@ public class ParqueController extends HttpServlet {
         c.ejecutar(query);
         c.cerrar();
         salida.put("estado", "ok");
+        return salida;
+    }
+    
+    private JSONObject getSelectParqueIdInstalacion(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_PARQUES_IDINSTALACION(" + entrada.getInt("idinstalacion") + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDPARQUE", "NOMPARQUE");
+        salida.put("options", options);
+        salida.put("estado", "ok");
+        c.cerrar();
         return salida;
     }
 

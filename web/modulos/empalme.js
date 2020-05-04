@@ -192,6 +192,33 @@ function getSelectBodegasInstalacion() {
     });
 }
 
+function getSelectBodegasInstalacionEdicion(idparque) {
+    var idinstalacion = $('#select-instalacion').val();
+    var datos = {
+        tipo: 'get-select-bodegas-instalacion',
+        idinstalacion: idinstalacion
+    };
+    $.ajax({
+        url: 'ParqueController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-bodega').html(obj.options);
+                $('#select-bodega').val(idparque);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
 function insEmpalme(callback) {
     var idinstalacion = $('#select-instalacion').val();
     var idparque = $('#select-bodega').val();
@@ -257,7 +284,8 @@ function activarEdicion(boton) {
 function armarEmpalme(empalme) {
     ID_EMPALME_EDICION = empalme.idinstalacion;
     $('#select-instalacion').val(empalme.idinstalacion);
-    $('#select-instalacion').change();
+    //$('#select-instalacion').change();
+    getSelectBodegasInstalacionEdicion(empalme.idparque);
     $('#num-empalme').val(empalme.numempalme);
     $('#btn-insert').attr("hidden", "hidden");
     $('#btn-guardar').removeAttr("hidden");

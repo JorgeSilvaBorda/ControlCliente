@@ -26,6 +26,9 @@ public class EmpalmeController extends HttpServlet {
             case "get-select-empalme":
                 out.print(getSelectEmpalme());
                 break;
+            case "get-select-empalme-idparque":
+                out.print(getSelectEmpalmeIdParque(entrada));
+                break;
             case "ins-empalme":
                 out.print(insEmpalme(entrada));
                 break;
@@ -82,6 +85,20 @@ public class EmpalmeController extends HttpServlet {
     private JSONObject getSelectEmpalme() {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_EMPALMES()";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDEMPALME", "NUMEMPALME");
+        salida.put("options", options);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getSelectEmpalmeIdParque(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_EMPALMES_IDPARQUE(" + entrada.getInt("idparque") + ")";
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);

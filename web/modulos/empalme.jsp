@@ -32,8 +32,8 @@
                     <input type="text" class="form-control form-control-sm small" maxlength="200" id="num-empalme" />
                 </div>
                 <div class="form-group">
-                    <button onclick="insEmpalme(getEmpalmes);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
-                    <button onclick="saveEmpalme(getEmpalmes);" hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
+                    <button onclick="existeEmpalmeInstalacion(validarCampos);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
+                    <button onclick="existeEmpalmeInstalacionUpdate(validarCamposUpdate);" hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
                     <button onclick="limpiar();" type="button" class="btn btn-default btn-sm" id="btn-limpiar">Limpiar</button>
                 </div>
             </form>

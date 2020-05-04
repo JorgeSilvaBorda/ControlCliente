@@ -112,8 +112,9 @@ public class EmpalmeController extends HttpServlet {
 
     private JSONObject existeEmpalmeInstalacion(JSONObject entrada) {
         JSONObject salida = new JSONObject();
-        String query = "CALL SP_EXISTE_EMPALME_EN_INSTALACION(" + entrada.getInt("numempalme") + ", " + entrada.getInt("idinstalacion") + ")";
+        String query = "CALL SP_EXISTE_EMPALME_EN_INSTALACION('" + entrada.getString("numempalme") + "', " + entrada.getInt("idinstalacion") + ")";
         Conexion c = new Conexion();
+        System.out.println(query);
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         int cantidad = 0;
@@ -135,7 +136,7 @@ public class EmpalmeController extends HttpServlet {
     }
 
     private JSONObject existeEmpalmeInstalacionUpdate(JSONObject entrada) {
-
+        
         JSONObject salida = new JSONObject();
         String query = "CALL SP_EXISTE_EMPALME_EN_INSTALACION_UPDATE("
                 + "'" + entrada.getString("numempalme") + "', "
@@ -143,6 +144,7 @@ public class EmpalmeController extends HttpServlet {
                 + entrada.getInt("newidinstalacion") + ", "
                 + entrada.getInt("idinstalacion") + ""
                 + ")";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -185,6 +187,7 @@ public class EmpalmeController extends HttpServlet {
         JSONObject empalme = new JSONObject();
         String query = "CALL SP_GET_EMPALME_IDEMPALME(" + idempalme + ")";
         Conexion c = new Conexion();
+        System.out.println(query);
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         try {
@@ -217,6 +220,7 @@ public class EmpalmeController extends HttpServlet {
                 + empalme.getInt("idparque") + ","
                 + "'" + empalme.getString("numempalme") + "')";
         Conexion c = new Conexion();
+        System.out.println(query);
         c.abrir();
         c.ejecutar(query);
         c.cerrar();

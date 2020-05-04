@@ -8,6 +8,8 @@ function existeEmpalmeInstalacion(callback1) {
         idinstalacion: idinstalacion,
         numempalme: numempalme
     };
+    console.log("existeEmpalmeInstalacion()");
+    console.log(datos);
     $.ajax({
         url: 'EmpalmeController',
         type: 'post',
@@ -17,10 +19,11 @@ function existeEmpalmeInstalacion(callback1) {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
+                console.log(obj);
                 if (obj.cantidad > 0) {
                     alert("El número de empalme que desea ingresar ya existe en la instalación.");
                 } else {
-                    callback1(validarCampos);
+                    callback1(true);
                 }
             }
         },
@@ -45,7 +48,7 @@ function existeEmpalmeInstalacionUpdate(callback1) {
         numempalme: EMPALME_EDIT.numempalme,
         newnumempalme: EMPALME_EDIT.newnumempalme
     };
-
+    console.log(datos);
     $.ajax({
         url: 'EmpalmeController',
         type: 'post',
@@ -55,10 +58,11 @@ function existeEmpalmeInstalacionUpdate(callback1) {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
+                console.log(obj);
                 if (obj.cantidad > 0) {
-                    alert("El número de empalme que desea ingresar, ya se encuentra en otra instalación.");
+                    alert("El número de empalme que desea ingresar, ya se encuentra en la instalación seleccionada.");
                 } else {
-                    callback1(validarCamposUpdate);
+                    callback1(true);
                 }
             }
         },
@@ -255,7 +259,7 @@ function insEmpalme(callback) {
 function activarEdicion(boton) {
     var fila = $(boton).parent().parent();
     var idempalme = $(fila).children(0).children(0).val();
-    IDEMPALME_EDICION = idempalme;
+    ID_EMPALME_EDICION = idempalme;
     var datos = {
         tipo: 'get-empalme-idempalme',
         idempalme: idempalme
@@ -282,7 +286,7 @@ function activarEdicion(boton) {
 }
 
 function armarEmpalme(empalme) {
-    ID_EMPALME_EDICION = empalme.idinstalacion;
+    ID_EMPALME_EDICION = empalme.idempalme;
     $('#select-instalacion').val(empalme.idinstalacion);
     //$('#select-instalacion').change();
     getSelectBodegasInstalacionEdicion(empalme.idparque);
@@ -348,6 +352,7 @@ function eliminar(boton) {
                 var obj = JSON.parse(res);
                 if (obj.estado === 'ok') {
                     getEmpalmes();
+                    limpiar();
                 }
             },
             error: function (a, b, c) {

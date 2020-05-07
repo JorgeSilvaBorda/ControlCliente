@@ -48,6 +48,10 @@
         <servlet-name>ParametrosController</servlet-name>
         <servlet-class>controlador.ParametrosController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RedController</servlet-name>
+        <servlet-class>controlador.RedController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UsuarioController</servlet-name>
         <url-pattern>/UsuarioController</url-pattern>
@@ -95,6 +99,10 @@
     <servlet-mapping>
         <servlet-name>ParametrosController</servlet-name>
         <url-pattern>/ParametrosController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RedController</servlet-name>
+        <url-pattern>/RedController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

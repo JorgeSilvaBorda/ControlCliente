@@ -80,6 +80,7 @@ function validarCampos(esvalido) {
     }
     var idinstalacion = $('#select-instalacion').val();
     var idparque = $('#select-bodega').val();
+    var idred = $('#select-red').val();
     var numempalme = $('#num-empalme').val();
 
     if (idinstalacion === '0') {
@@ -88,6 +89,10 @@ function validarCampos(esvalido) {
     }
     if (idparque === '0') {
         alert("Debe seleccionar una bodega del listado.");
+        return false;
+    }
+    if (idred === '0') {
+        alert("Debe seleccionar una red del listado.");
         return false;
     }
     if (numempalme.length < 3) { //Mínimo 3 caracteres para el número del empalme
@@ -103,6 +108,7 @@ function validarCamposUpdate(esvalido) {
     }
     var idinstalacion = $('#select-instalacion').val();
     var idparque = $('#select-bodega').val();
+    var idred = $('#select-red').val();
     var numempalme = $('#num-empalme').val();
 
     if (idinstalacion === '0') {
@@ -111,6 +117,10 @@ function validarCamposUpdate(esvalido) {
     }
     if (idparque === '0') {
         alert("Debe seleccionar una bodega del listado.");
+        return false;
+    }
+    if (idred === '0') {
+        alert("Debe seleccionar una red del listado.");
         return false;
     }
     if (numempalme.length < 3) { //Mínimo 3 caracteres para el número del empalme
@@ -196,6 +206,30 @@ function getSelectBodegasInstalacion() {
     });
 }
 
+function getSelectRed() {
+    var datos = {
+        tipo: 'get-select-red'
+    };
+    $.ajax({
+        url: 'RedController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-red').html(obj.options);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
 function getSelectBodegasInstalacionEdicion(idparque) {
     var idinstalacion = $('#select-instalacion').val();
     var datos = {
@@ -226,12 +260,14 @@ function getSelectBodegasInstalacionEdicion(idparque) {
 function insEmpalme(callback) {
     var idinstalacion = $('#select-instalacion').val();
     var idparque = $('#select-bodega').val();
+    var idred = $('#select-red').val();
     var numempalme = $('#num-empalme').val();
 
     var datos = {
         tipo: 'ins-empalme',
         idinstalacion: idinstalacion,
         idparque: idparque,
+        idred: idred,
         numempalme: numempalme
     };
 
@@ -288,6 +324,7 @@ function activarEdicion(boton) {
 function armarEmpalme(empalme) {
     ID_EMPALME_EDICION = empalme.idempalme;
     $('#select-instalacion').val(empalme.idinstalacion);
+    $('#select-red').val(empalme.idred);
     //$('#select-instalacion').change();
     getSelectBodegasInstalacionEdicion(empalme.idparque);
     $('#num-empalme').val(empalme.numempalme);
@@ -300,6 +337,7 @@ function saveEmpalme(callback) {
     var idempalme = ID_EMPALME_EDICION;
     var idinstalacion = $('#select-instalacion').val();
     var idparque = $('#select-bodega').val();
+    var idred = $('#select-red').val();
     var numempalme = $('#num-empalme').val();
 
     var datos = {
@@ -308,6 +346,7 @@ function saveEmpalme(callback) {
             idempalme: idempalme,
             idinstalacion: idinstalacion,
             idparque: idparque,
+            idred: idred,
             numempalme: numempalme
         }
     };
@@ -369,6 +408,7 @@ function limpiar() {
     EMPALME_EDIT = null;
     $('#num-empalme').val('');
     $('#select-instalacion').val('0');
+    $('#select-red').val('0');
     $('#select-bodega').html('');
     $('#btn-guardar').attr("hidden", "hidden");
     $('#btn-insert').removeAttr("hidden");

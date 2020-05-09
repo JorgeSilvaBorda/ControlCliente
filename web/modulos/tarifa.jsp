@@ -1,6 +1,7 @@
 <script src="modulos/tarifa.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        $('.red-oculto').hide();
         getTarifas();
         getSelectComunas();
         getTarifasConceptos();
@@ -88,6 +89,42 @@
                         </tr>
                     </tbody>
                 </table>
+                <table >
+                    <tbody>
+                        <tr>
+                            <td style="vertical-align: bottom; padding-right: 10px;" >
+                                <div class="form-group">
+                                    <label for="check-red">Dividir Costo / Red</label>
+                                    <input onchange="toggleRed();" type="checkbox" id="check-red" class="checkbox" />
+                                </div>
+                            </td>
+                            <td style="vertical-align: bottom;" class="red-oculto" >
+                                <div class="form-group">
+                                    <label for="btaa">BT_AA</label>
+                                    <input style="font-size: 10px; width: 100px;" type="number" id="btaa" class="form-control form-control-sm" />
+                                </div>
+                            </td>
+                            <td style="vertical-align: bottom;" class="red-oculto">
+                                <div class="form-group">
+                                    <label for="btas">BT_AS</label>
+                                    <input style="font-size: 10px; width: 100px;" type="number" id="btas" class="form-control form-control-sm" />
+                                </div>
+                            </td>
+                            <td style="vertical-align: bottom;" class="red-oculto">
+                                <div class="form-group">
+                                    <label for="btsa">BT_SA</label>
+                                    <input style="font-size: 10px; width: 100px;" type="number" id="btsa" class="form-control form-control-sm" />
+                                </div>
+                            </td>
+                            <td style="vertical-align: bottom;" class="red-oculto">
+                                <div class="form-group">
+                                    <label for="btss">BT_SS</label>
+                                    <input style="font-size: 10px; width: 100px;" type="number" id="btss" class="form-control form-control-sm" />
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </form>
             <div id="contenedor-tarifas-conceptos" class="small">
                 <table id="tabla-tarifas-conceptos" class="table table-sm table-condensed table-striped table-hover small">
@@ -95,6 +132,7 @@
                     <th>Concepto</th>
                     <th>Tarifa</th>
                     <th>Comuna</th>
+                    <th>Red</th>
                     <th>U. Medida</th>
                     <th>$ Neto</th>
                     <th>Acción</th>

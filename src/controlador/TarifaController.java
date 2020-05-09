@@ -89,17 +89,87 @@ public class TarifaController extends HttpServlet {
         String filas = "";
         try {
             while (rs.next()) {
+                String nombreredes = "<td>N/A</td>";
+                String valorredes = "<td><span>" + rs.getString("VALORNETO") + "</span></td>";
+                if(rs.getInt("INCLUYERED") == 1){
+                    nombreredes = "<td>"
+                            + "<table>"
+                            + "<tr><td>BT_AA</td></tr>"
+                            + "<tr><td>BT_AS</td></tr>"
+                            + "<tr><td>BT_SA</td></tr>"
+                            + "<tr><td>BT_SS</td></tr>"
+                            + "</table>"
+                            + "</td>";
+                    valorredes = "<td>"
+                            + "<table>"
+                            + "<tr><td>" + rs.getInt("BTAA") + "</td></tr>"
+                            + "<tr><td>" + rs.getInt("BTAS") + "</td></tr>"
+                            + "<tr><td>" + rs.getInt("BTSA") + "</td></tr>"
+                            + "<tr><td>" + rs.getInt("BTSS") + "</td></tr>"
+                            + "</table>"
+                            + "</td>";
+                }
+
                 filas += "<tr>";
-                filas += "<td><input type='hidden' value='" + rs.getInt("IDCONCEPTO") + "' /><span>" + rs.getString("NOMCONCEPTO") + "</span></td>";
-                filas += "<td><input type='hidden' value='" + rs.getInt("IDTARIFA") + "' /><span>" + rs.getString("NOMTARIFA") + "</span></td>";
-                filas += "<td><input type='hidden' value='" + rs.getInt("IDCOMUNA") + "' /><span>" + rs.getString("NOMCOMUNA") + "</span></td>";
-                filas += "<td><span>" + rs.getString("UNIDADMEDIDA") + "</span></td>";
-                filas += "<td><span>" + rs.getString("VALORNETO") + "</span></td>";
-                filas += "<td style='width:12%'>"
+                filas += "<td style='vertical-align: middle;' ><input type='hidden' value='" + rs.getInt("IDCONCEPTO") + "' /><span>" + rs.getString("NOMCONCEPTO") + "</span></td>";
+                filas += "<td style='vertical-align: middle;' ><input type='hidden' value='" + rs.getInt("IDTARIFA") + "' /><span>" + rs.getString("NOMTARIFA") + "</span></td>";
+                filas += "<td style='vertical-align: middle;' ><input type='hidden' value='" + rs.getInt("IDCOMUNA") + "' /><span>" + rs.getString("NOMCOMUNA") + "</span></td>";
+                
+                filas += nombreredes;
+                filas += "<td style='vertical-align: middle;' ><span>" + rs.getString("UNIDADMEDIDA") + "</span></td>";
+                filas += valorredes;
+                filas += "<td style='width:12%;vertical-align: middle;'>"
                         + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicionConcepto(this)'>Editar</button>"
                         + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminarConcepto(this)'>Eliminar</button>"
                         + "</td>";
                 filas += "</tr>";
+                /*
+                if (rs.getInt("INCLUYERED") == 0) {
+                    filas += "<tr>";
+                    filas += "<td><input type='hidden' value='" + rs.getInt("IDCONCEPTO") + "' /><span>" + rs.getString("NOMCONCEPTO") + "</span></td>";
+                    filas += "<td><input type='hidden' value='" + rs.getInt("IDTARIFA") + "' /><span>" + rs.getString("NOMTARIFA") + "</span></td>";
+                    filas += "<td><input type='hidden' value='" + rs.getInt("IDCOMUNA") + "' /><span>" + rs.getString("NOMCOMUNA") + "</span></td>";
+                    filas += "<td><span>N/A</span></td>";
+                    filas += "<td><span>" + rs.getString("UNIDADMEDIDA") + "</span></td>";
+                    filas += "<td><span>" + rs.getString("VALORNETO") + "</span></td>";
+                    filas += "<td style='width:12%'>"
+                            + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicionConcepto(this)'>Editar</button>"
+                            + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminarConcepto(this)'>Eliminar</button>"
+                            + "</td>";
+                    filas += "</tr>";
+                } else {
+                    filas += "<tr>";
+                    filas += "<td rowspan='4' style='vertical-align: middle;' ><input type='hidden' value='" + rs.getInt("IDCONCEPTO") + "' /><span>" + rs.getString("NOMCONCEPTO") + "</span></td>";
+                    filas += "<td rowspan='4' style='vertical-align: middle;' ><input type='hidden' value='" + rs.getInt("IDTARIFA") + "' /><span>" + rs.getString("NOMTARIFA") + "</span></td>";
+                    filas += "<td rowspan='4' style='vertical-align: middle;' ><input type='hidden' value='" + rs.getInt("IDCOMUNA") + "' /><span>" + rs.getString("NOMCOMUNA") + "</span></td>";
+                    filas += "<td>BT_AA</td>";
+                    filas += "<td rowspan='4' style='vertical-align: middle;' ><span>" + rs.getString("UNIDADMEDIDA") + "</span></td>";
+                    filas += "<td>" + rs.getString("BTAA") + "</td>";
+                    filas += "<td rowspan='4' style='vertical-align: middle;' style='width:12%'>"
+                            + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicionConcepto(this)'>Editar</button>"
+                            + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminarConcepto(this)'>Eliminar</button>"
+                            + "</td>";
+                    filas += "</tr>";
+
+                    filas += "<tr>"
+                            + "<td>BT_AS</td>"
+                            + "<td>" + rs.getString("BTAS") + "</td>"
+                            + "</tr>";
+
+                    filas += "<tr>"
+                            + "<td>BT_SA</td>"
+                            + "<td>" + rs.getString("BTSA") + "</td>"
+                            + "</tr>";
+
+                    filas += "<tr>"
+                            + "<td>BT_SS</td>"
+                            + "<td>" + rs.getString("BTSS") + "</td>"
+                            + "</tr>";
+
+                }
+                */
+                //filas += "<td><input type='hidden' value='" + /*rs.getInt("IDCOMUNA") +*/ "' /><span>" + /*rs.getString("NOMCOMUNA") +*/ "</span>N/A</td>";
+
             }
             salida.put("tabla", filas);
             salida.put("estado", "ok");
@@ -142,13 +212,19 @@ public class TarifaController extends HttpServlet {
     }
 
     private JSONObject insTarifaConcepto(JSONObject entrada) {
+        JSONObject redes = entrada.getJSONObject("redes");
         JSONObject salida = new JSONObject();
         String query = "CALL SP_INS_TARIFA_CONCEPTO("
                 + entrada.getInt("idtarifa") + ", "
                 + entrada.getInt("idcomuna") + ", "
                 + "'" + entrada.getString("nomconcepto") + "', "
                 + "'" + entrada.getString("umedida") + "', "
-                + entrada.getBigDecimal("valorneto")
+                + entrada.getBigDecimal("valorneto") + ", "
+                + redes.getInt("incluyered") + ", "
+                + redes.getInt("btaa") + ", "
+                + redes.getInt("btas") + ", "
+                + redes.getInt("btsa") + ", "
+                + redes.getInt("btss")
                 + ")";
         Conexion c = new Conexion();
         c.abrir();
@@ -200,6 +276,11 @@ public class TarifaController extends HttpServlet {
                 concepto.put("nomconcepto", rs.getString("NOMCONCEPTO"));
                 concepto.put("umedida", rs.getString("UNIDADMEDIDA"));
                 concepto.put("valorneto", rs.getBigDecimal("VALORNETO"));
+                concepto.put("incluyered", rs.getInt("INCLUYERED"));
+                concepto.put("btaa", rs.getInt("BTAA"));
+                concepto.put("btas", rs.getInt("BTAS"));
+                concepto.put("btsa", rs.getInt("BTSA"));
+                concepto.put("btss", rs.getInt("BTSS"));
             }
             salida.put("concepto", concepto);
             salida.put("estado", "ok");
@@ -228,6 +309,7 @@ public class TarifaController extends HttpServlet {
     }
 
     private JSONObject updConcepto(JSONObject concepto) {
+        JSONObject redes = concepto.getJSONObject("redes");
         JSONObject salida = new JSONObject();
         String query = "CALL SP_UPD_CONCEPTO("
                 + concepto.getInt("idconcepto") + ","
@@ -235,7 +317,14 @@ public class TarifaController extends HttpServlet {
                 + concepto.getInt("idcomuna") + ","
                 + "'" + concepto.getString("nomconcepto") + "',"
                 + "'" + concepto.getString("umedida") + "',"
-                + "'" + concepto.getBigDecimal("valorneto") + "')";
+                + concepto.getBigDecimal("valorneto") + ", "
+                + redes.getInt("incluyered") + ","
+                + redes.getInt("btaa") + ","
+                + redes.getInt("btas") + ","
+                + redes.getInt("btsa") + ","
+                + redes.getInt("btss")
+                + ")";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);
@@ -243,7 +332,7 @@ public class TarifaController extends HttpServlet {
         salida.put("estado", "ok");
         return salida;
     }
-    
+
     private JSONObject delConcepto(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_DEL_CONCEPTO(" + entrada.getInt("idconcepto") + ")";

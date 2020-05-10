@@ -170,6 +170,41 @@ function saveCliente(callback) {
     });
 }
 
+function eliminar(boton) {
+    var fila = $(boton).parent().parent();
+    var idcliente = $(fila).children(0).children(0).val();
+
+    if (confirm("Está seguro de que desea eliminar el cliente seleccionado?")) {
+        
+        var datos = {
+            tipo: 'del-cliente',
+            cliente: {
+                idcliente: idcliente
+            }
+        };
+        
+        $.ajax({
+            url: 'ClienteController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (res) {
+                var obj = JSON.parse(res);
+                if (obj.estado === 'ok') {
+                    limpiar();
+                    callback();
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            }
+        });
+    }
+}
+
 function limpiar() {
     ID_CLIENTE_EDICION = null;
     $('#rut-cliente').val('');

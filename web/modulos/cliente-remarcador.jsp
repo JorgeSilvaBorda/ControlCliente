@@ -46,51 +46,74 @@
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <form class="form small"  role="form">
-                <div class="form-group">
-                    <label for="select-cliente" >Cliente</label>
-                    <select onchange="getRemarcadoresAsignadosIdCliente($(this).val())" class="form-control form-control-sm small" id="select-cliente" >
-                    </select>
+            <div class="card">
+                <div class="card-header">
+                    <strong>Búsqueda</strong>
                 </div>
-                <div class="form-group">
-                    <button type="button" onclick="verAsignados();" class="btn btn-outline-primary" id="btn-mostrar-asignados">Ver todos los remarcadores asignados</button>
+                <div class="card-body">
+                    <form class="form small"  role="form">
+                        <div class="form-group">
+                            <label for="select-cliente" >Cliente</label>
+                            <select onchange="getRemarcadoresAsignadosIdCliente($(this).val())" class="form-control form-control-sm small" id="select-cliente" >
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" onclick="verAsignados();" class="btn btn-outline-info" id="btn-mostrar-asignados">Ver todos los remarcadores asignados</button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
 
-        <div class="col-sm-7">
-            <h4>Remarcadores sin asignar</h4>
-            <table id="tabla-remarcadores-libres" class="table table-condensed table-borderless table-striped table-hover table-sm small">
-                <thead>
-                    <tr>
-                        <th>ID Remarcador</th>
-                        <th># Empalme</th>
-                        <th>Bodega</th>
-                        <th>Módulos</th>
-                        <th>Instalacion</th>
-                        <th>Asignar</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <div class="col-sm-9">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Remarcadores sin asignar</strong>
+                </div>
+                <div class="card-body">
+                    <table id="tabla-remarcadores-libres" class="table table-condensed table-borderless table-striped table-hover table-sm small">
+                        <thead>
+                            <tr>
+                                <th>ID Remarcador</th>
+                                <th># Empalme</th>
+                                <th>Bodega</th>
+                                <th>Módulos</th>
+                                <th>Instalacion</th>
+                                <th>Asignar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                </tbody>
-            </table>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
+    <br />
     <div class='row'>
         <div class='col-sm-12'>
-            <table id='tabla-cliente-remarcador' class="table table-condensed table-borderless table-striped table-hover table-sm small">
-                <thead>
-                    <tr>
-                        <th>ID Remarcador</th>
-                        <th>Empalme</th>
-                        <th>Bodega</th>
-                        <th>Instalación</th>
-                        <th>Fecha Asignación</th>
-                        <th>Quitar</th>
-                    </tr>
-                </thead>
-            </table>
+            <div class="card">
+                <div class="card-header">
+                    <strong>Remarcadores asignados al Cliente seleccionado</strong>
+                </div>
+                <div class="card-body">
+                    <table id='tabla-cliente-remarcador' class="table table-condensed table-borderless table-striped table-hover table-sm small">
+                        <thead>
+                            <tr>
+                                <th>ID Remarcador</th>
+                                <th>Empalme</th>
+                                <th>Bodega</th>
+                                <th>Instalación</th>
+                                <th>Fecha Asignación</th>
+                                <th>Quitar</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

@@ -105,7 +105,9 @@
                             </ul>
                             <ul class="navbar-nav ml-md-auto">
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown">Usuario</a>
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown">
+                                        <% out.print(session.getAttribute("nombres") + " " + session.getAttribute("appaterno")); %>
+                                    </a>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                                         <a class="dropdown-item" onclick="salir();" href="#">Salir</a> 
                                         <div class="dropdown-divider"></div> 

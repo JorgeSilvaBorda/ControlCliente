@@ -193,7 +193,7 @@ function eliminar(boton) {
                 var obj = JSON.parse(res);
                 if (obj.estado === 'ok') {
                     limpiar();
-                    callback();
+                    getClientes();
                 }
             },
             error: function (a, b, c) {

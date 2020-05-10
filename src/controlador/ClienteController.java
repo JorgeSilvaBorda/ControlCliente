@@ -62,7 +62,7 @@ public class ClienteController extends HttpServlet {
                 filas += "<td>" + rs.getString("CARGO") + "</td>";
                 filas += "<td>" + rs.getInt("FONO") + "</td>";
                 filas += "<td>" + rs.getString("EMAIL") + "</td>";
-                filas += "<td style='width: 15%;'>"
+                filas += "<td style='width: 10%;'>"
                         + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
                         + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>"
                         + "</td>";

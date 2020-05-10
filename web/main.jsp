@@ -45,18 +45,6 @@
                         </button> <a class="navbar-brand" href="#">Bodenor</a>
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="navbar-nav">
-                                <!-- Usuario -->
-                                <!--
-                                <li class='nav-item dropdown'>
-                                    <a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Reportes</a>
-                                    <div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>
-                                        <a onclick='cargarModulo("emision-boleta");' class='dropdown-item' href='#'>Emisión Boleta</a> 
-                                        <a onclick='cargarModulo("consumo-cliente-remarcador");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> 
-                                        <a onclick='cargarModulo("consumo-total-cliente");' class='dropdown-item' href='#'>Consumo Total Cliente</a> 
-                                    </div>
-                                </li>
-                                -->
-
                                 <%
                                     String idtipousuario = session.getAttribute("idtipousuario").toString();
                                     if (idtipousuario != null) {

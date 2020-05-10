@@ -76,6 +76,33 @@ function getSelectEmpalmeIdParque(idparque) {
     });
 }
 
+function getSelectEmpalmeIdParqueAutoSelect(idparque, valautoselect) {
+    var datos = {
+        tipo: 'get-select-empalme-idparque',
+        idparque: idparque
+    };
+    $.ajax({
+        url: 'EmpalmeController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-empalme').html('');
+                $('#select-empalme').html(obj.options);
+                $('#select-empalme').val(valautoselect);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
 function getSelectBodegaIdInstalacion(idinstalacion) {
     var datos = {
         tipo: 'get-select-parque-idinstalacion',
@@ -92,6 +119,33 @@ function getSelectBodegaIdInstalacion(idinstalacion) {
             if (obj.estado === 'ok') {
                 $('#select-parque').html('');
                 $('#select-parque').html(obj.options);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function getSelectBodegaIdInstalacionAutoSelect(idinstalacion, valautoselect) {
+    var datos = {
+        tipo: 'get-select-parque-idinstalacion',
+        idinstalacion: idinstalacion
+    };
+    $.ajax({
+        url: 'ParqueController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-parque').html('');
+                $('#select-parque').html(obj.options);
+                $('#select-parque').val(valautoselect);
             }
         },
         error: function (a, b, c) {
@@ -181,7 +235,9 @@ function activarEdicion(boton) {
             console.log(obj);
             if (obj.estado === 'ok') {
                 armarRemarcador(obj.remarcador);
-                $('#select-parque').html(obj.remarcador.idparque);
+                $('#select-instalacion').val(obj.remarcador.idinstalacion);
+                getSelectBodegaIdInstalacionAutoSelect(obj.remarcador.idinstalacion, obj.remarcador.idparque);
+                getSelectEmpalmeIdParqueAutoSelect(obj.remarcador.idparque, obj.remarcador.idempalme);
             }
         },
         error: function (a, b, c) {

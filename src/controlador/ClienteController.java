@@ -26,6 +26,9 @@ public class ClienteController extends HttpServlet {
             case "get-select-clientes":
                 out.print(getSelectClientes());
                 break;
+            case "get-select-clientes-nombre":
+                out.print(getSelectClientesNombre());
+                break;
             case "ins-cliente":
                 out.print(insCliente(entrada));
                 break;
@@ -156,6 +159,19 @@ public class ClienteController extends HttpServlet {
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDCLIENTE", "RAZONCLIENTE");
+        c.cerrar();
+        salida.put("estado", "ok");
+        salida.put("options", options);
+        return salida;
+    }
+
+    private JSONObject getSelectClientesNombre() {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_SELECT_CLIENTES()";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDCLIENTE", "NOMCLIENTE");
         c.cerrar();
         salida.put("estado", "ok");
         salida.put("options", options);

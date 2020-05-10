@@ -102,39 +102,14 @@
                                         }
                                     }
                                 %>
-
-                                <!-- /Usuario -->
-                                <!-- Admin -->
-                                <!--
-                                <li class='nav-item dropdown'>
-                                    <a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Operaciones</a>
-                                    <div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>
-                                        <a class='dropdown-item' onclick='cargarModulo("cliente-remarcador");' href='#'>Asignar remarcador a cliente</a> 
-                                    </div>
-                                </li>
-                                <li class='nav-item dropdown'>
-                                    <a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown' >Mantenedores</a>
-                                    <div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>
-                                        <a class='dropdown-item' onclick='cargarModulo("usuario");' href='#'>Usuario</a> 
-                                        <div class='dropdown-divider'></div> 
-                                        <a class='dropdown-item' onclick='cargarModulo("instalacion");' href='#'>Instalación</a> 
-                                        <a class='dropdown-item' onclick='cargarModulo("parque");' href='#'>Bodega</a>
-                                        <a class='dropdown-item' onclick='cargarModulo("empalme");' href='#'>Empalme</a>
-                                        <a class='dropdown-item' onclick='cargarModulo("remarcador");' href='#'>Remarcador</a>
-                                        <a class='dropdown-item' onclick='cargarModulo("cliente");' href='#'>Cliente</a>
-                                        <a class='dropdown-item' onclick='cargarModulo("tarifa");' href='#'>Tarifa</a>
-                                    </div>
-                                </li>
-                                -->
                             </ul>
-                            <!-- /Admin -->
                             <ul class="navbar-nav ml-md-auto">
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown">Usuario</a>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                                        <a class="dropdown-item" href="#">Cerrar Sesión</a> 
+                                        <a class="dropdown-item" onclick="salir();" href="#">Salir</a> 
                                         <div class="dropdown-divider"></div> 
-                                        <a class="dropdown-item" href="#">Cambiar Contraseña</a> 
+                                        <a onclick="cargarModulo('cambio-pass');" class="dropdown-item" href="#">Cambiar Contraseña</a> 
                                     </div>
                                 </li>
                             </ul>

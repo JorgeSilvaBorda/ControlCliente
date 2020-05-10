@@ -21,11 +21,11 @@ public class UsuarioController extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         JSONObject entrada = new JSONObject(request.getParameter("datos"));
         switch (entrada.getString("tipo")) {
-            /*
-            case "login":
-                out.print(loginUsuario(entrada.getJSONObject("usuario"), request));
+            
+            case "salir":
+                request.getSession().invalidate();
+                out.print("salida");
                 break;
-                */
             case "get-usuarios":
                 out.print(getUsuarios());
                 break;
@@ -298,7 +298,7 @@ public class UsuarioController extends HttpServlet {
     public JSONObject cambioPass(String rutfull, String passAnterior, String passNueva, HttpServletRequest request) {
         JSONObject salida = new JSONObject();
         JSONObject credenciales = new JSONObject();
-        credenciales.put("rutusuario", rutfull.substring(0, rutfull.length() - 1));
+        credenciales.put("rut", rutfull.substring(0, rutfull.length() - 1));
         credenciales.put("password", passAnterior);
         JSONObject login = loginUsuario(credenciales, request);
         if (login.getInt("filas") > 0) {

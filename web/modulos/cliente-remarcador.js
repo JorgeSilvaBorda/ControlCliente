@@ -137,3 +137,33 @@ function quitar(idremarcador, idcliente) {
         }
     });
 }
+
+function verAsignados(){
+    var datos = {
+        tipo: 'get-remarcadores-asignados'
+    };
+    $.ajax({
+        url: 'RemarcadorController',
+        type: 'post',
+        data:{
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#modal-title').html("Remarcadores asignados");
+                
+                $('.dataTable#tabla-remarcadores-asignados').DataTable().destroy();
+                $('#modal-body').html(obj.tabla);
+                $('#tabla-remarcadores-asignados').DataTable(OPCIONES_DATATABLES);
+                $('#modal').modal('show');
+                
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}

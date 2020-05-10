@@ -115,7 +115,7 @@ function validarCampos() {
         alert("Debe seleccionar una bodega.");
         return false;
     }
-    if (numremarcador.length > 1) {
+    if (numremarcador.length < 1) {
         alert("Debe indicar un número de remarcador válido (Largo mínimo 1).");
         return false;
     }

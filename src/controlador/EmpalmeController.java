@@ -113,7 +113,10 @@ public class EmpalmeController extends HttpServlet {
 
     private JSONObject existeEmpalmeInstalacion(JSONObject entrada) {
         JSONObject salida = new JSONObject();
-        String query = "CALL SP_EXISTE_EMPALME_EN_INSTALACION('" + entrada.getString("numempalme") + "', " + entrada.getInt("idinstalacion") + ")";
+        String query = "CALL SP_EXISTE_EMPALME_EN_INSTALACION("
+                + "'" + entrada.getString("numempalme") + "', "
+                + entrada.getInt("idparque") + ", "
+                + entrada.getInt("idinstalacion") + ")";
         Conexion c = new Conexion();
         System.out.println(query);
         c.abrir();
@@ -140,10 +143,10 @@ public class EmpalmeController extends HttpServlet {
         
         JSONObject salida = new JSONObject();
         String query = "CALL SP_EXISTE_EMPALME_EN_INSTALACION_UPDATE("
-                + "'" + entrada.getString("numempalme") + "', "
+                + entrada.getInt("idempalme") + ", "
                 + "'" + entrada.getString("newnumempalme") + "', "
-                + entrada.getInt("newidinstalacion") + ", "
-                + entrada.getInt("idinstalacion") + ""
+                + entrada.getInt("newidparque") + ", "
+                + entrada.getInt("newidinstalacion")
                 + ")";
         System.out.println(query);
         Conexion c = new Conexion();

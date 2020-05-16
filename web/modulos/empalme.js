@@ -3,13 +3,14 @@ var EMPALME_EDIT = null;
 function existeEmpalmeInstalacion(callback1) {
     var numempalme = $('#num-empalme').val();
     var idinstalacion = $('#select-instalacion').val();
+    var idparque = $('#select-bodega').val();
     var datos = {
         tipo: 'existe-empalme-instalacion',
         idinstalacion: idinstalacion,
+        idparque: idparque,
         numempalme: numempalme
     };
-    console.log("existeEmpalmeInstalacion()");
-    console.log(datos);
+
     $.ajax({
         url: 'EmpalmeController',
         type: 'post',
@@ -21,7 +22,7 @@ function existeEmpalmeInstalacion(callback1) {
             if (obj.estado === 'ok') {
                 console.log(obj);
                 if (obj.cantidad > 0) {
-                    alert("El número de empalme que desea ingresar ya existe en la instalación.");
+                    alert("El número de empalme que desea ingresar ya existe en la instalación asociado a la bodega selecionada.");
                 } else {
                     callback1(true);
                 }
@@ -38,15 +39,13 @@ function existeEmpalmeInstalacion(callback1) {
 function existeEmpalmeInstalacionUpdate(callback1) {
     var idinstalacion = $('#select-instalacion').val();
     var newnumempalme = $('#num-empalme').val();
-    EMPALME_EDIT.newidinstalacion = idinstalacion;
-    EMPALME_EDIT.newnumempalme = newnumempalme;
+    var idparque = $('#select-bodega').val();
     var datos = {
         tipo: 'existe-empalme-instalacion-update',
         idempalme: ID_EMPALME_EDICION,
         newidinstalacion: idinstalacion,
-        idinstalacion: EMPALME_EDIT.idinstalacion,
-        numempalme: EMPALME_EDIT.numempalme,
-        newnumempalme: EMPALME_EDIT.newnumempalme
+        newidparque: idparque,
+        newnumempalme: newnumempalme
     };
     console.log(datos);
     $.ajax({
@@ -60,7 +59,7 @@ function existeEmpalmeInstalacionUpdate(callback1) {
             if (obj.estado === 'ok') {
                 console.log(obj);
                 if (obj.cantidad > 0) {
-                    alert("El número de empalme que desea ingresar, ya se encuentra en la instalación seleccionada.");
+                    alert("El número de empalme que desea ingresar, ya se encuentra en la instalación seleccionada asociada a la bodega indicada.");
                 } else {
                     callback1(true);
                 }

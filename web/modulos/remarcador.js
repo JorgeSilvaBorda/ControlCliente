@@ -201,7 +201,7 @@ function insRemarcador(callback) {
             success: function (res) {
                 var obj = JSON.parse(res);
                 if (obj.estado === 'ok') {
-                    limpiar();
+                    limpiarAfterInsert();
                     callback();
                 }
             },
@@ -299,10 +299,19 @@ function armarRemarcador(remarcador) {
 
 function limpiar() {
     ID_REMARCADOR_EDICION = null;
+    $('#select-instalacion').val('0');
     $('#num-remarcador').val('');
-    $('#select-empalme').val('0');
+    $('#select-empalme').html('');
     $('#modulos').val('');
     $('#select-parque').html('');
+    $('#btn-guardar').attr("hidden", "hidden");
+    $('#btn-insert').removeAttr("hidden");
+}
+
+function limpiarAfterInsert() {
+    ID_REMARCADOR_EDICION = null;
+    $('#num-remarcador').val('');
+    $('#modulos').val('');
     $('#btn-guardar').attr("hidden", "hidden");
     $('#btn-insert').removeAttr("hidden");
 }

@@ -40,15 +40,17 @@ function buscar(idcliente) {
         },
         success: function (resp) {
             GRAFICO.destroy();
-            console.log(resp);
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
                 $('.loader').fadeOut(500);
-                for(var i in obj.data.datasets){
-                    obj.data.datasets[i].borderColor = colorDinamico();
+                for (var i in obj.data.datasets) {
+                    var color = colorDinamicoArr();
+                    obj.data.datasets[i].borderColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] +  ", 1.0)";
+                    obj.data.datasets[i].backgroundColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] +  ", 0.3)";
                 }
+                console.log(obj.data.datasets);
                 GRAFICO = new Chart(document.getElementById("line-chart"), {
-                    type: 'line',
+                    type: 'bar',
                     data: obj.data,
                     options: {
                         title: {
@@ -57,7 +59,7 @@ function buscar(idcliente) {
                         }
                     }
                 });
-                
+
             }
         },
         error: function (a, b, c) {

@@ -160,4 +160,9 @@ public class Util {
         }
         return capitalizada.trim();
     }
+    
+    public static String invertirFecha(String fecha){
+        String[] campos = fecha.split("-");
+        return campos[2] + "-" + campos[1] + "-" + campos[0];
+    }
 }

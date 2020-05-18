@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.Conexion;
+import modelo.Util;
 
 public class ReportesController extends HttpServlet {
 
@@ -52,10 +53,7 @@ public class ReportesController extends HttpServlet {
             JSONObject dataset = new JSONObject();
             dataset.put("data", datasetData);
             dataset.put("label", "Remarcador ID: " + entrada.getInt("numremarcador"));
-            dataset.put("borderColor", "#3e95cd");
-            dataset.put("pointRadius", 1);
-            dataset.put("pointHoverRadius", 2);
-            dataset.put("fill", "false");
+            dataset.put("borderWidth", "2");
             datasets.put(dataset);
             JSONObject data = new JSONObject();
             data.put("labels", labels);
@@ -88,7 +86,7 @@ public class ReportesController extends HttpServlet {
         ResultSet rs = c.ejecutarQuery(query);
         try {
             while (rs.next()) {
-                labels.put(rs.getString("FECHA"));
+                labels.put(Util.invertirFecha(rs.getString("FECHA")));
                 fechas.add(rs.getString("FECHA"));
             }
         } catch (JSONException | SQLException ex) {
@@ -131,9 +129,7 @@ public class ReportesController extends HttpServlet {
         JSONObject dataset = new JSONObject();
 
         dataset.put("label", "Remarcador ID: " + numremarcador);
-        dataset.put("pointRadius", 2);
-        dataset.put("pointHoverRadius", 3);
-        dataset.put("fill", "false");
+        dataset.put("borderWidth", "2");
         JSONArray data = new JSONArray();
 
         for (String fecha : fechas) {

@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <form class="form small"  role="form">
                 <div class="form-group">
                     <label for="select-cliente" >Cliente</label>
@@ -29,6 +29,18 @@
             </form>
             <div class='col-md-12 float-sm-left small' id="detalle-remarcador">
 
+            </div>
+        </div>
+        <div class="col-sm-1">
+            <div class="loader" style="display: none;"><!-- Contenedor del Spinner -->
+                <br />
+                <div class="ldio-sa9px9nknjc"> <!-- El Spinner -->
+                    <div>
+                    </div>
+                    <div>
+                        <div></div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-8">

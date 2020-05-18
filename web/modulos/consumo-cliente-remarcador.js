@@ -110,6 +110,7 @@ function armarDetalleRemarcador(remarcador){
 
 function graficar(idremarcador) {
     getDatosRemarcador();
+    $('.loader').fadeIn(500);
     var idcliente = $('#select-cliente').val();
     var numremarcador = $("#select-remarcador option:selected").text();
     var datos = {
@@ -126,8 +127,14 @@ function graficar(idremarcador) {
             datos: JSON.stringify(datos)
         },
         success: function (resp) {
+            $('.loader').fadeOut(500);
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
+                for (var i in obj.data.datasets) {
+                    var color = colorDinamicoArr();
+                    obj.data.datasets[i].borderColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] +  ", 1.0)";
+                    obj.data.datasets[i].backgroundColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] +  ", 0.3)";
+                }
                 GRAFICO.destroy();
                 GRAFICO = new Chart(document.getElementById("grafico"), {
                     type: 'bar',

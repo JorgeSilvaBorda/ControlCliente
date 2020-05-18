@@ -1,3 +1,5 @@
+var GRAFICO = new Chart(document.getElementById("line-chart"));
+
 function getSelectClientes() {
     var datos = {
         tipo: 'get-select-clientes'
@@ -126,8 +128,8 @@ function graficar(idremarcador) {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
-                
-                new Chart(document.getElementById("grafico"), {
+                GRAFICO.destroy();
+                GRAFICO = new Chart(document.getElementById("grafico"), {
                     type: 'bar',
                     data: obj.data,
                     options: {

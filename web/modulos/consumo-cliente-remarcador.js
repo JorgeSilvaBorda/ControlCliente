@@ -2,7 +2,7 @@ var GRAFICO = new Chart(document.getElementById("line-chart"));
 
 function getSelectClientes() {
     var datos = {
-        tipo: 'get-select-clientes'
+        tipo: 'get-select-clientes-nombre'
     };
 
     $.ajax({

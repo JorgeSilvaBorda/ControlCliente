@@ -179,7 +179,7 @@ function eliminar(boton) {
         idparque: idparque
     };
 
-    if (confirm("Está seguro que desea eliminar el parque seleccionado?")) {
+    if (confirm("Está seguro que desea eliminar la bodega seleccionada?")) {
         $.ajax({
             url: 'ParqueController',
             type: 'post',

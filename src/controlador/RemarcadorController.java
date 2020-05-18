@@ -177,6 +177,7 @@ public class RemarcadorController extends HttpServlet {
         JSONObject salida = new JSONObject();
         JSONObject remarcador = new JSONObject();
         String query = "CALL SP_GET_REMARCADOR_IDREMARCADOR(" + idremarcador + ")";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -228,6 +229,7 @@ public class RemarcadorController extends HttpServlet {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_SELECT_REMARCADORES_CLIENTE(" + entrada.getInt("idcliente") + ")";
         Conexion c = new Conexion();
+        System.out.println(query);
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
 

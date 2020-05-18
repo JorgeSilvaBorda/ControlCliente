@@ -1,6 +1,8 @@
+var GRAFICO = new Chart(document.getElementById("line-chart"));
+
 function getSelectClientes() {
     var datos = {
-        tipo: 'get-select-clientes'
+        tipo: 'get-select-clientes-nombre'
     };
 
     $.ajax({
@@ -24,6 +26,7 @@ function getSelectClientes() {
 }
 
 function buscar(idcliente) {
+    $('.loader').fadeIn(500);
     var datos = {
         tipo: 'resumen-mes-cliente',
         idcliente: idcliente
@@ -36,13 +39,15 @@ function buscar(idcliente) {
             datos: JSON.stringify(datos)
         },
         success: function (resp) {
+            GRAFICO.destroy();
             console.log(resp);
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
+                $('.loader').fadeOut(500);
                 for(var i in obj.data.datasets){
                     obj.data.datasets[i].borderColor = colorDinamico();
                 }
-                new Chart(document.getElementById("line-chart"), {
+                GRAFICO = new Chart(document.getElementById("line-chart"), {
                     type: 'line',
                     data: obj.data,
                     options: {

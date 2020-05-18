@@ -55,7 +55,7 @@ function getDatosRemarcador() {
         tipo: 'get-remarcador-idremarcador',
         idremarcador: idremarcador
     };
-
+    console.log(datos);
     $.ajax({
         url: 'RemarcadorController',
         type: 'post',
@@ -126,6 +126,7 @@ function graficar(idremarcador) {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
+                
                 new Chart(document.getElementById("grafico"), {
                     type: 'bar',
                     data: obj.data,

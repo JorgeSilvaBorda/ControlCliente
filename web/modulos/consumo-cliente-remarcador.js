@@ -1,4 +1,4 @@
-var GRAFICO = new Chart(document.getElementById("line-chart"));
+var GRAFICO = new Chart(document.getElementById("grafico"));
 
 function getSelectClientes() {
     var datos = {

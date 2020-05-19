@@ -36,11 +36,17 @@ public class RemarcadorController extends HttpServlet {
             case "get-select-remarcadores-cliente":
                 out.print(getSelectRemarcadoresCliente(entrada));
                 break;
+            case "get-select-remarcador-idempalme":
+                out.print(getSelectRemarcadorIdEmpalme(entrada));
+                break;
             case "ins-remarcador":
                 out.print(insRemarcador(entrada));
                 break;
             case "get-remarcador-idremarcador":
                 out.print(getRemarcadorIdRemarcador(entrada));
+                break;
+            case "get-registros-mes-remarcador":
+                out.print(getRegistrosMesRemarcador(entrada));
                 break;
             case "upd-remarcador":
                 out.print(updRemarcador(entrada.getJSONObject("remarcador")));
@@ -83,7 +89,7 @@ public class RemarcadorController extends HttpServlet {
         c.cerrar();
         return salida;
     }
-    
+
     private JSONObject getRemarcadoresIdEmpalme(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         JSONArray ides = new JSONArray();
@@ -92,7 +98,7 @@ public class RemarcadorController extends HttpServlet {
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         String filas = "";
-        
+
         String tabla = "<table style='font-size: 12px;' id='tabla-remarcadores-empalme' class='table table-borderless table-condensed table-sm'>";
         tabla += "<caption style='caption-side:top;'><h5>Remarcadores en el Empalme Nº: " + entrada.getString("numempalme") + "</h5></caption>";
         tabla += "<thead><tr>";
@@ -133,6 +139,19 @@ public class RemarcadorController extends HttpServlet {
             salida.put("estado", "error");
             salida.put("error", ex);
         }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getSelectRemarcadorIdEmpalme(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_REMARCADORES_IDEMPALME(" + entrada.getInt("idempalme") + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDREMARCADOR", "NUMREMARCADOR");
+        salida.put("options", options);
+        salida.put("estado", "ok");
         c.cerrar();
         return salida;
     }
@@ -257,6 +276,64 @@ public class RemarcadorController extends HttpServlet {
             salida.put("estado", "ok");
         } catch (JSONException | SQLException ex) {
             System.out.println("Problemas en controlador.RemarcadorController.getRemarcadorIdRemarcador().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject getRegistrosMesRemarcador(JSONObject entrada) {
+        
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_REGISTROS_MES_REMARCADOR(" 
+                + entrada.getInt("idremarcador") + ", " 
+                + entrada.getInt("messolo") + ", "
+                + entrada.getInt("aniosolo")
+                + ")";
+        Conexion c = new Conexion();
+        System.out.println(query);
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String filas = "";
+        String tabla = "<table style='font-size: 10px;' id='tabla-detalle-remarcador' class='table table-bordered table-hover table-sm small'>";
+        tabla += "<thead><tr>";
+        tabla += "<th>TIMESTAMP</th>";
+        tabla += "<th>FECHA</th>";
+        tabla += "<th>AÑO</th>";
+        tabla += "<th>MES</th>";
+        tabla += "<th>DIA</th>";
+        tabla += "<th>HORA</th>";
+        tabla += "<th>ITEM95</th>";
+        tabla += "<th>ITEM96</th>"; 
+        //tabla += "<th>CONSUMO</th>"; 
+        tabla += "</tr></thead><tbody>";
+        int cont = 0;
+        try {
+            while (rs.next()) {
+                filas += "<tr>";
+                filas += "<td><span>" + rs.getString("TIMESTAMP") + "</span></td>";
+                filas += "<td><span>" + rs.getString("FECHA") + "</span></td>";
+                filas += "<td><span>" + rs.getString("ANIO") + "</span></td>";
+                filas += "<td><span>" + rs.getString("MES") + "</span></td>";
+                filas += "<td><span>" + rs.getString("DIA") + "</span></td>";
+                filas += "<td><span>" + rs.getString("HORA") + "</span></td>";
+                filas += "<td><span>" + rs.getString("ITEM95") + "</span></td>";
+                filas += "<td><span>" + rs.getString("ITEM96") + "</span></td>";
+                //filas += "<td><span>" + rs.getString("CONSUMO") + "</span></td>";
+                filas += "</tr>";
+                cont ++;
+                System.out.println("Fila: " + cont);
+            }
+            tabla += filas;
+            tabla += "</tbody></table>";
+            salida.put("tabla", tabla);
+            salida.put("estado", "ok");
+            System.out.println(salida);
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.RemarcadorController.getRegistrosMesRemarcador().");
             System.out.println(ex);
             ex.printStackTrace();
             salida.put("estado", "error");

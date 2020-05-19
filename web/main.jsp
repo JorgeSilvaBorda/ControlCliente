@@ -73,6 +73,7 @@
                                                     + "                                    <a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Operaciones</a>\n"
                                                     + "                                    <div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
                                                     + "                                        <a class='dropdown-item' onclick='cargarModulo(\"cliente-remarcador\");' href='#'>Asignar remarcador a cliente</a> \n"
+                                                    + "                                        <a class='dropdown-item' onclick='cargarModulo(\"registros-mes-remarcador\");' href='#'>Registros Mes Remarcador</a> \n"
                                                     + "                                    </div>\n"
                                                     + "                                </li>\n"
                                                     + "                                <li class='nav-item dropdown'>\n"

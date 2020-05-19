@@ -1,5 +1,6 @@
 package controlador;
 
+import clases.json.JSONArray;
 import clases.json.JSONException;
 import clases.json.JSONObject;
 import java.io.IOException;
@@ -22,6 +23,9 @@ public class RemarcadorController extends HttpServlet {
         switch (entrada.getString("tipo")) {
             case "get-remarcadores":
                 out.print(getRemarcadores());
+                break;
+            case "get-remarcadores-idempalme":
+                out.print(getRemarcadoresIdEmpalme(entrada));
                 break;
             case "get-remarcadores-libres":
                 out.print(getRemarcadoresLibres());
@@ -71,6 +75,59 @@ public class RemarcadorController extends HttpServlet {
             salida.put("estado", "ok");
         } catch (JSONException | SQLException ex) {
             System.out.println("Problemas en controlador.RemarcadorController.getRemarcadores().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject getRemarcadoresIdEmpalme(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        JSONArray ides = new JSONArray();
+        String query = "CALL SP_GET_REMARCADORES_IDEMPALME(" + entrada.getInt("idempalme") + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String filas = "";
+        
+        String tabla = "<table style='font-size: 12px;' id='tabla-remarcadores-empalme' class='table table-borderless table-condensed table-sm'>";
+        tabla += "<caption style='caption-side:top;'><h5>Remarcadores en el Empalme Nº: " + entrada.getString("numempalme") + "</h5></caption>";
+        tabla += "<thead><tr>";
+        tabla += "<th># Remarcador</th>";
+        //tabla += "<th># Empalme</th>";
+        tabla += "<th>Bodega</th>";
+        tabla += "<th>Módulos</th>";
+        tabla += "<th>Instalación</th>";
+        tabla += "</tr></thead><tbody>";
+        JSONObject remarcador;
+        JSONArray remarcadores = new JSONArray();
+        try {
+            while (rs.next()) {
+                filas += "<tr>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
+                //filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
+                filas += "<td><span>" + rs.getString("MODULOS") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
+                filas += "</tr>";
+                remarcador = new JSONObject();
+                remarcador.put("idremarcador", rs.getInt("IDREMARCADOR"));
+                remarcador.put("numremarcador", rs.getString("NUMREMARCADOR"));
+                remarcador.put("idparque", rs.getInt("IDPARQUE"));
+                remarcador.put("modulos", rs.getString("MODULOS"));
+                remarcador.put("idinstalacion", rs.getInt("IDINSTALACION"));
+                remarcadores.put(remarcador);
+            }
+            tabla += filas;
+            tabla += "</tbody></table>";
+            salida.put("tabla", tabla);
+            salida.put("remarcadores", remarcadores);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.RemarcadorController.getRemarcadoresIdEmpalme().");
             System.out.println(ex);
             ex.printStackTrace();
             salida.put("estado", "error");
@@ -142,7 +199,7 @@ public class RemarcadorController extends HttpServlet {
             }
             tabla += filas;
             tabla += "</tbody></table>";
-            
+
             salida.put("tabla", tabla);
             salida.put("estado", "ok");
         } catch (JSONException | SQLException ex) {

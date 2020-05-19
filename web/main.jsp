@@ -66,6 +66,7 @@
                                                     + "<a onclick='cargarModulo(\"boleta-cliente\");' class='dropdown-item' href='#'>Emisión Boleta Cliente</a> \n"
                                                     + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-mes-cliente\");' class='dropdown-item' href='#'>Resumen Mes Cliente</a> \n"
+                                                    + "<a onclick='cargarModulo(\"resumen-mes-remarcadores\");' class='dropdown-item' href='#'>Resumen Mes Remarcadores</a> \n"
                                                     + "</div>\n"
                                                     + "</li>");
                                             out.print("<li class='nav-item dropdown'>\n"

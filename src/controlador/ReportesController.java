@@ -111,6 +111,7 @@ public class ReportesController extends HttpServlet {
         rs = c.ejecutarQuery(query);
         try {
             while (rs.next()) {
+                
                 JSONObject dataset = getDataSetPorRemarcador(rs.getInt("NUMREMARCADOR"), fechas);
                 datasets.put(dataset);
             }
@@ -131,38 +132,20 @@ public class ReportesController extends HttpServlet {
 
     private JSONObject resumenMesRemarcadoresEmpalme(JSONObject entrada) {
         JSONObject salida = new JSONObject();
-
-        //Obtener Labels (Días del mes-anio  enviado) -------------------------------
         JSONArray labels = new JSONArray();
         JSONArray datasets = new JSONArray();
         JSONObject data = new JSONObject();
-        String query = "CALL SP_GET_FECHAS_MES_ANIO(" + entrada.getInt("mes") + ", " + entrada.getInt("anio") + ");";
-        LinkedList<String> fechas = new LinkedList();
-        Conexion c = new Conexion();
-        System.out.println(query);
-        c.abrir();
-        ResultSet rs = c.ejecutarQuery(query);
-        try {
-            while (rs.next()) {
-                labels.put(Util.invertirFecha(rs.getString("FECHA")));
-                fechas.add(rs.getString("FECHA"));
-            }
-        } catch (JSONException | SQLException ex) {
-            System.out.println("Problemas en controlador.ReportesController.resumenMesRemarcadoresEmpalme().");
-            System.out.println(ex);
-            ex.printStackTrace();
-            salida.put("estado", "error");
-            salida.put("error", ex);
-        }
-        c.cerrar();
-        
         JSONArray remarcadores = entrada.getJSONArray("remarcadores");
         Iterator i = remarcadores.iterator();
-        
+
         while (i.hasNext()) {
             JSONObject remarcador = (JSONObject) i.next();
             int numremarcador = remarcador.getInt("numremarcador");
-            JSONObject dataset = getDataSetPorRemarcador(numremarcador, fechas);
+            JSONObject d = getDatasetRemarcadorMes(numremarcador, entrada.getInt("mes"), entrada.getInt("anio"));
+            JSONObject dataset = d.getJSONObject("dataset");
+            labels = d.getJSONArray("labels");
+            dataset.put("label", "Remarcador ID: " + numremarcador);
+            dataset.put("borderWidth", "2");
             datasets.put(dataset);
         }
         data.put("labels", labels);
@@ -172,6 +155,33 @@ public class ReportesController extends HttpServlet {
         return salida;
     }
 
+    private JSONObject getDatasetRemarcadorMes(int numremarcador, int mes, int anio) {
+        JSONObject dataset = new JSONObject();
+        JSONObject salida = new JSONObject();
+        JSONArray data = new JSONArray();
+        JSONArray labels = new JSONArray();
+        String query = "CALL SP_GET_DATASET_REMARCADOR_MES_ANIO(" + numremarcador + ", " + mes + ", " + anio + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        System.out.println(query);
+        try {
+            while (rs.next()) {
+                data.put(rs.getInt("CONSUMO"));
+                labels.put(rs.getDate("FECHA"));
+            }
+            dataset.put("data", data);
+            salida.put("dataset", dataset);
+            salida.put("labels", labels);
+        } catch (JSONException | SQLException ex) {
+            System.out.println("No se pudo obtener la data para el remarcador " + numremarcador);
+            System.out.println(ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
+    @Deprecated
     private JSONObject getDataSetPorRemarcador(int numremarcador, LinkedList<String> fechas) {
         JSONObject dataset = new JSONObject();
 
@@ -183,13 +193,10 @@ public class ReportesController extends HttpServlet {
         for (String fecha : fechas) {
             String query = "SELECT FN_GET_CONSUMO_DIA_REMARCADOR(" + numremarcador + ", '" + fecha + "') AS CONSUMO";
             Conexion c = new Conexion();
-            System.out.println(query);
             c.abrir();
             ResultSet rs = c.ejecutarQuery(query);
             try {
                 while (rs.next()) {
-                    JSONObject dato = new JSONObject();
-                    dato.put(fecha, rs.getInt("CONSUMO"));
                     data.put(rs.getInt("CONSUMO"));
                 }
                 dataset.put("data", data);

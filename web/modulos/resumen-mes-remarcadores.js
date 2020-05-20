@@ -142,9 +142,11 @@ function graficarRemarcadores(obj) {
                 for (var i in obj.data.datasets) {
                     var color = colorDinamicoArr();
                     obj.data.datasets[i].borderColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 1.0)";
-                    obj.data.datasets[i].backgroundColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] +  ", 0.3)";
+                    
                     obj.data.datasets[i].pointRadius = "2";
                     obj.data.datasets[i].borderWidth = "1";
+                    obj.data.datasets[i].lineTension = "0";
+                    obj.data.datasets[i].fill = false;
                 }
                 GRAFICO = new Chart(document.getElementById("grafico"), {
                     type: 'line',

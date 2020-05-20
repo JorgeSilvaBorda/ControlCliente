@@ -308,7 +308,6 @@ public class RemarcadorController extends HttpServlet {
         tabla += "<th>HORA</th>";
         tabla += "<th>ITEM95</th>";
         tabla += "<th>ITEM96</th>"; 
-        //tabla += "<th>CONSUMO</th>"; 
         tabla += "</tr></thead><tbody>";
         int cont = 0;
         try {
@@ -322,7 +321,6 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td><span>" + rs.getString("HORA") + "</span></td>";
                 filas += "<td><span>" + rs.getString("ITEM95") + "</span></td>";
                 filas += "<td><span>" + rs.getString("ITEM96") + "</span></td>";
-                //filas += "<td><span>" + rs.getString("CONSUMO") + "</span></td>";
                 filas += "</tr>";
                 cont ++;
                 System.out.println("Fila: " + cont);

@@ -105,6 +105,7 @@ public class RemarcadorController extends HttpServlet {
         tabla += "<th># Remarcador</th>";
         //tabla += "<th># Empalme</th>";
         tabla += "<th>Bodega</th>";
+        tabla += "<th>Cliente</th>";
         tabla += "<th>Módulos</th>";
         tabla += "<th>Instalación</th>";
         tabla += "</tr></thead><tbody>";
@@ -116,6 +117,7 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
                 //filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
+                filas += "<td><span>" + rs.getString("RAZONCLIENTE") + "</span></td>";
                 filas += "<td><span>" + rs.getString("MODULOS") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
                 filas += "</tr>";

@@ -14,21 +14,21 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3 ">
+        <div class="col-md-4">
             <form class="form small"  role="form">
                 <div class="form-group">
                     <label for="select-instalacion" >Instalación</label>
-                    <select onchange="getSelectBodegasInstalacion($(this).val())" class="form-control form-control-sm small" id="select-instalacion" >
+                    <select onchange="getSelectBodegasInstalacion($(this).val())" class="form-control form-control-sm small" id="select-instalacion" style="width: 80%;" >
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="select-bodega" >Bodega</label>
-                    <select onchange="getSelectEmpalmeIdParque($(this).val());" class="form-control form-control-sm small" id="select-bodega" >
+                    <select onchange="getSelectEmpalmeIdParque($(this).val());" class="form-control form-control-sm small" id="select-bodega" style="width: 80%;"  >
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="select-empalme" >Empalme</label>
-                    <select class="form-control form-control-sm small" id="select-empalme" >
+                    <select class="form-control form-control-sm small" id="select-empalme" style="width: 40%;"  >
                     </select>
                 </div>
                 <div class="row">
@@ -37,37 +37,37 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <input type="month" class="form-control form-control-sm small" id="mes"/>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <button id="btn-buscar" onclick="buscar();" type="button" class="btn btn-primary btn-sm float-sm-right ">Buscar</button>
                         </div>
                     </div>
+                    <div class="col-md-1">
+                        <div class="loader"  style="display:none;"><!-- Contenedor del Spinner -->
+                            <br />
+                            <div class="ldio-sa9px9nknjc"  style="top:0px; position: absolute;"> <!-- El Spinner -->
+                                <div>
+                                </div>
+                                <div>
+                                    <div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
-        </div>
-        <div class="col-sm-1">
-            <div class="loader" style="display: none;"><!-- Contenedor del Spinner -->
-                <br />
-                <div class="ldio-sa9px9nknjc"> <!-- El Spinner -->
-                    <div>
-                    </div>
-                    <div>
-                        <div></div>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="col-sm-8 float-sm-right" id="detalle-remarcadores">
         </div>
 
     </div>
     <div class="row">
-        
+
     </div>
     <div class='row'>
         <div class="col-md-12">

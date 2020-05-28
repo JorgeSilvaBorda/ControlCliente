@@ -2,6 +2,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         getSelectTarifas();
+        getSelectComunas();
     });
 
 </script>
@@ -27,7 +28,7 @@
                             </select>
                         </div>
                         <div class="col-md-1">
-                            <button id="btn-buscar" type="button" class="btn btn-info btn-sm">Buscar</button>
+                            <button onclick="buscar();" id="btn-buscar" type="button" class="btn btn-info btn-sm">Buscar</button>
                         </div>
                     </div>
                 </div>
@@ -50,7 +51,7 @@
                                         Nombre
                                     </td>
                                     <td>
-                                        <input style="font-size: 12px;" type="text" id="nom-tarifa" class="form-control form-control-sm small" />
+                                        <input style="font-size: 12px;" type="text" id="nom-tarifa" class="form-control form-control-sm small texto-valido" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -58,7 +59,7 @@
                                         Comuna
                                     </td>
                                     <td>
-                                        <select style="font-size: 12px;" id="select-comuna" class="form-control form-control-sm small">
+                                        <select style="font-size: 12px;" id="select-comuna" class="form-control form-control-sm small select-valido">
 
                                         </select>
                                     </td>
@@ -70,6 +71,7 @@
             </div>
         </div>
     </div>
+    <br />
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -94,7 +96,7 @@
                                         <td>$/Mes</td>
                                         <td></td>
                                         <td>
-                                            <input id="cargo-fijo" type="number" class="form-control form-control-sm small" />
+                                            <input id="cargo-fijo" type="number" class="form-control form-control-sm small numero-valido" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -102,7 +104,7 @@
                                         <td>$/kWh</td>
                                         <td></td>
                                         <td>
-                                            <input id="cargo-servicio-publico" type="number" class="form-control form-control-sm small" />
+                                            <input id="cargo-servicio-publico" type="number" class="form-control form-control-sm small numero-valido" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -110,7 +112,7 @@
                                         <td>$/kWh</td>
                                         <td></td>
                                         <td>
-                                            <input id="transporte-electricidad" type="number" class="form-control form-control-sm small" />
+                                            <input id="transporte-electricidad" type="number" class="form-control form-control-sm small numero-valido" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -118,7 +120,7 @@
                                         <td>$/kWh</td>
                                         <td></td>
                                         <td>
-                                            <input id="cargo-energia" type="number" class="form-control form-control-sm small" />
+                                            <input id="cargo-energia" type="number" class="form-control form-control-sm small numero-valido" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -126,7 +128,7 @@
                                         <td>$/kW/Mes</td>
                                         <td>BT_AA</td>
                                         <td>
-                                            <input id="cdmplhp-btaa" type="number" class="form-control form-control-sm small" />
+                                            <input id="cdmplhp-btaa" type="number" class="form-control form-control-sm small numero-valido" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -134,7 +136,7 @@
                                         <td></td>
                                         <td>BT_SA</td>
                                         <td>
-                                            <input id="cdmplhp-btsa" type="number" class="form-control form-control-sm small" />
+                                            <input id="cdmplhp-btsa" type="number" class="form-control form-control-sm small numero-valido" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -142,7 +144,7 @@
                                         <td></td>
                                         <td>BT_AS</td>
                                         <td>
-                                            <input id="cdmplhp-btas" type="number" class="form-control form-control-sm small" />
+                                            <input id="cdmplhp-btas" type="number" class="form-control form-control-sm small numero-valido" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -150,7 +152,7 @@
                                         <td></td>
                                         <td>BT_SS</td>
                                         <td>
-                                            <input id="cdmplhp-btss" type="number" class="form-control form-control-sm small" />
+                                            <input id="cdmplhp-btss" type="number" class="form-control form-control-sm small numero-valido" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -158,7 +160,7 @@
                                         <td>$/kW/Mes</td>
                                         <td>BT_AA</td>
                                         <td>
-                                            <input id="cdmps-btaa" type="number" class="form-control form-control-sm small" />
+                                            <input id="cdmps-btaa" type="number" class="form-control form-control-sm small numero-valido" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -166,7 +168,7 @@
                                         <td></td>
                                         <td>BT_SA</td>
                                         <td>
-                                            <input id="cdmps-btsa" type="number" class="form-control form-control-sm small" />
+                                            <input id="cdmps-btsa" type="number" class="form-control form-control-sm small numero-valido" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -174,7 +176,7 @@
                                         <td></td>
                                         <td>BT_AS</td>
                                         <td>
-                                            <input id="cdmps-btas" type="number" class="form-control form-control-sm small" />
+                                            <input id="cdmps-btas" type="number" class="form-control form-control-sm small numero-valido" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -182,8 +184,19 @@
                                         <td></td>
                                         <td>BT_SS</td>
                                         <td>
-                                            <input id="cdmps-btss" type="number" class="form-control form-control-sm small" />
+                                            <input id="cdmps-btss" type="number" class="form-control form-control-sm small numero-valido" />
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <button type="button" id="btn-insert" onclick="insTarifa()" class="btn btn-primary btn-sm">Insertar</button>
+                                            <button type="button" id="btn-save" onclick="saveTarifa()" class="btn btn-success btn-sm" style="display:none;">Guardar</button>
+                                        </td>
+                                        <td>
+                                            <button type="button" id="btn-limpiar" onclick="limpiar()" class="btn btn-default btn-sm">Limpiar</button>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 </tbody>
                             </table>

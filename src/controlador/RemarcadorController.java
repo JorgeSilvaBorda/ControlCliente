@@ -325,13 +325,11 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td><span>" + rs.getString("ITEM96") + "</span></td>";
                 filas += "</tr>";
                 cont ++;
-                System.out.println("Fila: " + cont);
             }
             tabla += filas;
             tabla += "</tbody></table>";
             salida.put("tabla", tabla);
             salida.put("estado", "ok");
-            System.out.println(salida);
         } catch (JSONException | SQLException ex) {
             System.out.println("Problemas en controlador.RemarcadorController.getRegistrosMesRemarcador().");
             System.out.println(ex);

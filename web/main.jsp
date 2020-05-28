@@ -39,10 +39,11 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-dark bg-dark navbar-fixed fixed-top">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-fixed fixed-top">
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                             <span class="navbar-toggler-icon"></span>
-                        </button> <a class="navbar-brand" href="#">Bodenor</a>
+                        </button> 
+                        <a class="navbar-brand" href="#"><img src="img/logo.jpg" height="30em;" alt="Bodenor FlexCenter"></a>
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="navbar-nav">
                                 <%
@@ -52,7 +53,7 @@
                                             out.print("<li class='nav-item dropdown'>\n"
                                                     + "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Reportes</a>\n"
                                                     + "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
-                                                    + "<a onclick='cargarModulo(\"boleta-remarcador\");' class='dropdown-item' href='#'>Emisión Boleta Remarcador</a> \n"
+                                                    // + "<a onclick='cargarModulo(\"boleta-remarcador\");' class='dropdown-item' href='#'>Emisión Boleta Remarcador</a> \n"
                                                     // + "<a onclick='cargarModulo(\"boleta-cliente\");' class='dropdown-item' href='#'>Emisión Boleta Cliente</a> \n"
                                                     + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-mes-cliente\");' class='dropdown-item' href='#'>Resumen Mes Cliente</a> \n"
@@ -62,8 +63,8 @@
                                             out.print("<li class='nav-item dropdown'>\n"
                                                     + "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Reportes</a>\n"
                                                     + "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
-                                                    + "<a onclick='cargarModulo(\"boleta-remarcador\");' class='dropdown-item' href='#'>Emisión Boleta Remarcador</a> \n"
-                                                    + "<a onclick='cargarModulo(\"boleta-cliente\");' class='dropdown-item' href='#'>Emisión Boleta Cliente</a> \n"
+                                                    // + "<a onclick='cargarModulo(\"boleta-remarcador\");' class='dropdown-item' href='#'>Emisión Boleta Remarcador</a> \n"
+                                                    // + "<a onclick='cargarModulo(\"boleta-cliente\");' class='dropdown-item' href='#'>Emisión Boleta Cliente</a> \n"
                                                     + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-mes-cliente\");' class='dropdown-item' href='#'>Resumen Mes Cliente</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-mes-remarcadores\");' class='dropdown-item' href='#'>Resumen Mes Remarcadores</a> \n"

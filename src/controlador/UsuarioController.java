@@ -134,7 +134,9 @@ public class UsuarioController extends HttpServlet {
                 filas += "<td>" + rs.getString("APPATERNO") + "</td>";
                 filas += "<td>" + rs.getString("APMATERNO") + "</td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDTIPOUSUARIO") + "' />" + rs.getString("NOMTIPOUSUARIO") + "</td>";
-                filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button><button style='font-size:10px;  padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-success' onclick='modalCambiar(this)'>Cambio pass</button></td>";
+                filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
+                        //+ "<button style='font-size:10px;  padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-success' onclick='modalCambiar(this)'>Cambio pass</button>"
+                        + "</td>";
                 filas += "</tr>";
             }
             salida.put("tabla", filas);

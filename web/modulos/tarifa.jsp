@@ -193,7 +193,7 @@
                                             <button type="button" id="btn-save" onclick="saveTarifa()" class="btn btn-success btn-sm" style="display:none;">Guardar</button>
                                         </td>
                                         <td>
-                                            <button type="button" id="btn-limpiar" onclick="limpiar()" class="btn btn-default btn-sm">Limpiar</button>
+                                            <button type="button" id="btn-limpiar" onclick="limpiar()" class="btn btn-outline-primary btn-sm">Limpiar</button>
                                         </td>
                                         <td></td>
                                         <td></td>

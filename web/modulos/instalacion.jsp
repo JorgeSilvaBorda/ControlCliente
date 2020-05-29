@@ -1,4 +1,4 @@
-<script src="modulos/instalacion.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
+<script src="modulos/instalacion.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         getInstalaciones();
@@ -28,7 +28,7 @@
                 <div class="form-group">
                     <label for="comuna" >Comuna</label>
                     <select id="select-comuna" class="form-control form-control-sm smal">
-                        
+
                     </select>
                 </div>
                 <div class="form-group">
@@ -50,7 +50,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                 </tbody>
             </table>
         </div>

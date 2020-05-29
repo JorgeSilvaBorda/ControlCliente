@@ -63,6 +63,7 @@ public class EmpalmeController extends HttpServlet {
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDRED") + "' /><span>" + rs.getString("NOMRED") + "</span></td>";
                 filas += "<td style='width: 15%;'>"
                         + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
                         + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>"
@@ -112,7 +113,10 @@ public class EmpalmeController extends HttpServlet {
 
     private JSONObject existeEmpalmeInstalacion(JSONObject entrada) {
         JSONObject salida = new JSONObject();
-        String query = "CALL SP_EXISTE_EMPALME_EN_INSTALACION('" + entrada.getString("numempalme") + "', " + entrada.getInt("idinstalacion") + ")";
+        String query = "CALL SP_EXISTE_EMPALME_EN_INSTALACION("
+                + "'" + entrada.getString("numempalme") + "', "
+                + entrada.getInt("idparque") + ", "
+                + entrada.getInt("idinstalacion") + ")";
         Conexion c = new Conexion();
         System.out.println(query);
         c.abrir();
@@ -139,10 +143,10 @@ public class EmpalmeController extends HttpServlet {
         
         JSONObject salida = new JSONObject();
         String query = "CALL SP_EXISTE_EMPALME_EN_INSTALACION_UPDATE("
-                + "'" + entrada.getString("numempalme") + "', "
+                + entrada.getInt("idempalme") + ", "
                 + "'" + entrada.getString("newnumempalme") + "', "
-                + entrada.getInt("newidinstalacion") + ", "
-                + entrada.getInt("idinstalacion") + ""
+                + entrada.getInt("newidparque") + ", "
+                + entrada.getInt("newidinstalacion")
                 + ")";
         System.out.println(query);
         Conexion c = new Conexion();
@@ -171,6 +175,7 @@ public class EmpalmeController extends HttpServlet {
         String query = "CALL SP_INS_EMPALME("
                 + "'" + entrada.getInt("idinstalacion") + "',"
                 + "'" + entrada.getInt("idparque") + "',"
+                + "" + entrada.getInt("idred") + ","
                 + "'" + entrada.getString("numempalme") + "'"
                 + ")";
         Conexion c = new Conexion();
@@ -198,6 +203,8 @@ public class EmpalmeController extends HttpServlet {
                 empalme.put("nominstalacion", rs.getString("NOMINSTALACION"));
                 empalme.put("idparque", rs.getInt("IDPARQUE"));
                 empalme.put("nomparque", rs.getString("NOMPARQUE"));
+                empalme.put("idred", rs.getInt("IDRED"));
+                empalme.put("nombred", rs.getString("NOMRED"));
             }
             salida.put("empalme", empalme);
             salida.put("estado", "ok");
@@ -218,6 +225,7 @@ public class EmpalmeController extends HttpServlet {
                 + empalme.getInt("idempalme") + ","
                 + empalme.getInt("idinstalacion") + ","
                 + empalme.getInt("idparque") + ","
+                + empalme.getInt("idred") + ","
                 + "'" + empalme.getString("numempalme") + "')";
         Conexion c = new Conexion();
         System.out.println(query);

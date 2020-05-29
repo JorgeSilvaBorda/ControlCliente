@@ -1,4 +1,4 @@
-<script src="modulos/resumen-mes-cliente.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
+<script src="modulos/resumen-mes-cliente.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         getSelectClientes();
@@ -23,8 +23,17 @@
                 </div>
             </form>
         </div>
-        <div class="col-sm-9">
-            
+        <div class="col-sm-1">
+            <div class="loader" style="display: none;"><!-- Contenedor del Spinner -->
+                <br />
+                <div class="ldio-sa9px9nknjc"> <!-- El Spinner -->
+                    <div>
+                    </div>
+                    <div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class='row'>

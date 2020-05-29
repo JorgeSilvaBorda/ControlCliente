@@ -1,6 +1,8 @@
+var GRAFICO = new Chart(document.getElementById("grafico"));
+
 function getSelectClientes() {
     var datos = {
-        tipo: 'get-select-clientes'
+        tipo: 'get-select-clientes-nombre'
     };
 
     $.ajax({
@@ -49,9 +51,68 @@ function getSelectRemarcadoresCliente(idcliente) {
     });
 }
 
+function getDatosRemarcador() {
+    var idremarcador = $('#select-remarcador').val();
+    var datos = {
+        tipo: 'get-remarcador-idremarcador',
+        idremarcador: idremarcador
+    };
+    console.log(datos);
+    $.ajax({
+        url: 'RemarcadorController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                armarDetalleRemarcador(obj.remarcador);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function armarDetalleRemarcador(remarcador){
+    var tabla = '<table>' +
+                '<tr>' +
+                    '<td><strong># Remarcador:</strong></td>' +
+                    '<td>' + remarcador.numremarcador + '</td>' +
+                '</tr>' +
+                '<tr>' +
+                    '<td><strong># Empalme:</strong></td>' +
+                    '<td>' + remarcador.numempalme + '</td>' +
+                '</tr>' +
+                '<tr>' +
+                    '<td><strong>Bodega:</strong></td>' +
+                    '<td>' + remarcador.nomparque + '</td>' +
+                '</tr>' +
+                '<tr>' +
+                    '<td><strong>Instalación:</strong></td>' +
+                    '<td>' + remarcador.nominstalacion + '</td>' +
+                '</tr>' +
+                '<tr>' +
+                    '<td><strong>Dirección:</strong></td>' +
+                    '<td>' + remarcador.direccion + '</td>' +
+                '</tr>' +
+                '<tr>' +
+                    '<td><strong>Comuna:</strong></td>' +
+                    '<td>' + remarcador.nomcomuna + '</td>' +
+                '</tr>' +
+            '</table>';
+    $('#detalle-remarcador').html(tabla);
+}
+
 function graficar(idremarcador) {
+    getDatosRemarcador();
+    $('.loader').fadeIn(500);
     var idcliente = $('#select-cliente').val();
-    var numremarcador = $( "#select-remarcador option:selected" ).text();
+    var numremarcador = $("#select-remarcador option:selected").text();
     var datos = {
         tipo: 'consumo-cliente-remarcador',
         idcliente: idcliente,
@@ -66,9 +127,16 @@ function graficar(idremarcador) {
             datos: JSON.stringify(datos)
         },
         success: function (resp) {
+            $('.loader').fadeOut(500);
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
-                new Chart(document.getElementById("grafico"), {
+                for (var i in obj.data.datasets) {
+                    var color = colorDinamicoArr();
+                    obj.data.datasets[i].borderColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] +  ", 1.0)";
+                    obj.data.datasets[i].backgroundColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] +  ", 0.3)";
+                }
+                GRAFICO.destroy();
+                GRAFICO = new Chart(document.getElementById("grafico"), {
                     type: 'bar',
                     data: obj.data,
                     options: {

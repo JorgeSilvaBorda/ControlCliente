@@ -26,6 +26,9 @@ public class ClienteController extends HttpServlet {
             case "get-select-clientes":
                 out.print(getSelectClientes());
                 break;
+            case "get-select-clientes-nombre":
+                out.print(getSelectClientesNombre());
+                break;
             case "ins-cliente":
                 out.print(insCliente(entrada));
                 break;
@@ -34,6 +37,9 @@ public class ClienteController extends HttpServlet {
                 break;
             case "upd-cliente":
                 out.print(updCliente(entrada.getJSONObject("cliente")));
+                break;
+            case "del-cliente":
+                out.print(delCliente(entrada.getJSONObject("cliente")));
                 break;
         }
     }
@@ -56,7 +62,10 @@ public class ClienteController extends HttpServlet {
                 filas += "<td>" + rs.getString("CARGO") + "</td>";
                 filas += "<td>" + rs.getInt("FONO") + "</td>";
                 filas += "<td>" + rs.getString("EMAIL") + "</td>";
-                filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button></td>";
+                filas += "<td style='width: 10%;'>"
+                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
+                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>"
+                        + "</td>";
                 filas += "</tr>";
             }
             salida.put("tabla", filas);
@@ -148,6 +157,17 @@ public class ClienteController extends HttpServlet {
         salida.put("estado", "ok");
         return salida;
     }
+    
+    private JSONObject delCliente(JSONObject cliente) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_DEL_CLIENTE(" + cliente.getInt("idcliente") + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
+        return salida;
+    }
 
     private JSONObject getSelectClientes() {
         JSONObject salida = new JSONObject();
@@ -156,6 +176,19 @@ public class ClienteController extends HttpServlet {
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDCLIENTE", "RAZONCLIENTE");
+        c.cerrar();
+        salida.put("estado", "ok");
+        salida.put("options", options);
+        return salida;
+    }
+
+    private JSONObject getSelectClientesNombre() {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_SELECT_CLIENTES()";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDCLIENTE", "NOMCLIENTE");
         c.cerrar();
         salida.put("estado", "ok");
         salida.put("options", options);

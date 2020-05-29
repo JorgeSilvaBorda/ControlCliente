@@ -1,10 +1,10 @@
-var ID_TARIFA_EDICION = null;
-function getTarifas() {
+var TARIFA_EDICION = null;
+function getSelectComunas() {
     var datos = {
-        tipo: 'get-tarifas'
+        tipo: 'get-select-comunas'
     };
     $.ajax({
-        url: 'TarifaController',
+        url: 'ParametrosController',
         type: 'post',
         data: {
             datos: JSON.stringify(datos)
@@ -12,37 +12,7 @@ function getTarifas() {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
-                $('#tabla-tarifas.dataTable').DataTable().destroy();
-                $('#tabla-tarifas tbody').html(obj.tabla);
-                $('#tabla-tarifas').DataTable(OPCIONES_DATATABLES);
-                getSelectTarifas();
-            }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
-}
-
-function getTarifasConceptos() {
-    var datos = {
-        tipo: 'get-tarifas-conceptos'
-    };
-    $.ajax({
-        url: 'TarifaController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (resp) {
-            var obj = JSON.parse(resp);
-            if (obj.estado === 'ok') {
-                $('#tabla-tarifas-conceptos.dataTable').DataTable().destroy();
-                $('#tabla-tarifas-conceptos tbody').html(obj.tabla);
-                $('#tabla-tarifas-conceptos').DataTable(OPCIONES_DATATABLES);
-                getSelectTarifas();
+                $('#select-tarifa').html(obj.options);
             }
         },
         error: function (a, b, c) {
@@ -57,7 +27,6 @@ function getSelectTarifas() {
     var datos = {
         tipo: 'get-select-tarifas'
     };
-
     $.ajax({
         url: 'TarifaController',
         type: 'post',
@@ -82,7 +51,6 @@ function getSelectComunas() {
     var datos = {
         tipo: 'get-select-comunas'
     };
-
     $.ajax({
         url: 'ParametrosController',
         type: 'post',
@@ -103,90 +71,22 @@ function getSelectComunas() {
     });
 }
 
-function insTarifa(callback) {
-    var nomtarifa = $('#nom-tarifa').val();
-
-    var datos = {
-        tipo: 'ins-tarifa',
-        nomtarifa: nomtarifa
-    };
-
-    $.ajax({
-        url: 'TarifaController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (res) {
-            var obj = JSON.parse(res);
-            if (obj.estado === 'ok') {
-                limpiar();
-                callback();
-            }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
-}
-
-function insTarifaConcepto(callback) {
+function buscar() {
     var idtarifa = $('#select-tarifa').val();
-    var idcomuna = $('#select-comuna').val();
-    var nomconcepto = $('#nomconcepto').val();
-    var umedida = $('#umedida').val();
-    var valorneto = $('#valorneto').val();
     var datos = {
-        tipo: 'ins-tarifa-concepto',
-        idtarifa: idtarifa,
-        idcomuna: idcomuna,
-        nomconcepto: nomconcepto,
-        umedida: umedida,
-        valorneto: valorneto
-    };
-
-    $.ajax({
-        url: 'TarifaController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (res) {
-            var obj = JSON.parse(res);
-            if (obj.estado === 'ok') {
-                limpiar();
-                callback();
-            }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
-}
-
-function activarEdicion(boton) {
-    var fila = $(boton).parent().parent();
-    var idtarifa = $(fila).children(0).children(0).val();
-
-    var datos = {
-        tipo: 'get-tarifa-idtarifa',
+        tipo: 'get-detalle-tarifa',
         idtarifa: idtarifa
     };
-
     $.ajax({
         url: 'TarifaController',
         type: 'post',
         data: {
             datos: JSON.stringify(datos)
         },
-        success: function (res) {
-            var obj = JSON.parse(res);
+        success: function (resp) {
+            var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
-                armarTarifa(obj.tarifa);
+                pintarTarifa(obj.tarifa);
             }
         },
         error: function (a, b, c) {
@@ -197,145 +97,220 @@ function activarEdicion(boton) {
     });
 }
 
-function activarEdicionConcepto(boton) {
-    var fila = $(boton).parent().parent();
-    var idconcepto = $(fila).children(0).children(0).val();
-
-    var datos = {
-        tipo: 'get-concepto-idconcepto',
-        idconcepto: idconcepto
-    };
-
-    $.ajax({
-        url: 'TarifaController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (res) {
-            var obj = JSON.parse(res);
-            if (obj.estado === 'ok') {
-                armarConcepto(obj.concepto);
-            }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
-}
-
-function armarTarifa(tarifa) {
-    ID_TARIFA_EDICION = tarifa.idtarifa;
+function pintarTarifa(tarifa) {
+    TARIFA_EDICION = tarifa;
     $('#nom-tarifa').val(tarifa.nomtarifa);
+    $('#select-comuna').val(tarifa.idcomuna);
 
-    $('#btn-insert').attr("hidden", "hidden");
-    $('#btn-guardar').removeAttr("hidden");
+    for (var i in tarifa.conceptos) {
+        var concepto = tarifa.conceptos[i];
+        console.log(concepto.nomconcepto);
+        switch (concepto.idconcepto) {
+            case 1:
+                $('#cargo-fijo').val(concepto.valorneto);
+                break;
+            case 2:
+                $('#cargo-servicio-publico').val(concepto.valorneto);
+                break;
+            case 3:
+                $('#transporte-electricidad').val(concepto.valorneto);
+                break;
+            case 4:
+                $('#cargo-energia').val(concepto.valorneto);
+                break;
+            case 5:
+                $('#cdmplhp-btaa').val(concepto.valorneto);
+                break;
+            case 6:
+                $('#cdmplhp-btas').val(concepto.valorneto);
+                break;
+            case 7:
+                $('#cdmplhp-btsa').val(concepto.valorneto);
+                break;
+            case 8:
+                $('#cdmplhp-btss').val(concepto.valorneto);
+                break;
+            case 9:
+                $('#cdmps-btaa').val(concepto.valorneto);
+                break;
+            case 10:
+                $('#cdmps-btas').val(concepto.valorneto);
+                break;
+            case 11:
+                $('#cdmps-btsa').val(concepto.valorneto);
+                break;
+            case 12:
+                $('#cdmps-btss').val(concepto.valorneto);
+                break;
+        }
+    }
+    $('#btn-save').show();
+    $('#btn-insert').hide();
 }
 
-function armarConcepto(concepto) {
-    ID_CONCEPTO_EDICION = concepto.idconcepto;
-    $('#select-tarifa').val(concepto.idtarifa);
-    $('#nomconcepto').val(concepto.nomconcepto);
-    $('#select-comuna').val(concepto.idcomuna);
-    $('#umedida').val(concepto.umedida);
-    $('#valorneto').val(concepto.valorneto);
-    $('#btn-ins-tarifa-concepto').attr("hidden", "hidden");
-    $('#btn-save-tarifa-concepto').removeAttr("hidden");
-}
-
-function saveTarifa(callback) {
+function validarCampos() {
     var nomtarifa = $('#nom-tarifa').val();
-
-    var datos = {
-        tipo: 'upd-tarifa',
-        tarifa: {
-            idtarifa: ID_TARIFA_EDICION,
-            nomtarifa: nomtarifa
-        }
-    };
-
-    $.ajax({
-        url: 'TarifaController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (res) {
-            var obj = JSON.parse(res);
-            if (obj.estado === 'ok') {
-                limpiar();
-                callback();
-            }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
-}
-
-function saveConcepto(callback) {
-    var idtarifa = $('#select-tarifa').val();
     var idcomuna = $('#select-comuna').val();
-    var nomconcepto = $('#nomconcepto').val();
-    var umedida = $('#umedida').val();
-    var valorneto = $('#valorneto').val();
+    var cargofijo = $('#cargo-fijo').val();
+    var cargoserviciopublico = $('#cargo-servicio-publico').val();
+    var transporteelectricidad = $('#transporte-electricidad').val();
+    var cargoenergia = $('#cargo-energia').val();
+    var cdmplhpbtaa = $('#cdmplhp-btaa').val();
+    var cdmplhpbtsa = $('#cdmplhp-btsa').val();
+    var cdmplhpbtas = $('#cdmplhp-btas').val();
+    var cdmplhpbtss = $('#cdmplhp-btss').val();
+    var cdmpsbtaa = $('#cdmps-btaa').val();
+    var cdmpsbtsa = $('#cdmps-btsa').val();
+    var cdmpsbtas = $('#cdmps-btas').val();
+    var cdmpsbtss = $('#cdmps-btss').val();
 
-    var datos = {
-        tipo: 'upd-concepto',
-        concepto: {
-            idconcepto: ID_CONCEPTO_EDICION,
-            idtarifa: idtarifa,
-            idcomuna: idcomuna,
-            nomconcepto: nomconcepto,
-            umedida: umedida,
-            valorneto: valorneto
-        }
-    };
-
-    $.ajax({
-        url: 'TarifaController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (res) {
-            var obj = JSON.parse(res);
-            if (obj.estado === 'ok') {
-                limpiar();
-                callback();
-            }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
+    if (nomtarifa.length < 2) {
+        alert("Debe indicar un nombre de tarifa válido.");
+        return false;
+    }
+    if (idcomuna === '0') {
+        alert("Debe seleccionar una comuna del listado para la tarifa.");
+        return false;
+    }
+    if (parseInt(cargofijo) < 0 || isNaN(cargofijo) || cargofijo.length < 1) {
+        alert("Debe indicar un valor neto válido en Cargo Fijo.");
+        return false;
+    }
+    if (parseInt(cargoserviciopublico) < 0 || isNaN(cargoserviciopublico) || cargoserviciopublico.length < 1) {
+        alert("Debe indicar un valor neto válido en Cargo por Servicio Público.");
+        return false;
+    }
+    if (parseInt(transporteelectricidad) < 0 || isNaN(transporteelectricidad) || transporteelectricidad.length < 1) {
+        alert("Debe indicar un valor neto válido en Transporte de Electricidad.");
+        return false;
+    }
+    if (parseInt(cargoenergia) < 0 || isNaN(cargoenergia) || cargoenergia.length < 1) {
+        alert("Debe indicar un valor neto válido en Cargo por Energía.");
+        return false;
+    }
+    if (parseInt(cdmplhpbtaa) < 0 || isNaN(cdmplhpbtaa) || cdmplhpbtaa.length < 1) {
+        alert("Debe indicar un valor neto válido en Cargo por Demanda Máxima de Potencia Leída en Horas de Punta BT_AA.");
+        return false;
+    }
+    if (parseInt(cdmplhpbtsa) < 0 || isNaN(cdmplhpbtsa) || cdmplhpbtsa.length < 1) {
+        alert("Debe indicar un valor neto válido en Cargo por Demanda Máxima de Potencia Leída en Horas de Punta BT_SA.");
+        return false;
+    }
+    if (parseInt(cdmplhpbtas) < 0 || isNaN(cdmplhpbtas) || cdmplhpbtas.length < 1) {
+        alert("Debe indicar un valor neto válido en Cargo por Demanda Máxima de Potencia Leída en Horas de Punta BT_AS.");
+        return false;
+    }
+    if (parseInt(cdmplhpbtss) < 0 || isNaN(cdmplhpbtss) || cdmplhpbtss.length < 1) {
+        alert("Debe indicar un valor neto válido en Cargo por Demanda Máxima de Potencia Leída en Horas de Punta BT_SS.");
+        return false;
+    }
+    if (parseInt(cdmpsbtaa) < 0 || isNaN(cdmpsbtaa) || cdmpsbtaa.length < 1) {
+        alert("Debe indicar un valor neto válido en Cargo por Demanda Máxima de Potencia Suministrada BT_AA.");
+        return false;
+    }
+    if (parseInt(cdmpsbtas) < 0 || isNaN(cdmpsbtas) || cdmpsbtas.length < 1) {
+        alert("Debe indicar un valor neto válido en Cargo por Demanda Máxima de Potencia Suministrada BT_AS.");
+        return false;
+    }
+    if (parseInt(cdmpsbtsa) < 0 || isNaN(cdmpsbtsa) || cdmpsbtsa.length < 1) {
+        alert("Debe indicar un valor neto válido en Cargo por Demanda Máxima de Potencia Suministrada BT_SA.");
+        return false;
+    }
+    if (parseInt(cdmpsbtss) < 0 || isNaN(cdmpsbtss) || cdmpsbtss.length < 1) {
+        alert("Debe indicar un valor neto válido en Cargo por Demanda Máxima de Potencia Suministrada BT_SS.");
+        return false;
+    }
+    return true;
 }
 
-function eliminarConcepto(boton) {
-    var fila = $(boton).parent().parent();
-    var idconcepto = $(fila).children(0).children(0).val();
+function insTarifa() {
+    if (validarCampos()) {
+        var tarifa = {
+            nomtarifa: $('#nom-tarifa').val(),
+            idcomuna: $('#select-comuna').val(),
+            cargofijo: $('#cargo-fijo').val(),
+            cargoserviciopublico: $('#cargo-servicio-publico').val(),
+            transporteelectricidad: $('#transporte-electricidad').val(),
+            cargoenergia: $('#cargo-energia').val(),
+            cdmplhpbtaa: $('#cdmplhp-btaa').val(),
+            cdmplhpbtsa: $('#cdmplhp-btsa').val(),
+            cdmplhpbtas: $('#cdmplhp-btas').val(),
+            cdmplhpbtss: $('#cdmplhp-btss').val(),
+            cdmpsbtaa: $('#cdmps-btaa').val(),
+            cdmpsbtsa: $('#cdmps-btsa').val(),
+            cdmpsbtas: $('#cdmps-btas').val(),
+            cdmpsbtss: $('#cdmps-btss').val()
+        };
 
-    var datos = {
-        tipo: 'del-concepto',
-        idconcepto: idconcepto
-    };
-    if (confirm("Está seguro que desea eliminar el concepto?")) {
+        var datos = {
+            tipo: 'ins-tarifa',
+            tarifa: tarifa
+        };
+
         $.ajax({
             url: 'TarifaController',
             type: 'post',
             data: {
                 datos: JSON.stringify(datos)
             },
-            success: function (res) {
-                var obj = JSON.parse(res);
+            success: function (resp) {
+                var obj = JSON.parse(resp);
                 if (obj.estado === 'ok') {
-                    getTarifasConceptos();
+                    alert("Tarifa insertada exitosamente!");
+                    limpiar();
+                }else if(obj.estado === 'existe'){
+                    alert("La tarifa que intenta ingresar ya existe. Por favor utilice la función editar.");
+                    return false;
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            }
+        });
+    }
+}
+
+function saveTarifa() {
+    if (validarCampos()) {
+        var tarifa = {
+            nomtarifa: $('#nom-tarifa').val(),
+            idcomuna: $('#select-comuna').val(),
+            cargofijo: $('#cargo-fijo').val(),
+            cargoserviciopublico: $('#cargo-servicio-publico').val(),
+            transporteelectricidad: $('#transporte-electricidad').val(),
+            cargoenergia: $('#cargo-energia').val(),
+            cdmplhpbtaa: $('#cdmplhp-btaa').val(),
+            cdmplhpbtsa: $('#cdmplhp-btsa').val(),
+            cdmplhpbtas: $('#cdmplhp-btas').val(),
+            cdmplhpbtss: $('#cdmplhp-btss').val(),
+            cdmpsbtaa: $('#cdmps-btaa').val(),
+            cdmpsbtsa: $('#cdmps-btsa').val(),
+            cdmpsbtas: $('#cdmps-btas').val(),
+            cdmpsbtss: $('#cdmps-btss').val()
+        };
+
+        var datos = {
+            tipo: 'upd-tarifa',
+            newtarifa: tarifa,
+            tarifa: TARIFA_EDICION
+        };
+
+        $.ajax({
+            url: 'TarifaController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (resp) {
+                var obj = JSON.parse(resp);
+                if (obj.estado === 'ok') {
+                    alert("Tarifa guardada exitosamente!");
+                    limpiar();
+                }else if(obj.estado === 'existe'){
+                    alert("Los datos que intenta cambiar a la tarifa ya se encuentran en uso por otra.");
+                    return false;
                 }
             },
             error: function (a, b, c) {
@@ -348,19 +323,11 @@ function eliminarConcepto(boton) {
 }
 
 function limpiar() {
-    ID_TARIFA_EDICION = null;
-    ID_CONCEPTO_EDICION = null;
-    $('#nom-tarifa').val('');
-    $('#valor-tarifa').val('');
-
-    $('#select-tarifa').val('0');
-    $('#select-comuna').val('0');
-    $('#nomconcepto').val('');
-    $('#umedida').val('');
-    $('#valorneto').val('');
-
-    $('#btn-guardar').attr("hidden", "hidden");
-    $('#btn-insert').removeAttr("hidden");
-    $('#btn-ins-tarifa-concepto').removeAttr("hidden");
-    $('#btn-save-tarifa-concepto').attr("hidden", "hidden");
+    $('#btn-insert').show();
+    $('#btn-save').hide();
+    $('input').val('');
+    $('select').val('0');
+    getSelectTarifas();
+    getSelectComunas();
+    TARIFA_EDICION = null;
 }

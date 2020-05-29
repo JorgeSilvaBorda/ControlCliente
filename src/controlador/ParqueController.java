@@ -32,10 +32,16 @@ public class ParqueController extends HttpServlet {
             case "ins-parque":
                 out.print(insParque(entrada));
                 break;
+            case "existe-parque-instalacion":
+                out.print(existeParqueInstalacion(entrada));
+                break;
+            case "existe-parque-instalacion-update":
+                out.print(existeParqueInstalacionUpdate(entrada));
+                break;
             case "get-parque-idparque":
                 out.print(getParqueIdParque(entrada));
                 break;
-                case "get-select-parque-idinstalacion":
+            case "get-select-parque-idinstalacion":
                 out.print(getSelectParqueIdInstalacion(entrada));
                 break;
             case "upd-parque":
@@ -121,7 +127,64 @@ public class ParqueController extends HttpServlet {
         salida.put("estado", "ok");
         return salida;
     }
-    
+
+    private JSONObject existeParqueInstalacion(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_EXISTE_PARQUE_INSTALACION("
+                + "'" + entrada.getString("nomparque") + "', "
+                + entrada.getInt("idinstalacion")
+                + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        int cantidad = 0;
+        try {
+            while (rs.next()) {
+                cantidad = rs.getInt("CANTIDAD");
+            }
+            salida.put("cantidad", cantidad);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.ParqueController.existeParqueInstalacion().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject existeParqueInstalacionUpdate(JSONObject entrada) {
+
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_EXISTE_PARQUE_INSTALACION_UPDATE("
+                + entrada.getInt("idparque") + ", "
+                + "'" + entrada.getString("newnomparque") + "', "
+                + entrada.getInt("newidinstalacion")
+                + ")";
+        Conexion c = new Conexion();
+        System.out.println(query);
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        int cantidad = 0;
+        try {
+            while (rs.next()) {
+                cantidad = rs.getInt("CANTIDAD");
+            }
+            salida.put("cantidad", cantidad);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.ParquueController.existeParqueInstalacionUpdate().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
     private JSONObject getSelectParqueIdInstalacion(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_PARQUES_IDINSTALACION(" + entrada.getInt("idinstalacion") + ")";

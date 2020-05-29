@@ -2,6 +2,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         getSelectInstalacion();
+        getSelectRed();
         getEmpalmes();
     });
 
@@ -28,6 +29,11 @@
                     </select>
                 </div>
                 <div class="form-group">
+                    <label for="select-red">Red</label>
+                    <select class="form-control-sm form-control small" id="select-red">
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="num-empalme" >Número Empalme</label>
                     <input type="text" class="form-control form-control-sm small" maxlength="200" id="num-empalme" />
                 </div>
@@ -46,6 +52,7 @@
                         <th># Empalme</th>
                         <th>Instalación</th>
                         <th>Bodega</th>
+                        <th>Red</th>
                         <th>Acción</th>
                     </tr>
                 </thead>

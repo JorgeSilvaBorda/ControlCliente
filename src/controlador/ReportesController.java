@@ -7,11 +7,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.LinkedList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.Conexion;
+import modelo.Util;
 
 public class ReportesController extends HttpServlet {
 
@@ -27,6 +30,9 @@ public class ReportesController extends HttpServlet {
             case "resumen-mes-cliente":
                 out.print(resumenMesCliente(entrada));
                 break;
+            case "resumen-mes-remarcadores-empalme":
+                out.print(resumenMesRemarcadoresEmpalme(entrada));
+                break;
         }
     }
 
@@ -34,6 +40,7 @@ public class ReportesController extends HttpServlet {
         JSONObject salida = new JSONObject();
         //Obtener Labels remarcadores
         String query = "CALL SP_GET_CONSUMO_13_MESES_REMARCADOR(" + entrada.getInt("numremarcador") + ", NOW())";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -43,17 +50,14 @@ public class ReportesController extends HttpServlet {
 
         try {
             while (rs.next()) {
-                labels.put(rs.getString("FECHA"));
+                labels.put(Util.invertirFecha(rs.getString("FECHA")));
                 datasetData.put(rs.getInt("CONSUMO"));
             }
 
             JSONObject dataset = new JSONObject();
             dataset.put("data", datasetData);
-            dataset.put("label", "Remarcador Nº: " + entrada.getInt("numremarcador"));
-            dataset.put("borderColor", "#3e95cd");
-            dataset.put("pointRadius", 1);
-            dataset.put("pointHoverRadius", 2);
-            dataset.put("fill", "false");
+            dataset.put("label", "Remarcador ID: " + entrada.getInt("numremarcador"));
+            dataset.put("borderWidth", "2");
             datasets.put(dataset);
             JSONObject data = new JSONObject();
             data.put("labels", labels);
@@ -79,12 +83,15 @@ public class ReportesController extends HttpServlet {
         JSONObject data = new JSONObject();
 
         String query = "CALL SP_GET_DIAS_MES_CURSO()";
+        System.out.println(query);
+        LinkedList<String> fechas = new LinkedList();
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         try {
             while (rs.next()) {
-                labels.put(rs.getString("FECHA"));
+                labels.put(Util.invertirFecha(rs.getString("FECHA")));
+                fechas.add(rs.getString("FECHA"));
             }
         } catch (JSONException | SQLException ex) {
             System.out.println("Problemas en controlador.ReportesController.resumenMesCliente().");
@@ -97,13 +104,15 @@ public class ReportesController extends HttpServlet {
 
         //Obtener Remarcadores asociados al cliente ----------------------------
         query = "CALL SP_GET_SELECT_REMARCADORES_CLIENTE(" + entrada.getInt("idcliente") + ")";
+        System.out.println(query);
         c = new Conexion();
         c.abrir();
 
         rs = c.ejecutarQuery(query);
         try {
             while (rs.next()) {
-                JSONObject dataset = getDataSetPorRemarcador(rs.getInt("NUMREMARCADOR"));
+                
+                JSONObject dataset = getDataSetPorRemarcador(rs.getInt("NUMREMARCADOR"), fechas);
                 datasets.put(dataset);
             }
             data.put("labels", labels);
@@ -121,30 +130,83 @@ public class ReportesController extends HttpServlet {
         return salida;
     }
 
-    private JSONObject getDataSetPorRemarcador(int numremarcador) {
+    private JSONObject resumenMesRemarcadoresEmpalme(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        JSONArray labels = new JSONArray();
+        JSONArray datasets = new JSONArray();
+        JSONObject data = new JSONObject();
+        JSONArray remarcadores = entrada.getJSONArray("remarcadores");
+        Iterator i = remarcadores.iterator();
+
+        while (i.hasNext()) {
+            JSONObject remarcador = (JSONObject) i.next();
+            int numremarcador = remarcador.getInt("numremarcador");
+            JSONObject d = getDatasetRemarcadorMes(numremarcador, entrada.getInt("mes"), entrada.getInt("anio"));
+            JSONObject dataset = d.getJSONObject("dataset");
+            labels = d.getJSONArray("labels");
+            dataset.put("label", "Remarcador ID: " + numremarcador);
+            dataset.put("borderWidth", "2");
+            datasets.put(dataset);
+        }
+        data.put("labels", labels);
+        data.put("datasets", datasets);
+        salida.put("data", data);
+        salida.put("estado", "ok");
+        return salida;
+    }
+
+    private JSONObject getDatasetRemarcadorMes(int numremarcador, int mes, int anio) {
         JSONObject dataset = new JSONObject();
-
-        dataset.put("label", "Nº: " + numremarcador);
-        //dataset.put("borderColor", "#3e95cd");
-        dataset.put("pointRadius", 2);
-        dataset.put("pointHoverRadius", 3);
-        dataset.put("fill", "false");
-
+        JSONObject salida = new JSONObject();
         JSONArray data = new JSONArray();
-        String query = "CALL SP_GET_CONSUMO_MES_ACTUAL_REMARCADOR(" + numremarcador + ")";
+        JSONArray labels = new JSONArray();
+        String query = "CALL SP_GET_DATASET_REMARCADOR_MES_ANIO(" + numremarcador + ", " + mes + ", " + anio + ")";
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
+        System.out.println(query);
         try {
             while (rs.next()) {
-                data.put(rs.getInt("EAC_KVAH"));
+                data.put(rs.getInt("CONSUMO"));
+                labels.put(rs.getDate("FECHA"));
             }
             dataset.put("data", data);
+            salida.put("dataset", dataset);
+            salida.put("labels", labels);
         } catch (JSONException | SQLException ex) {
             System.out.println("No se pudo obtener la data para el remarcador " + numremarcador);
             System.out.println(ex);
         }
         c.cerrar();
+        return salida;
+    }
+
+    @Deprecated
+    private JSONObject getDataSetPorRemarcador(int numremarcador, LinkedList<String> fechas) {
+        JSONObject dataset = new JSONObject();
+
+        dataset.put("label", "Remarcador ID: " + numremarcador);
+        dataset.put("borderWidth", "2");
+
+        JSONArray data = new JSONArray();
+
+        for (String fecha : fechas) {
+            String query = "SELECT FN_GET_CONSUMO_DIA_REMARCADOR(" + numremarcador + ", '" + fecha + "') AS CONSUMO";
+            Conexion c = new Conexion();
+            c.abrir();
+            ResultSet rs = c.ejecutarQuery(query);
+            try {
+                while (rs.next()) {
+                    data.put(rs.getInt("CONSUMO"));
+                }
+                dataset.put("data", data);
+            } catch (JSONException | SQLException ex) {
+                System.out.println("No se pudo obtener la data para el remarcador " + numremarcador);
+                System.out.println(ex);
+            }
+            c.cerrar();
+        }
+
         return dataset;
     }
 }

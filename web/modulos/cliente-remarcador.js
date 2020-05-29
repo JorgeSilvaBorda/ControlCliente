@@ -6,7 +6,7 @@ $(document).ready(function () {
 
 function getSelectClientes() {
     var datos = {
-        tipo: 'get-select-clientes'
+        tipo: 'get-select-clientes-nombre'
     };
 
     $.ajax({
@@ -128,6 +128,36 @@ function quitar(idremarcador, idcliente) {
             if (obj.estado === 'ok') {
                 getRemarcadoresLibres();
                 getRemarcadoresAsignadosIdCliente(idcliente);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function verAsignados(){
+    var datos = {
+        tipo: 'get-remarcadores-asignados'
+    };
+    $.ajax({
+        url: 'RemarcadorController',
+        type: 'post',
+        data:{
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#modal-title').html("Remarcadores asignados");
+                
+                $('.dataTable#tabla-remarcadores-asignados').DataTable().destroy();
+                $('#modal-body').html(obj.tabla);
+                $('#tabla-remarcadores-asignados').DataTable(OPCIONES_DATATABLES);
+                $('#modal').modal('show');
+                
             }
         },
         error: function (a, b, c) {

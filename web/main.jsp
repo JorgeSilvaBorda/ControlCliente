@@ -39,24 +39,13 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-dark bg-dark navbar-fixed fixed-top">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-fixed fixed-top">
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                             <span class="navbar-toggler-icon"></span>
-                        </button> <a class="navbar-brand" href="#">Bodenor</a>
+                        </button> 
+                        <a class="navbar-brand" href="#"><img src="img/logo.jpg" height="30em;" alt="Bodenor FlexCenter"></a>
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul class="navbar-nav">
-                                <!-- Usuario -->
-                                <!--
-                                <li class='nav-item dropdown'>
-                                    <a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Reportes</a>
-                                    <div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>
-                                        <a onclick='cargarModulo("emision-boleta");' class='dropdown-item' href='#'>Emisión Boleta</a> 
-                                        <a onclick='cargarModulo("consumo-cliente-remarcador");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> 
-                                        <a onclick='cargarModulo("consumo-total-cliente");' class='dropdown-item' href='#'>Consumo Total Cliente</a> 
-                                    </div>
-                                </li>
-                                -->
-
                                 <%
                                     String idtipousuario = session.getAttribute("idtipousuario").toString();
                                     if (idtipousuario != null) {
@@ -64,7 +53,7 @@
                                             out.print("<li class='nav-item dropdown'>\n"
                                                     + "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Reportes</a>\n"
                                                     + "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
-                                                    + "<a onclick='cargarModulo(\"boleta-remarcador\");' class='dropdown-item' href='#'>Emisión Boleta Remarcador</a> \n"
+                                                    // + "<a onclick='cargarModulo(\"boleta-remarcador\");' class='dropdown-item' href='#'>Emisión Boleta Remarcador</a> \n"
                                                     // + "<a onclick='cargarModulo(\"boleta-cliente\");' class='dropdown-item' href='#'>Emisión Boleta Cliente</a> \n"
                                                     + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-mes-cliente\");' class='dropdown-item' href='#'>Resumen Mes Cliente</a> \n"
@@ -74,16 +63,18 @@
                                             out.print("<li class='nav-item dropdown'>\n"
                                                     + "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Reportes</a>\n"
                                                     + "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
-                                                    + "<a onclick='cargarModulo(\"boleta-remarcador\");' class='dropdown-item' href='#'>Emisión Boleta Remarcador</a> \n"
-                                                    + "<a onclick='cargarModulo(\"boleta-cliente\");' class='dropdown-item' href='#'>Emisión Boleta Cliente</a> \n"
+                                                    // + "<a onclick='cargarModulo(\"boleta-remarcador\");' class='dropdown-item' href='#'>Emisión Boleta Remarcador</a> \n"
+                                                    // + "<a onclick='cargarModulo(\"boleta-cliente\");' class='dropdown-item' href='#'>Emisión Boleta Cliente</a> \n"
                                                     + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-mes-cliente\");' class='dropdown-item' href='#'>Resumen Mes Cliente</a> \n"
+                                                    + "<a onclick='cargarModulo(\"resumen-mes-remarcadores\");' class='dropdown-item' href='#'>Resumen Mes Remarcadores</a> \n"
                                                     + "</div>\n"
                                                     + "</li>");
                                             out.print("<li class='nav-item dropdown'>\n"
                                                     + "                                    <a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Operaciones</a>\n"
                                                     + "                                    <div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
                                                     + "                                        <a class='dropdown-item' onclick='cargarModulo(\"cliente-remarcador\");' href='#'>Asignar remarcador a cliente</a> \n"
+                                                    + "                                        <a class='dropdown-item' onclick='cargarModulo(\"registros-mes-remarcador\");' href='#'>Registros Mes Remarcador</a> \n"
                                                     + "                                    </div>\n"
                                                     + "                                </li>\n"
                                                     + "                                <li class='nav-item dropdown'>\n"
@@ -102,39 +93,16 @@
                                         }
                                     }
                                 %>
-
-                                <!-- /Usuario -->
-                                <!-- Admin -->
-                                <!--
-                                <li class='nav-item dropdown'>
-                                    <a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Operaciones</a>
-                                    <div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>
-                                        <a class='dropdown-item' onclick='cargarModulo("cliente-remarcador");' href='#'>Asignar remarcador a cliente</a> 
-                                    </div>
-                                </li>
-                                <li class='nav-item dropdown'>
-                                    <a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown' >Mantenedores</a>
-                                    <div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>
-                                        <a class='dropdown-item' onclick='cargarModulo("usuario");' href='#'>Usuario</a> 
-                                        <div class='dropdown-divider'></div> 
-                                        <a class='dropdown-item' onclick='cargarModulo("instalacion");' href='#'>Instalación</a> 
-                                        <a class='dropdown-item' onclick='cargarModulo("parque");' href='#'>Bodega</a>
-                                        <a class='dropdown-item' onclick='cargarModulo("empalme");' href='#'>Empalme</a>
-                                        <a class='dropdown-item' onclick='cargarModulo("remarcador");' href='#'>Remarcador</a>
-                                        <a class='dropdown-item' onclick='cargarModulo("cliente");' href='#'>Cliente</a>
-                                        <a class='dropdown-item' onclick='cargarModulo("tarifa");' href='#'>Tarifa</a>
-                                    </div>
-                                </li>
-                                -->
                             </ul>
-                            <!-- /Admin -->
                             <ul class="navbar-nav ml-md-auto">
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown">Usuario</a>
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown">
+                                        <% out.print(session.getAttribute("nombres") + " " + session.getAttribute("appaterno")); %>
+                                    </a>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                                        <a class="dropdown-item" href="#">Cerrar Sesión</a> 
+                                        <a class="dropdown-item" onclick="salir();" href="#">Salir</a> 
                                         <div class="dropdown-divider"></div> 
-                                        <a class="dropdown-item" href="#">Cambiar Contraseña</a> 
+                                        <a onclick="cargarModulo('cambio-pass');" class="dropdown-item" href="#">Cambiar Contraseña</a> 
                                     </div>
                                 </li>
                             </ul>

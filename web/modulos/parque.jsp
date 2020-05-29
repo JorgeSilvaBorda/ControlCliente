@@ -27,8 +27,8 @@
                     <input type="text" class="form-control form-control-sm small" maxlength="200" id="nom-parque" />
                 </div>
                 <div class="form-group">
-                    <button onclick="insParque(getParques);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
-                    <button onclick="saveParque(getParques);" hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
+                    <button onclick="existeParqueInstalacion();" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
+                    <button onclick="existeParqueInstalacionUpdate();" hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
                     <button onclick="limpiar();" type="button" class="btn btn-default btn-sm" id="btn-limpiar">Limpiar</button>
                 </div>
             </form>

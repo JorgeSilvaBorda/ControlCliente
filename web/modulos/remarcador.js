@@ -76,6 +76,33 @@ function getSelectEmpalmeIdParque(idparque) {
     });
 }
 
+function getSelectEmpalmeIdParqueAutoSelect(idparque, valautoselect) {
+    var datos = {
+        tipo: 'get-select-empalme-idparque',
+        idparque: idparque
+    };
+    $.ajax({
+        url: 'EmpalmeController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-empalme').html('');
+                $('#select-empalme').html(obj.options);
+                $('#select-empalme').val(valautoselect);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
 function getSelectBodegaIdInstalacion(idinstalacion) {
     var datos = {
         tipo: 'get-select-parque-idinstalacion',
@@ -102,6 +129,33 @@ function getSelectBodegaIdInstalacion(idinstalacion) {
     });
 }
 
+function getSelectBodegaIdInstalacionAutoSelect(idinstalacion, valautoselect) {
+    var datos = {
+        tipo: 'get-select-parque-idinstalacion',
+        idinstalacion: idinstalacion
+    };
+    $.ajax({
+        url: 'ParqueController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-parque').html('');
+                $('#select-parque').html(obj.options);
+                $('#select-parque').val(valautoselect);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
 function validarCampos() {
     var idempalme = $('#select-empalme').val();
     var idparque = $('#select-parque').val();
@@ -115,7 +169,7 @@ function validarCampos() {
         alert("Debe seleccionar una bodega.");
         return false;
     }
-    if (numremarcador.length > 1) {
+    if (numremarcador.length < 1) {
         alert("Debe indicar un número de remarcador válido (Largo mínimo 1).");
         return false;
     }
@@ -147,7 +201,7 @@ function insRemarcador(callback) {
             success: function (res) {
                 var obj = JSON.parse(res);
                 if (obj.estado === 'ok') {
-                    limpiar();
+                    limpiarAfterInsert();
                     callback();
                 }
             },
@@ -181,7 +235,9 @@ function activarEdicion(boton) {
             console.log(obj);
             if (obj.estado === 'ok') {
                 armarRemarcador(obj.remarcador);
-                $('#select-parque').html(obj.remarcador.idparque);
+                $('#select-instalacion').val(obj.remarcador.idinstalacion);
+                getSelectBodegaIdInstalacionAutoSelect(obj.remarcador.idinstalacion, obj.remarcador.idparque);
+                getSelectEmpalmeIdParqueAutoSelect(obj.remarcador.idparque, obj.remarcador.idempalme);
             }
         },
         error: function (a, b, c) {
@@ -243,10 +299,19 @@ function armarRemarcador(remarcador) {
 
 function limpiar() {
     ID_REMARCADOR_EDICION = null;
+    $('#select-instalacion').val('0');
     $('#num-remarcador').val('');
-    $('#select-empalme').val('0');
+    $('#select-empalme').html('');
     $('#modulos').val('');
     $('#select-parque').html('');
+    $('#btn-guardar').attr("hidden", "hidden");
+    $('#btn-insert').removeAttr("hidden");
+}
+
+function limpiarAfterInsert() {
+    ID_REMARCADOR_EDICION = null;
+    $('#num-remarcador').val('');
+    $('#modulos').val('');
     $('#btn-guardar').attr("hidden", "hidden");
     $('#btn-insert').removeAttr("hidden");
 }

@@ -46,16 +46,14 @@ public class UsuarioController extends HttpServlet {
             case "upd-usuario":
                 out.print(updUsuario(entrada.getJSONObject("usuario")));
                 break;
-            /*    
-            case "del-usuario":
-                out.print(delUsuario(entrada.getInt("idusuario")));
-                break;
-             */
             case "reset-pass-usuario":
                 out.print(resetPassUsuario(entrada));
                 break;
             case "cambio-pass":
                 out.print(cambioPass(entrada.getString("rutfull"), entrada.getString("claveAnterior"), entrada.getString("claveNueva"), request));
+                break;
+            case "del-usuario":
+                out.print(delUsuario(entrada));
                 break;
         }
     }
@@ -135,7 +133,7 @@ public class UsuarioController extends HttpServlet {
                 filas += "<td>" + rs.getString("APMATERNO") + "</td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDTIPOUSUARIO") + "' />" + rs.getString("NOMTIPOUSUARIO") + "</td>";
                 filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
-                        //+ "<button style='font-size:10px;  padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-success' onclick='modalCambiar(this)'>Cambio pass</button>"
+                        + "<button style='font-size:10px;  padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>"
                         + "</td>";
                 filas += "</tr>";
             }
@@ -255,17 +253,6 @@ public class UsuarioController extends HttpServlet {
         return salida;
     }
 
-    private JSONObject delUsuario(int idusuario) {
-        JSONObject salida = new JSONObject();
-        String query = "CALL SP_DEL_USUARIO(" + idusuario + ")";
-        Conexion c = new Conexion();
-        c.abrir();
-        c.ejecutar(query);
-        c.cerrar();
-        salida.put("estado", "ok");
-        return salida;
-    }
-
     private JSONObject resetPassUsuario(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String rutfullusuario = entrada.getString("rutfullusuario");
@@ -315,6 +302,19 @@ public class UsuarioController extends HttpServlet {
             salida.put("estado", "error");
             salida.put("mensaje", "La contraseña ingresada no corresponde con la registrada. Intente nuevamente");
         }
+        return salida;
+    }
+    
+    private JSONObject delUsuario(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_DEL_USUARIO("
+                + entrada.getInt("idusuario") + ""
+                + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
         return salida;
     }
 }

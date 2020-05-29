@@ -148,6 +148,37 @@ function saveUsuario(callback) {
     });
 }
 
+function eliminar(boton) {
+    var fila = $(boton).parent().parent();
+    var idusuario = $(fila).children(0).children(0).val();
+
+    if (confirm("Está seguro que desea eliminar este Usuario?")) {
+        var datos = {
+            tipo: 'del-usuario',
+            idusuario: idusuario
+        };
+
+        $.ajax({
+            url: 'UsuarioController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (res) {
+                var obj = JSON.parse(res);
+                if (obj.estado === 'ok') {
+                    getUsuarios();
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            }
+        });
+    }
+}
+
 function limpiar() {
     ID_USUARIO_EDICION = null;
     $('#select-tipo-usuario').val('0');

@@ -170,6 +170,8 @@ public class RemarcadorController extends HttpServlet {
         tabla += "<th>Cliente</th>";
         tabla += "<th>Módulos</th>";
         tabla += "<th>Instalación</th>";
+        tabla += "<th>Lectura<br />Anterior</th>";
+        tabla += "<th>Lectura<br />Actual</th>";
         tabla += "<th>Consumo (kW)</th>";
         tabla += "<th>Acción</th>";
         tabla += "</tr></thead><tbody>";
@@ -183,8 +185,10 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td><span>" + rs.getString("NOMCLIENTE") + "</span></td>";
                 filas += "<td><span>" + rs.getString("MODULOS") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
+                filas += "<td><span>" + rs.getString("LECTURAANTERIOR") + "</span></td>";
+                filas += "<td><span>" + rs.getString("LECTURAACTUAL") + "</span></td>";
                 filas += "<td><span>" + rs.getInt("CONSUMO") + "</span></td>";
-                filas += "<td><button type='button' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
+                filas += "<td><button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("fechaini") + "\", \"" + entrada.getString("fechafin") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
                 filas += "</tr>";
                 kwtotal += rs.getInt("CONSUMO");
                 remarcador = new JSONObject();
@@ -197,23 +201,23 @@ public class RemarcadorController extends HttpServlet {
                 remarcadores.put(remarcador);
             }
             filas += "<tr class='table-info'>";
-            filas += "<td colspan='5' style='text-align: right; padding-right:5px; font-weight: bold;'>Consumo Total Remarcadores: </td>";
+            filas += "<td colspan='7' style='text-align: right; padding-right:5px; font-weight: bold;'>Consumo Total Remarcadores: </td>";
             filas += "<td>" + kwtotal + " kW</td>";
             filas += "</tr>";
             
             filas += "<tr>";
-            filas += "<td colspan='5' style='vertical-align: middle; text-align: right; padding-right:5px; font-weight: bold;'>Consumo Facturado del Empalme: " + entrada.getString("numempalme") + "</td>";
+            filas += "<td colspan='7' style='vertical-align: middle; text-align: right; padding-right:5px; font-weight: bold;'>Consumo Facturado del Empalme: " + entrada.getString("numempalme") + "</td>";
             filas += "<td><input type='number' onkeyup='calcularDiferencia();' class='form-control form-control-sm small' style='font-size: 0.9em; padding-top: 0px; padding-bottom: 0px;' id='consumo-facturado-empalme'/></td>";
             filas += "</tr>";
             
             filas += "<tr>";
-            filas += "<td colspan='5' style='text-align: right; padding-right:5px; font-weight: bold;'>KW Diferencia: </td>";
+            filas += "<td colspan='7' style='text-align: right; padding-right:5px; font-weight: bold;'>KW Diferencia: </td>";
             filas += "<td><span id='kw-diferencia'></span></td>";
             filas += "</tr>";
             
             
             filas += "<tr>";
-            filas += "<td colspan='5' style='text-align: right; padding-right:5px; font-weight: bold;'>% Diferencia: </td>";
+            filas += "<td colspan='7' style='text-align: right; padding-right:5px; font-weight: bold;'>% Diferencia: </td>";
             filas += "<td><span id='porc-diferencia'></span></td>";
             filas += "</tr>";
             

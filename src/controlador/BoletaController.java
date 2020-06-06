@@ -100,4 +100,13 @@ public class BoletaController extends HttpServlet {
         return tabla;
     }
     
+    private JSONObject armarPreBoletaRemarcador(JSONObject entrada){
+        JSONObject salida = new JSONObject();
+        int idremarcador = entrada.getInt("idremarcador");
+        String fechaini = entrada.getString("fechaini");
+        String fechafin = entrada.getString("fechafin");
+        return salida;
+        
+    }
+    
 }

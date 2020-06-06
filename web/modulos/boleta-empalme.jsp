@@ -6,6 +6,30 @@
 
 </script>
 <div class="container-fluid">
+    <!-- Modal -->
+    <div class="modal fade" id="modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- Header -->
+                <div class="modal-header">
+                    <h4 id="modal-title" class="modal-title"></h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Body -->
+                <div id="modal-body" class="modal-body">
+
+                </div>
+
+                <!-- Modal footer -->
+                <div id="modal-footer" class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-12">
             <div class="page-header">
@@ -26,7 +50,7 @@
                     <select class="form-control form-control-sm small" id="select-empalme" >
                     </select>
                 </div>
-                
+
                 <div class="form-group" style="">
                     <label for="fecha-ini">Fecha Ini</label>
                     <input type="date" id="fecha-ini" class="form-control form-control-sm"/>

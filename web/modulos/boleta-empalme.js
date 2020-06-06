@@ -141,6 +141,12 @@ function buscar() {
     }
 }
 
+function calcular(idremarcador, consumo, fechaini, fechafin, lecturaanterior, lecturaactual){
+    
+    $('#modal').modal();
+    $('#modal-body').load("modulos/boleta-empalme/mask-boleta-empalme.jsp?idremarcador=" + idremarcador + "&consumo=" + consumo + "&fechaini='" + fechaini + "'&fechafin='" + fechafin + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual);
+}
+
 function limpiar(){
     KWTOTAL = null;
 }

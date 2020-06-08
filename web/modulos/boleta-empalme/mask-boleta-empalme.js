@@ -65,10 +65,10 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 $('#fecha-emision').html(formatFechaDDMMYYYY(FECHAFIN) + '<br /><br />');
                 var dt = new Date(FECHAFIN);
                 var nextfecha = new Date(dt.setMonth(dt.getMonth() + 1));
-                nextfecha = formatFechaDDMMYYYY(nextfecha);
+                nextfecha = formatFechaDDMMYYYY(formatFechaYYYYMMDD(nextfecha));
                 $('#fecha-prox-lectura').html(nextfecha + '<br /><br />');
                 $('#direccion-suministro').html(remcli.direccion + '<br /><br />');
-                //$('#tarifa').html($('#select-tarifa option:selected').html() + '<br /><br />');
+
                 $('#desde').html(formatFechaDDMMYYYY(FECHAINI) + '<br /><br />');
                 $('#hasta').html(formatFechaDDMMYYYY(FECHAFIN) + '<br /><br />');
                 $('#suministradas').html(formatMiles(remcli.dmps) + '<br /><br />');
@@ -119,36 +119,10 @@ function armarDetalleTarifa() {
 }
 
 function generar() {
-    html2canvas(document.getElementById('cont-boleta'), {
-        onrendered: function (canvas) {
-            var data = canvas.toDataURL();
-            var docDefinition = {
-                content: [{
-                        image: data,
-                        width: 1000
-                    }]
-            };
-            var pdfDoc = pdfMake.createPdf(docDefinition);
-            var docDefinition = getRWABELPDF(data);
-            var createPdf = pdfMake.createPdf(docDefinition);
-            var base64data = null;
-
-            createPdf.getBase64(function (encodedString) {
-                base64data = encodedString;
-                console.log(base64data);
-
-
-                var byteCharacters = atob(base64data);
-                var byteNumbers = new Array(byteCharacters.length);
-                for (var i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                }
-                var byteArray = new Uint8Array(byteNumbers);
-                var file = new Blob([byteArray], {type: 'application/pdf;base64'});
-                var fileURL = URL.createObjectURL(file);
-                window.open(fileURL);
-            });
-        }
-    });
-
+    // Choose the element that our invoice is rendered in.
+    const element = document.getElementById("modal-body");
+    // Choose the element and save the PDF for our user.
+    html2pdf()
+            .from(element)
+            .save("boleta.pdf");
 }

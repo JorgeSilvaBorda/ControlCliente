@@ -37,7 +37,8 @@
         <script src="js/html2canvas.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
         <script src="js/pdfmake.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
         <script src="js/vfs_fonts.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
-
+        
+        <script src="js/html2pdf.bundle.js" type="text/javascript"></script>
     </head>
     <body>
         <div class="container-fluid">

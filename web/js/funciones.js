@@ -18,7 +18,16 @@ function colorDinamicoArr() {
     return [r, g, b];
 }
 
-function formatFechaDDMMYYYY(fecha){
+function formatFechaYYYYMMDD(fecha) {
+    console.log(fecha);
+    const date = new Date(fecha);
+    const dateTimeFormat = new Intl.DateTimeFormat('es', {year: 'numeric', month: '2-digit', day: '2-digit'});
+    const [{value: month}, , {value: day}, , {value: year}] = dateTimeFormat.formatToParts(date);
+
+    return (`${year}-${day}-${month}`);
+}
+
+function formatFechaDDMMYYYY(fecha) {
     var fec = fecha.toString().split("-");
     return fec[2] + "-" + fec[1] + "-" + fec[0];
 }

@@ -136,10 +136,9 @@ public class BoletaController extends HttpServlet {
         System.out.println(query);
         String tabla = "<thead>"
                 + "<tr>"
-                + "<th colspan='2' style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white; '>"
+                + "<th colspan='3' style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;'>"
                 + "Cargos"
                 + "</th>"
-                + "<th></th>"
                 + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white; '>"
                 + "Valores ($)"
                 + "</th>"
@@ -151,12 +150,10 @@ public class BoletaController extends HttpServlet {
         try{
             while(rs.next()){
                 tabla += "<tr>";
-                tabla += "<td colspan='2' style='padding-right: 100px; font-weight: bold;'>";
+                tabla += "<td colspan='3' style='padding-right: 100px; font-weight: bold;'>";
                 tabla += rs.getString("NOMCONCEPTO") + " (" + rs.getString("UMEDIDA") + ")";
                 tabla += "</td>";
-                tabla += "<td></td>";
                 tabla += "<td>";
-                //tabla += rs.getInt("TOTAL");
                 tabla += Util.formatMiles(rs.getInt("TOTAL"));
                 tabla += "</td>";
                 tabla += "</tr>";
@@ -166,6 +163,7 @@ public class BoletaController extends HttpServlet {
                     exento = rs.getInt("TOTAL");
                 }
             }
+            
             tabla += "<tr>";
             tabla += "<td colspan='3' style='text-align: right; padding-right: 25px; font-weight: bold;'>";
             tabla += "Total Monto Neto ";

@@ -17,14 +17,18 @@
 <style>
     .modal-lg{
         max-width: 70%;
+        max-height: 120%;
+    }
+    table.print-friendly tr td, table.print-friendly tr th {
+        page-break-inside: avoid;
     }
 </style>
-<div class="container-fluid" id="cont-boleta">
-    <div class="row">
+<div class="container-fluid" id="cont-boleta" style="height: 100%;">
+    <div class="row" style="height: 100%;">
         <div class="col-md-3">
             <div class="form-group" style="font-size: 11px;">
-                <label for="select-tarifa">Tarifa: </label>
-                <select onchange="armarDetalleTarifa();" class="form-control form-control-sm small" style="font-size: 11px;" id="select-tarifa"></select>
+                <label data-html2canvas-ignore="true" for="select-tarifa">Tarifa: </label>
+                <select data-html2canvas-ignore="true" onchange="armarDetalleTarifa();" class="form-control form-control-sm small" style="font-size: 11px;" id="select-tarifa"></select>
             </div>
         </div>
         <div class="col-md-6"></div>
@@ -100,10 +104,7 @@
             </table>
         </div>    
     </div>
-</div>
-<div id="contenido-boleta-empalme">
-
-    <div class="container-fluid">
+    <div class="row">
         <div class="col-md-9 float-left" style="position: absolute; top: 5em; left: 0px;">
             <table style="border-collapse: collapse; font-size: 12px;" id="cabecera">
                 <tbody>
@@ -179,7 +180,7 @@
             </table>
             <br />
             <h5><strong>Detalle de consumo del remarcador</strong></h5>
-            <table style="border-collapse: collapse; border: 3px solid white; font-size: 12px; background-color: #E9EFF8;" id="detalle-remarcador">
+            <table style="border-collapse: collapse; border: 3px solid white; font-size: 11px; background-color: #E9EFF8;" id="detalle-remarcador">
                 <thead>
                     <tr>
                         <th style="padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white; ">
@@ -218,17 +219,7 @@
                 </tbody>
             </table>
             <br />
-            <table style='border-collapse: collapse; border: 3px solid white; font-size: 12px; background-color: #E9EFF8;' id='detalle-tarifa-remarcador'>
-                <thead>
-                    <tr>
-                        <th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white; '>
-                            Cargos
-                        </th>
-                        <th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white; '>
-                            Valores
-                        </th>
-                    </tr>
-                </thead>
+            <table style='border-collapse: collapse; border: 3px solid white; font-size: 11px; background-color: #E9EFF8; width: 100%; height:100%;' class="print-friendly" id='detalle-tarifa-remarcador'>
             </table>
         </div>
 

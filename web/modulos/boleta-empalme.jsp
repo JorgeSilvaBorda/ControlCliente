@@ -18,7 +18,7 @@
                 </div>
 
                 <!-- Body -->
-                <div id="modal-body" class="modal-body"  style="height: 45em;">
+                <div id="modal-body" class="modal-body" style="height: 800px; width:1000px;">
 
                 </div>
 
@@ -61,8 +61,26 @@
                     <input type="date" id="fecha-fin" class="form-control form-control-sm"/>
                 </div>
                 <div class="form-group" style="">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="buscar();" >Buscar</button>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="buscar();" >Buscar</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="loader" style="display: none; top: -1.5em; position: absolute;"><!-- Contenedor del Spinner -->
+                                <br />
+                                <div class="ldio-sa9px9nknjc"> <!-- El Spinner -->
+                                    <div>
+                                    </div>
+                                    <div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- button type="button" class="btn btn-outline-primary btn-sm float-right" onclick="limpiar()">Limpiar</button-->
+
                 </div>
             </form>
         </div>

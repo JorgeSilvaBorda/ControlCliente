@@ -49,6 +49,7 @@ function getRemarcadoresNumEmpalmeBoleta() {
                 $('.dataTable').DataTable().destroy();
                 $('#detalle-remarcadores').html(obj.tabla);
                 KWTOTAL = obj.kwtotal;
+                $('.loader').fadeOut(500);
             }
         },
         error: function (a, b, c) {
@@ -136,6 +137,7 @@ function calcularDiferencia(){
 function buscar() {
     if (validarCampos()) {
         $('#btn-buscar').attr("disabled", "disabled");
+        $('.loader').fadeIn(500);
         //$('.loader').fadeIn(500);
         getRemarcadoresNumEmpalmeBoleta();
     }

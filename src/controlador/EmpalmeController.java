@@ -29,6 +29,12 @@ public class EmpalmeController extends HttpServlet {
             case "get-select-empalme-idparque":
                 out.print(getSelectEmpalmeIdParque(entrada));
                 break;
+            case "get-select-empalmes-idinstalacion":
+                out.print(getSelectEmpalmesIdInstalacion(entrada));
+                break;
+            case "get-select-empalmes-numempalmes-idinstalacion":
+                out.print(getSelectEmpalmesNumEmpalmesIdInstalacion(entrada));
+                break;
             case "ins-empalme":
                 out.print(insEmpalme(entrada));
                 break;
@@ -111,6 +117,36 @@ public class EmpalmeController extends HttpServlet {
         return salida;
     }
 
+    private JSONObject getSelectEmpalmesIdInstalacion(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_EMPALMES_IDINSTALACION(" + entrada.getInt("idinstalacion") + ")";
+
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDEMPALME", "NUMEMPALME");
+        salida.put("options", options);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getSelectEmpalmesNumEmpalmesIdInstalacion(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_EMPALMES_NUMEMPALMES_IDINSTALACION(" + entrada.getInt("idinstalacion") + ")";
+
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "NUMEMPALME", "NUMEMPALME");
+        salida.put("options", options);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+
     private JSONObject existeEmpalmeInstalacion(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_EXISTE_EMPALME_EN_INSTALACION("
@@ -140,7 +176,7 @@ public class EmpalmeController extends HttpServlet {
     }
 
     private JSONObject existeEmpalmeInstalacionUpdate(JSONObject entrada) {
-        
+
         JSONObject salida = new JSONObject();
         String query = "CALL SP_EXISTE_EMPALME_EN_INSTALACION_UPDATE("
                 + entrada.getInt("idempalme") + ", "

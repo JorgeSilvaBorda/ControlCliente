@@ -34,6 +34,11 @@
         <script src="js/pivot.min.js" type="text/javascript"></script>
         <script src="js/Chart.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 
+        <script src="js/html2canvas.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
+        <script src="js/pdfmake.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
+        <script src="js/vfs_fonts.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
+        
+        <script src="js/html2pdf.bundle.js" type="text/javascript"></script>
     </head>
     <body>
         <div class="container-fluid">
@@ -53,7 +58,7 @@
                                             out.print("<li class='nav-item dropdown'>\n"
                                                     + "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Reportes</a>\n"
                                                     + "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
-                                                    // + "<a onclick='cargarModulo(\"boleta-remarcador\");' class='dropdown-item' href='#'>Emisión Boleta Remarcador</a> \n"
+                                                    + "<a onclick='cargarModulo(\"boleta-empalme\");' class='dropdown-item' href='#'>Emisión Boleta Empalme</a> \n"
                                                     // + "<a onclick='cargarModulo(\"boleta-cliente\");' class='dropdown-item' href='#'>Emisión Boleta Cliente</a> \n"
                                                     + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-mes-cliente\");' class='dropdown-item' href='#'>Resumen Mes Cliente</a> \n"
@@ -63,7 +68,7 @@
                                             out.print("<li class='nav-item dropdown'>\n"
                                                     + "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Reportes</a>\n"
                                                     + "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
-                                                    // + "<a onclick='cargarModulo(\"boleta-remarcador\");' class='dropdown-item' href='#'>Emisión Boleta Remarcador</a> \n"
+                                                    + "<a onclick='cargarModulo(\"boleta-empalme\");' class='dropdown-item' href='#'>Emisión Boleta Empalme</a> \n"
                                                     // + "<a onclick='cargarModulo(\"boleta-cliente\");' class='dropdown-item' href='#'>Emisión Boleta Cliente</a> \n"
                                                     + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-mes-cliente\");' class='dropdown-item' href='#'>Resumen Mes Cliente</a> \n"
@@ -97,7 +102,7 @@
                             <ul class="navbar-nav ml-md-auto">
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown">
-                                        <% out.print(session.getAttribute("nombres") + " " + session.getAttribute("appaterno")); %>
+                                        <% out.print(session.getAttribute("nombres") + " " + session.getAttribute("appaterno"));%>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                                         <a class="dropdown-item" onclick="salir();" href="#">Salir</a> 

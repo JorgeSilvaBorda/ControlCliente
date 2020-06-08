@@ -142,7 +142,6 @@ function buscar() {
 }
 
 function calcular(idremarcador, numremarcador, consumo, fechaini, fechafin, lecturaanterior, lecturaactual){
-    
     $('#modal').modal();
     $('#modal-body').load("modulos/boleta-empalme/mask-boleta-empalme.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&consumo=" + consumo + "&fechaini='" + fechaini + "'&fechafin='" + fechafin + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual);
 }

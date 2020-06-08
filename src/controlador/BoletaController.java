@@ -156,7 +156,8 @@ public class BoletaController extends HttpServlet {
                 tabla += "</td>";
                 tabla += "<td></td>";
                 tabla += "<td>";
-                tabla += rs.getInt("TOTAL");
+                //tabla += rs.getInt("TOTAL");
+                tabla += Util.formatMiles(rs.getInt("TOTAL"));
                 tabla += "</td>";
                 tabla += "</tr>";
                 if(rs.getInt("IDCONCEPTO") != 2){
@@ -170,7 +171,7 @@ public class BoletaController extends HttpServlet {
             tabla += "Total Monto Neto ";
             tabla += "</td>";
             tabla += "<td>";
-            tabla += total;
+            tabla += Util.formatMiles(total);
             tabla += "</td>";
             tabla += "</tr>";
             
@@ -179,7 +180,7 @@ public class BoletaController extends HttpServlet {
             tabla += "Total I.V.A. ";
             tabla += "</td>";
             tabla += "<td>";
-            tabla += Integer.parseInt(Double.toString(total * 0.19).split("\\.")[0]);
+            tabla += Util.formatMiles(Integer.parseInt(Double.toString(total * 0.19).split("\\.")[0]));
             tabla += "</td>";
             tabla += "</tr>";
             
@@ -188,7 +189,7 @@ public class BoletaController extends HttpServlet {
             tabla += "Monto Exento ";
             tabla += "</td>";
             tabla += "<td>";
-            tabla += exento;
+            tabla += Util.formatMiles(exento);
             tabla += "</td>";
             tabla += "</tr>";
             
@@ -197,9 +198,19 @@ public class BoletaController extends HttpServlet {
             tabla += "Monto Total ";
             tabla += "</td>";
             tabla += "<td>";
-            tabla += total + Integer.parseInt(Double.toString(total * 0.19).split("\\.")[0]) + exento;
+            tabla += Util.formatMiles(total + Integer.parseInt(Double.toString(total * 0.19).split("\\.")[0]) + exento);
             tabla += "</td>";
             tabla += "</tr>";
+            
+            tabla += "<tr style='border-top: 2px solid white;'>";
+            tabla += "<td colspan='3' style='border-top: 2px solid white;background-color: white; text-align: right; padding-right: 25px; font-weight: bold;'>";
+            tabla += "Total a Pagar ";
+            tabla += "</td>";
+            tabla += "<td style='border-top: 2px solid white;'>";
+            tabla += Util.formatMiles(total + Integer.parseInt(Double.toString(total * 0.19).split("\\.")[0]) + exento);
+            tabla += "</td>";
+            tabla += "</tr>";
+            
             tabla += "</tbody>";
             tabla += "</table>";
         }catch (SQLException ex) {

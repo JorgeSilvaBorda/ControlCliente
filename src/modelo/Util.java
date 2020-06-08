@@ -9,7 +9,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.Properties;
+import static javax.management.Query.value;
 
 public class Util {
 
@@ -103,26 +107,21 @@ public class Util {
         return validacion;
     }
 
-    public static String formatMiles(String numero) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 1, len = builder.length(); i < len; i++) {
-            if (i % 4 == 0) {
-                builder.insert(len = builder.length() - i, '.');
-                len = builder.length();
-            }
-        }
-        return builder.toString();
+    public static String formatMiles(int numero) {
+        String pattern = "###,###,###.##";
+        //Si no le paso ningun Locale, toma el del sistema, que en mi caso es Locale("es","MX");
+        DecimalFormat myFormatter = new DecimalFormat(pattern);
+        String output = myFormatter.format(numero);
+        return output;
     }
     
-    public static String formatMiles(int numero) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 1, len = builder.length(); i < len; i++) {
-            if (i % 4 == 0) {
-                builder.insert(len = builder.length() - i, '.');
-                len = builder.length();
-            }
-        }
-        return builder.toString();
+    public static String formatMiles(String numero) {
+        int num = Integer.parseInt(numero);
+        String pattern = "###,###,###.##";
+        //Si no le paso ningun Locale, toma el del sistema, que en mi caso es Locale("es","MX");
+        DecimalFormat myFormatter = new DecimalFormat(pattern);
+        String output = myFormatter.format(num);
+        return output;
     }
 
     public static String armarBody(ResultSet rs, String[] arrCampos) throws SQLException {
@@ -171,8 +170,8 @@ public class Util {
         }
         return capitalizada.trim();
     }
-    
-    public static String invertirFecha(String fecha){
+
+    public static String invertirFecha(String fecha) {
         String[] campos = fecha.split("-");
         return campos[2] + "-" + campos[1] + "-" + campos[0];
     }

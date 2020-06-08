@@ -18,13 +18,14 @@
                 </div>
 
                 <!-- Body -->
-                <div id="modal-body" class="modal-body">
+                <div id="modal-body" class="modal-body"  style="height: 45em;">
 
                 </div>
 
                 <!-- Modal footer -->
                 <div id="modal-footer" class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button style="position: absolute; left: 4px;" type="button" class="float-right btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button id="btn-generar" onclick="generar();" type="button" class="float-left btn btn-outline-primary">Generar</button>
                 </div>
 
             </div>

@@ -18,36 +18,9 @@ function colorDinamicoArr() {
     return [r, g, b];
 }
 
-function formatFechaYYYYMMDD(fecha){
-    var dt = new Date(fecha);
-    var dia = dt.getDate();
-    var diaString = dia.toString();
-    var mes = dt.getMonth() + 1;
-    var mesString = mes.toString();
-    var anio = dt.getFullYear();
-    if(dia < 10){
-        diaString = '0' + dia.toString();
-    }
-    if(mes < 10){
-        mesString = '0' + mes.toString();
-    }
-    return anio.toString() + '-' + mesString + '-' + diaString;
-}
-
 function formatFechaDDMMYYYY(fecha){
-    var dt = new Date(fecha);
-    var dia = dt.getDate();
-    var diaString = dia.toString();
-    var mes = dt.getMonth() + 1;
-    var mesString = mes.toString();
-    var anio = dt.getFullYear();
-    if(dia < 10){
-        diaString = '0' + dia.toString();
-    }
-    if(mes < 10){
-        mesString = '0' + mes.toString();
-    }
-    return  diaString + '-' + mesString + '-' + anio.toString();
+    var fec = fecha.toString().split("-");
+    return fec[2] + "-" + fec[1] + "-" + fec[0];
 }
 
 function formatMiles(valor) {

@@ -39,6 +39,9 @@ public class RemarcadorController extends HttpServlet {
             case "get-select-remarcadores-cliente":
                 out.print(getSelectRemarcadoresCliente(entrada));
                 break;
+            case "get-remarcador-cliente-idremarcador":
+                out.print(getRemarcadorClienteIdRemarcador(entrada));
+                break;
             case "get-select-remarcador-idempalme":
                 out.print(getSelectRemarcadorIdEmpalme(entrada));
                 break;
@@ -188,7 +191,7 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td><span>" + rs.getString("LECTURAANTERIOR") + "</span></td>";
                 filas += "<td><span>" + rs.getString("LECTURAACTUAL") + "</span></td>";
                 filas += "<td><span>" + rs.getInt("CONSUMO") + "</span></td>";
-                filas += "<td><button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("fechaini") + "\", \"" + entrada.getString("fechafin") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
+                filas += "<td><button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("fechaini") + "\", \"" + entrada.getString("fechafin") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
                 filas += "</tr>";
                 kwtotal += rs.getInt("CONSUMO");
                 remarcador = new JSONObject();
@@ -204,23 +207,22 @@ public class RemarcadorController extends HttpServlet {
             filas += "<td colspan='7' style='text-align: right; padding-right:5px; font-weight: bold;'>Consumo Total Remarcadores: </td>";
             filas += "<td>" + kwtotal + " kW</td>";
             filas += "</tr>";
-            
+
             filas += "<tr>";
             filas += "<td colspan='7' style='vertical-align: middle; text-align: right; padding-right:5px; font-weight: bold;'>Consumo Facturado del Empalme: " + entrada.getString("numempalme") + "</td>";
             filas += "<td><input type='number' onkeyup='calcularDiferencia();' class='form-control form-control-sm small' style='font-size: 0.9em; padding-top: 0px; padding-bottom: 0px;' id='consumo-facturado-empalme'/></td>";
             filas += "</tr>";
-            
+
             filas += "<tr>";
             filas += "<td colspan='7' style='text-align: right; padding-right:5px; font-weight: bold;'>KW Diferencia: </td>";
             filas += "<td><span id='kw-diferencia'></span></td>";
             filas += "</tr>";
-            
-            
+
             filas += "<tr>";
             filas += "<td colspan='7' style='text-align: right; padding-right:5px; font-weight: bold;'>% Diferencia: </td>";
             filas += "<td><span id='porc-diferencia'></span></td>";
             filas += "</tr>";
-            
+
             tabla += filas;
             tabla += "</tbody></table>";
             salida.put("tabla", tabla);
@@ -366,6 +368,51 @@ public class RemarcadorController extends HttpServlet {
                 remarcador.put("nominstalacion", rs.getString("NOMINSTALACION"));
                 remarcador.put("direccion", rs.getString("DIRECCION"));
                 remarcador.put("nomcomuna", rs.getString("NOMCOMUNA"));
+            }
+            salida.put("remarcador", remarcador);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.RemarcadorController.getRemarcadorIdRemarcador().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getRemarcadorClienteIdRemarcador(JSONObject entrada) {
+        int idremarcador = entrada.getInt("idremarcador");
+        JSONObject salida = new JSONObject();
+        JSONObject remarcador = new JSONObject();
+        String query = "CALL SP_GET_REMARCADOR_CLIENTE_IDREMARCADOR(" + idremarcador + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        try {
+            while (rs.next()) {
+                remarcador.put("idremarcador", rs.getInt("IDREMARCADOR"));
+                remarcador.put("numremarcador", rs.getInt("NUMREMARCADOR"));
+                remarcador.put("idcliente", rs.getInt("IDCLIENTE"));
+                remarcador.put("rutcliente", rs.getInt("RUTCLIENTE"));
+                remarcador.put("dvcliente", rs.getString("DVCLIENTE"));
+                remarcador.put("nomcliente", rs.getString("NOMCLIENTE"));
+                remarcador.put("razoncliente", rs.getString("RAZONCLIENTE"));
+                remarcador.put("direccion", rs.getString("DIRECCION"));
+                remarcador.put("persona", rs.getString("PERSONA"));
+                remarcador.put("cargo", rs.getString("CARGO"));
+                remarcador.put("fono", rs.getInt("FONO"));
+                remarcador.put("email", rs.getString("EMAIL"));
+                remarcador.put("idempalme", rs.getInt("IDEMPALME"));
+                remarcador.put("numempalme", rs.getString("EMAIL"));
+                remarcador.put("idinstalacion", rs.getInt("IDINSTALACION"));
+                remarcador.put("nominstalacion", rs.getString("NOMINSTALACION"));
+                remarcador.put("idcomuna", rs.getInt("IDCOMUNA"));
+                remarcador.put("nomcomuna", rs.getString("NOMCOMUNA"));
+                remarcador.put("idred", rs.getInt("IDRED"));
+                remarcador.put("nomred", rs.getString("NOMRED"));
             }
             salida.put("remarcador", remarcador);
             salida.put("estado", "ok");

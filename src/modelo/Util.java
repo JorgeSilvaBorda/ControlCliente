@@ -113,6 +113,17 @@ public class Util {
         }
         return builder.toString();
     }
+    
+    public static String formatMiles(int numero) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 1, len = builder.length(); i < len; i++) {
+            if (i % 4 == 0) {
+                builder.insert(len = builder.length() - i, '.');
+                len = builder.length();
+            }
+        }
+        return builder.toString();
+    }
 
     public static String armarBody(ResultSet rs, String[] arrCampos) throws SQLException {
         String salida = "<thead><tr>";

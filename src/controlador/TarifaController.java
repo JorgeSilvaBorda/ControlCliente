@@ -1,7 +1,6 @@
 package controlador;
 
 import clases.json.JSONArray;
-import clases.json.JSONException;
 import clases.json.JSONObject;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,6 +23,9 @@ public class TarifaController extends HttpServlet {
             case "get-select-tarifas":
                 out.print(getSelectTarifas());
                 break;
+            case "get-select-tarifas-idcomuna":
+                out.print(getSelectTarifasIdComuna(entrada));
+                break;
             case "get-detalle-tarifa":
                 out.print(getDetalleTarifa(entrada));
                 break;
@@ -39,6 +41,20 @@ public class TarifaController extends HttpServlet {
     private JSONObject getSelectTarifas() {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_TARIFAS()";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDTARIFA", "NOMBRESELECT");
+        salida.put("options", options);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getSelectTarifasIdComuna(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_SELECT_TARIFAS_IDCOMUNA(" + entrada.getInt("idcomuna") + ")";
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -94,9 +110,9 @@ public class TarifaController extends HttpServlet {
 
     private JSONObject insTarifa(JSONObject entrada) {
         JSONObject salida = new JSONObject();
-        
+
         JSONObject tarifa = entrada.getJSONObject("tarifa");
-        if(existeTarifa(tarifa) > 0){
+        if (existeTarifa(tarifa) > 0) {
             salida.put("estado", "existe");
             return salida;
         }
@@ -129,12 +145,12 @@ public class TarifaController extends HttpServlet {
         JSONObject salida = new JSONObject();
         JSONObject newtarifa = entrada.getJSONObject("newtarifa");
         JSONObject tarifa = entrada.getJSONObject("tarifa");
-        
-        if(existeTarifaUpdate(tarifa, newtarifa) > 0){
+
+        if (existeTarifaUpdate(tarifa, newtarifa) > 0) {
             salida.put("estado", "existe");
             return salida;
         }
-        
+
         String query = "CALL SP_UPD_TARIFA("
                 + tarifa.getInt("idtarifa") + ", "
                 + "'" + newtarifa.getString("nomtarifa") + "', "
@@ -183,7 +199,7 @@ public class TarifaController extends HttpServlet {
         }
         return cantidad;
     }
-    
+
     private int existeTarifaUpdate(JSONObject tarifa, JSONObject newtarifa) {
         int cantidad = 0;
         String query = "CALL SP_EXISTE_TARIFA_UPDATE("

@@ -1,7 +1,8 @@
 <script src="modulos/boleta-empalme/mask-boleta-empalme.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
 <script type="text/javascript">
     var idremarcador = <%out.print(request.getParameter("idremarcador"));%>;
-    var consumo = <%out.print(request.getParameter("consumo"));%>;
+    var numremarcador = <%out.print(request.getParameter("numremarcador"));%>;
+    var CONSUMO = <%out.print(request.getParameter("consumo"));%>;
     var fechaini = <%out.print(request.getParameter("fechaini"));%>;
     var fechafin = <%out.print(request.getParameter("fechafin"));%>;
     var lecturaactual = <%out.print(request.getParameter("lecturaactual"));%>;
@@ -13,10 +14,23 @@
         console.log("fechafin: " + fechafin);
         console.log("lecturaanterior: " + lecturaanterior);
         console.log("lecturactual: " + lecturaactual);
+        console.log("lecturactual: " + numremarcador);
+
+        getRemarcadorClienteIdRemarcador(idremarcador);
     });
 </script>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-group" style="font-size: 11px;">
+                <label for="select-tarifa">Tarifa: </label>
+                <select onchange="armarDetalleTarifa();" class="form-control form-control-sm small" style="font-size: 11px;" id="select-tarifa"></select>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="contenido-boleta-empalme">
-    <table style="border-collapse: collapse;; font-size: 12px;" id="cabecera">
+    <table style="border-collapse: collapse; font-size: 12px;" id="cabecera">
         <tbody>
             <tr style="vertical-align: top;">
                 <td rowspan="3">
@@ -24,31 +38,31 @@
                 </td>
                 <td style="font-weight: bold;">
                     <ul>
-                        <li>Rut:</li>
+                        <li>Rut: </li>
                     </ul>
                 </td>
                 <td style="vertical-align: top;">
-                    99.999.999-9
+                    <span id="rut-cliente"></span>
                 </td>
             </tr>
             <tr style="vertical-align: top;">
                 <td style="font-weight: bold;">
                     <ul>
-                        <li>Señor(es):</li>
+                        <li>Señor(es): </li>
                     </ul>
                 </td>
                 <td style="vertical-align: top;">
-                    Nombre CLiente S.A.
+                    <span id="nom-cliente"></span>
                 </td>
             </tr>
             <tr style="vertical-align: top;">
                 <td style="font-weight: bold;">
                     <ul>
-                        <li>Dirección</li>
+                        <li>Dirección: </li>
                     </ul>
                 </td>
                 <td style="vertical-align: top;">
-                    Dirección del remarcador # 123
+                    <span id="direccion"></span>
                 </td>
             </tr>
             <tr style="vertical-align: top;">
@@ -59,31 +73,31 @@
                 </td>
                 <td style="font-weight: bold;">
                     <ul>
-                        <li>Don(ña):</li>
-                    </ul>
-                </td>
-                <td style="vertical-align: mtopiddle;">
-                    Nombre de persona
-                </td>
-            </tr>
-            <tr style="vertical-align: middltope;">
-                <td style="font-weight: bold;">
-                    <ul>
-                        <li>Campo 2:</li>
+                        <li>Don(ña): </li>
                     </ul>
                 </td>
                 <td style="vertical-align: top;">
-                    Valor Campo 2
+                    <span id="persona"></span>
                 </td>
             </tr>
             <tr style="vertical-align: top;">
                 <td style="font-weight: bold;">
                     <ul>
-                        <li>Campo 3:</li>
+                        <li>Fono: </li>
                     </ul>
                 </td>
                 <td style="vertical-align: top;">
-                    Valor Campo 3
+                    <span id="fono"></span>
+                </td>
+            </tr>
+            <tr style="vertical-align: top;">
+                <td style="font-weight: bold; padding-top: 1px; padding-bottom: 1px;">
+                    <ul style="padding-top: 1px; padding-bottom: 1px;" >
+                        <li style="padding-top: 1px; padding-bottom: 1px;" >Email: </li>
+                    </ul>
+                </td>
+                <td style="vertical-align: top;">
+                    <span id="email"></span>
                 </td>
             </tr>
         </tbody>
@@ -93,31 +107,53 @@
     <table style="border-collapse: collapse; border: 3px solid white; font-size: 12px; background-color: #E9EFF8;" id="detalle-remarcador">
         <thead>
             <tr>
-                <th style="background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;">
+                <th style="padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white; ">
                     Nº Medidor
                 </th>
-                <th style="background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;">
+                <th style="padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;">
                     Propiedad
                 </th>
-                <th style="background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;">
+                <th style="padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;">
                     Lectura Anterior
                 </th>
-                <th style="background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;">
+                <th style="padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;">
                     Lectura Actual
                 </th>
-                <th style="background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;">
+                <th style="padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;">
                     Consumo (kWh)
                 </th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>123</td>
-                <td>Bodenor Flex Center</td>
-                <td>34234</td>
-                <td>15234</td>
-                <td>4000</td>
+                <td style="padding: 0px 20px 0px 10px;">
+                    <%out.print(request.getParameter("numremarcador"));%>
+                </td>
+                <td style="padding: 0px 20px 0px 10px;">Bodenor Flex Center</td>
+                <td>
+                    <%out.print(request.getParameter("lecturaanterior"));%>
+                </td>
+                <td style="padding: 0px 20px 0px 10px;">
+                    <%out.print(request.getParameter("lecturaactual"));%>
+                </td>
+                <td style="padding: 0px 20px 0px 10px;">
+                    <%out.print(request.getParameter("consumo"));%>
+                </td>
             </tr>
         </tbody>
     </table>
+    <br />
+    <table style='border-collapse: collapse; border: 3px solid white; font-size: 12px; background-color: #E9EFF8;' id='detalle-tarifa-remarcador'>
+        <thead>
+            <tr>
+                <th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white; '>
+                    Cargos
+                </th>
+                <th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white; '>
+                    Valores
+                </th>
+            </tr>
+        </thead>
+    </table>
+
 </div>

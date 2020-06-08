@@ -47,12 +47,9 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
         },
         success: function (res) {
             var obj = JSON.parse(res);
-            console.log("Se parsea");
             if (obj.estado === 'ok') {
-                console.log(obj);
                 REMCLI = obj.remarcador;
                 var remcli = obj.remarcador;
-                console.log(remcli);
                 $('#rut-cliente').html($.formatRut(remcli.rutcliente + "-" + remcli.dvcliente));
                 $('#nom-cliente').html(remcli.nomcliente);
                 $('#direccion').html(remcli.direccion);

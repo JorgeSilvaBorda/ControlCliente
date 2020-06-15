@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import modelo.Conexion;
+import modelo.Util;
 
 public class UsuarioController extends HttpServlet {
 
@@ -128,9 +129,9 @@ public class UsuarioController extends HttpServlet {
             while (rs.next()) {
                 filas += "<tr>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDUSUARIO") + "' /><span>" + modelo.Util.formatRut(rs.getString("RUT") + "-" + rs.getString("DV")) + "</span></td>";
-                filas += "<td>" + rs.getString("NOMBRES") + "</td>";
-                filas += "<td>" + rs.getString("APPATERNO") + "</td>";
-                filas += "<td>" + rs.getString("APMATERNO") + "</td>";
+                filas += "<td>" + Util.capitalizar(rs.getString("NOMBRES")) + "</td>";
+                filas += "<td>" + Util.capitalizar(rs.getString("APPATERNO")) + "</td>";
+                filas += "<td>" + Util.capitalizar(rs.getString("APMATERNO")) + "</td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDTIPOUSUARIO") + "' />" + rs.getString("NOMTIPOUSUARIO") + "</td>";
                 filas += "<td><button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
                         + "<button style='font-size:10px;  padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>"
@@ -165,9 +166,9 @@ public class UsuarioController extends HttpServlet {
                 usuario.put("nomtipousuario", rs.getString("NOMTIPOUSUARIO"));
                 usuario.put("rut", rs.getInt("RUT"));
                 usuario.put("dv", rs.getString("DV"));
-                usuario.put("nombres", rs.getString("NOMBRES"));
-                usuario.put("appaterno", rs.getString("APPATERNO"));
-                usuario.put("apmaterno", rs.getString("APMATERNO"));
+                usuario.put("nombres", Util.capitalizar(rs.getString("NOMBRES")));
+                usuario.put("appaterno", Util.capitalizar(rs.getString("APPATERNO")));
+                usuario.put("apmaterno", Util.capitalizar(rs.getString("APMATERNO")));
             }
             salida.put("usuario", usuario);
             salida.put("estado", "ok");
@@ -223,9 +224,9 @@ public class UsuarioController extends HttpServlet {
         String query = "CALL SP_INS_USUARIO("
                 + usuario.getInt("rutusuario") + ", "
                 + "'" + usuario.getString("dvusuario") + "', "
-                + "'" + usuario.getString("nombres") + "', "
-                + "'" + usuario.getString("appaterno") + "', "
-                + "'" + usuario.getString("apmaterno") + "', "
+                + "'" + Util.capitalizar(usuario.getString("nombres")) + "', "
+                + "'" + Util.capitalizar(usuario.getString("appaterno")) + "', "
+                + "'" + Util.capitalizar(usuario.getString("apmaterno")) + "', "
                 + usuario.getInt("idtipousuario") + ")";
         Conexion c = new Conexion();
         c.abrir();
@@ -236,15 +237,15 @@ public class UsuarioController extends HttpServlet {
     }
 
     private JSONObject updUsuario(JSONObject usuario) {
-        JSONObject salida = new JSONObject();
+        JSONObject salida = new JSONObject();   
         String query = "CALL SP_UPD_USUARIO("
                 + usuario.getInt("idusuario") + ","
                 + usuario.getInt("idtipousuario") + ","
                 + usuario.getInt("rutusuario") + ","
                 + "'" + usuario.getString("dvusuario") + "',"
-                + "'" + usuario.getString("nombres") + "',"
-                + "'" + usuario.getString("appaterno") + "',"
-                + "'" + usuario.getString("apmaterno") + "')";
+                + "'" + Util.capitalizar(usuario.getString("nombres")) + "',"
+                + "'" + Util.capitalizar(usuario.getString("appaterno")) + "',"
+                + "'" + Util.capitalizar(usuario.getString("apmaterno")) + "')";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

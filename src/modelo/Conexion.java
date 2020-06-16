@@ -69,7 +69,7 @@ public class Conexion {
 	Connection conn;
 	try {
 	    Class.forName("com.mysql.cj.jdbc.Driver");
-	    conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + bd + "?useUnicode=tre&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", user, pass);
+	    conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + bd + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", user, pass);
 	    this.con = conn;
 	} catch (ClassNotFoundException | SQLException ex) {
 	    System.out.println("Problemas al abrir la conexion.");

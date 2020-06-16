@@ -114,7 +114,7 @@ public class Util {
         String output = myFormatter.format(numero);
         return output;
     }
-    
+
     public static String formatMiles(String numero) {
         int num = Integer.parseInt(numero);
         String pattern = "###,###,###.##";
@@ -174,5 +174,22 @@ public class Util {
     public static String invertirFecha(String fecha) {
         String[] campos = fecha.split("-");
         return campos[2] + "-" + campos[1] + "-" + campos[0];
+    }
+
+    public static String capitalizar(String frase) {
+        System.out.println(frase);
+        if (frase.contains(" ")) {
+            String[] palabras = frase.split("\\s");
+            StringBuilder b = new StringBuilder();
+            for (String palabra : palabras) {
+                String p = palabra.substring(0, 1).toUpperCase() + palabra.substring(1).toLowerCase();
+                b.append(p);
+            }
+            return b.toString().trim();
+        }else if(frase.equals("")){
+            return frase;
+        }
+        
+        return frase.substring(0, 1).toUpperCase() + frase.substring(1).toLowerCase().trim();
     }
 }

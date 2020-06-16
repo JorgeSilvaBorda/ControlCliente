@@ -100,7 +100,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Cargo por Servicio Público</strong></td>
+                                        <td><strong>Cargo por Servicio Pï¿½blico</strong></td>
                                         <td>$/kWh</td>
                                         <td></td>
                                         <td>
@@ -116,7 +116,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Cargo por Energía</strong></td>
+                                        <td><strong>Cargo por Energï¿½a</strong></td>
                                         <td>$/kWh</td>
                                         <td></td>
                                         <td>
@@ -124,7 +124,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Cargo por Demanda Máxima de Potencia Leída en Horas de Punta</strong></td>
+                                        <td><strong>Cargo por Demanda Mï¿½xima de Potencia Leï¿½da en Horas de Punta</strong></td>
                                         <td>$/kW/Mes</td>
                                         <td>BT_AA</td>
                                         <td>
@@ -156,7 +156,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Cargo por Demanda Máxima de Potencia Suministrada</strong></td>
+                                        <td><strong>Cargo por Demanda Mï¿½xima de Potencia Suministrada</strong></td>
                                         <td>$/kW/Mes</td>
                                         <td>BT_AA</td>
                                         <td>

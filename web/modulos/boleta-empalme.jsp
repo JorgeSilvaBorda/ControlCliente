@@ -8,8 +8,8 @@
 <div class="container-fluid">
     <!-- Modal -->
     <div class="modal fade" id="modal">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
+        <div class="modal-dialog modal-lg" style="width: 55em;">
+            <div class="modal-content" style="width: 55em;">
 
                 <!-- Header -->
                 <div class="modal-header">
@@ -18,7 +18,7 @@
                 </div>
 
                 <!-- Body -->
-                <div id="modal-body" class="modal-body" style="height: 800px; width:1000px;">
+                <div id="modal-body" class="modal-body" style="height: 50em; width: 55em;">
 
                 </div>
 
@@ -53,13 +53,13 @@
                 </div>
 
                 <div class="form-group" style="">
-                    <label for="fecha-ini">Fecha Ini</label>
-                    <input type="date" id="fecha-ini" class="form-control form-control-sm"/>
+                    <label for="mes">Mes</label>
+                    <input type="month" id="mes" class="form-control form-control-sm"/>
                 </div>
-                <div class="form-group" style="">
+                <!-- div class="form-group" style="">
                     <label for="fecha-fin">Fecha Fin</label>
                     <input type="date" id="fecha-fin" class="form-control form-control-sm"/>
-                </div>
+                </div -->
                 <div class="form-group" style="">
                     <div class="row">
                         <div class="col-sm-6">

@@ -160,6 +160,7 @@ function validarCampos() {
     var idempalme = $('#select-empalme').val();
     var idparque = $('#select-parque').val();
     var numremarcador = $('#num-remarcador').val();
+    var numserie = $('#num-serie').val();
     var modulos = $('#modulos').val();
     if (idempalme === '' || idempalme === '0') {
         alert("Debe seleccionar un empalme.");
@@ -173,6 +174,10 @@ function validarCampos() {
         alert("Debe indicar un número de remarcador válido (Largo mínimo 1).");
         return false;
     }
+    if (numserie.length < 2) {
+        alert("Debe indicar un número de serie válido (Largo mínimo 2).");
+        return false;
+    }
     return true;
 }
 
@@ -180,6 +185,7 @@ function insRemarcador(callback) {
     var idempalme = $('#select-empalme').val();
     var idparque = $('#select-parque').val();
     var numremarcador = $('#num-remarcador').val();
+    var numserie = $('#num-serie').val();
     var modulos = $('#modulos').val();
 
 
@@ -188,6 +194,7 @@ function insRemarcador(callback) {
         idempalme: idempalme,
         idparque: idparque,
         numremarcador: numremarcador,
+        numerie: numserie,
         modulos: modulos
     };
 
@@ -253,6 +260,7 @@ function saveRemarcador(callback) {
     var idempalme = $('#select-empalme').val();
     var idparque = $('#select-parque').val();
     var numremarcador = $('#num-remarcador').val();
+    var numserie = $('#num-serie').val();
     var modulos = $('#modulos').val();
 
     var datos = {
@@ -262,34 +270,38 @@ function saveRemarcador(callback) {
             idempalme: idempalme,
             idparque: idparque,
             numremarcador: numremarcador,
+            numserie: numserie,
             modulos: modulos
         }
     };
-
-    $.ajax({
-        url: 'RemarcadorController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (res) {
-            var obj = JSON.parse(res);
-            if (obj.estado === 'ok') {
-                limpiar();
-                callback();
+    if (validarCampos()) {
+        $.ajax({
+            url: 'RemarcadorController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (res) {
+                var obj = JSON.parse(res);
+                if (obj.estado === 'ok') {
+                    limpiar();
+                    callback();
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
             }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
+        });
+    }
+
 }
 
 function armarRemarcador(remarcador) {
     ID_REMARCADOR_EDICION = remarcador.idremarcador;
     $('#num-remarcador').val(remarcador.numremarcador);
+    $('#num-serie').val(remarcador.numserie);
     $('#select-empalme').val(remarcador.idempalme);
     $('#modulos').val(remarcador.modulos);
     $('#select-empalme').change();
@@ -301,6 +313,7 @@ function limpiar() {
     ID_REMARCADOR_EDICION = null;
     $('#select-instalacion').val('0');
     $('#num-remarcador').val('');
+    $('#num-serie').val('');
     $('#select-empalme').html('');
     $('#modulos').val('');
     $('#select-parque').html('');
@@ -311,6 +324,7 @@ function limpiar() {
 function limpiarAfterInsert() {
     ID_REMARCADOR_EDICION = null;
     $('#num-remarcador').val('');
+    $('#num-serie').val('');
     $('#modulos').val('');
     $('#btn-guardar').attr("hidden", "hidden");
     $('#btn-insert').removeAttr("hidden");

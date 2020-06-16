@@ -75,6 +75,7 @@
                         <thead>
                             <tr>
                                 <th>ID Remarcador</th>
+                                <th>Nº Serie</th>
                                 <th># Empalme</th>
                                 <th>Bodega</th>
                                 <th>Módulos</th>
@@ -103,6 +104,7 @@
                         <thead>
                             <tr>
                                 <th>ID Remarcador</th>
+                                <th>Nº Serie</th>
                                 <th>Empalme</th>
                                 <th>Bodega</th>
                                 <th>Instalación</th>

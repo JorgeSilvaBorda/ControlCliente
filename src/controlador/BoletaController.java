@@ -117,7 +117,6 @@ public class BoletaController extends HttpServlet {
 
     private JSONObject getDetalleTarifaIdRedConsumoRemarcador(JSONObject entrada) {
         JSONObject salida = new JSONObject();
-        String fechaconsulta = entrada.getString("fechafin");
         int idtarifa = entrada.getInt("idtarifa");
         int idred = entrada.getInt("idred");
         int consumo = entrada.getInt("consumo");
@@ -127,7 +126,6 @@ public class BoletaController extends HttpServlet {
         //Query creada. Seguir... 
         //SP_GET_DETALLE_TARIFA_IDRED_CONSUMO_REMARCADOR
         String query = "CALL SP_GET_DETALLE_TARIFA_IDRED_CONSUMO_REMARCADOR("
-                + "'" + fechaconsulta + "', "
                 + idtarifa + ", "
                 + idred + ", "
                 + consumo + ", "

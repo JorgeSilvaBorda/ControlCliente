@@ -3,11 +3,13 @@
 <script type="text/javascript">
     var idremarcador = <%out.print(request.getParameter("idremarcador"));%>;
     var numremarcador = <%out.print(request.getParameter("numremarcador"));%>;
+    var NUMREMARCADOR = <%out.print(request.getParameter("numremarcador"));%>;
     var CONSUMO = <%out.print(request.getParameter("consumo"));%>;
-    var fechaini = <%out.print(request.getParameter("fechaini"));%>;
-    var FECHAINI = <%out.print(request.getParameter("fechaini"));%>;
-    var fechafin = <%out.print(request.getParameter("fechafin"));%>;
-    var FECHAFIN = <%out.print(request.getParameter("fechafin"));%>;
+    var mes = <%out.print(request.getParameter("mes"));%>;
+    var MES = <%out.print(request.getParameter("mes"));%>;
+    var FECHA_LECTURA_INICIAL = <%out.print(request.getParameter("fechalecturaini"));%>;
+    var FECHA_LECTURA_FINAL = <%out.print(request.getParameter("fechalecturafin"));%>;
+    var NUMSERIE = <%out.print(request.getParameter("numserie"));%>;
     var lecturaactual = <%out.print(request.getParameter("lecturaactual"));%>;
     var lecturaanterior = <%out.print(request.getParameter("lecturaanterior"));%>;
     $(document).ready(function () {
@@ -16,7 +18,7 @@
 </script>
 <style>
     .modal-lg{
-        max-width: 70%;
+        max-width: 60%;
         max-height: 120%;
     }
     table.print-friendly tr td, table.print-friendly tr th {
@@ -31,7 +33,7 @@
                 <select data-html2canvas-ignore="true" onchange="armarDetalleTarifa();" class="form-control form-control-sm small" style="font-size: 11px;" id="select-tarifa"></select>
             </div>
         </div>
-        <div class="col-md-6"></div>
+        <div class="col-md-4"></div>
         <div class="col-md-3 float-right" style="right: 0px;" >
             <div style="border: 3px solid #FD8104; width: 100%; text-align: center; font-weight: bold; font-size: 14px;">
                 RUT: 99.593.200-8
@@ -43,6 +45,24 @@
             <br />
             <br />
             <table style="font-size: 10px;">
+                <tr>
+                    <td colspan="2">Nº Empalme</td>
+                </tr>
+                <tr>
+                    <td colspan="2" id="num-empalme-boleta" style="font-weight: bold;"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">Nº Remarcador</td>
+                </tr>
+                <tr>
+                    <td colspan="2" id="num-remarcador-boleta" style="font-weight: bold;"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">Nº Serie</td>
+                </tr>
+                <tr>
+                    <td colspan="2" id="num-serie" style="font-weight: bold;"></td>
+                </tr>
                 <tr>
                     <td colspan="2">Número de cliente</td>
                 </tr>
@@ -66,6 +86,12 @@
                 </tr>
                 <tr>
                     <td colspan="2" id="direccion-suministro" style="font-weight: bold;"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">Tipo Red</td>
+                </tr>
+                <tr>
+                    <td colspan="2" id="nomred" style="font-weight: bold;"></td>
                 </tr>
                 <tr>
                     <td colspan="2">Tarifa</td>
@@ -106,7 +132,7 @@
     </div>
     <div class="row">
         <div class="col-md-9 float-left" style="position: absolute; top: 5em; left: 0px;">
-            <table style="border-collapse: collapse; font-size: 12px;" id="cabecera">
+            <table style="border-collapse: collapse; font-size: 12px; width: 80%;" id="cabecera">
                 <tbody>
                     <tr style="vertical-align: top;">
                         <td rowspan="3">
@@ -180,7 +206,7 @@
             </table>
             <br />
             <h5><strong>Detalle de consumo del remarcador</strong></h5>
-            <table style="border-collapse: collapse; border: 3px solid white; font-size: 11px; background-color: #E9EFF8;" id="detalle-remarcador">
+            <table style="border-collapse: collapse; border: 3px solid white; font-size: 11px; background-color: #E9EFF8; width: 80%;" id="detalle-remarcador">
                 <thead>
                     <tr>
                         <th style="padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white; ">
@@ -219,7 +245,7 @@
                 </tbody>
             </table>
             <br />
-            <table style='border-collapse: collapse; border: 3px solid white; font-size: 11px; background-color: #E9EFF8; width: 100%; height:100%;' class="print-friendly" id='detalle-tarifa-remarcador'>
+            <table style='border-collapse: collapse; border: 3px solid white; font-size: 11px; background-color: #E9EFF8; width: 75%; height:100%;' class="print-friendly" id='detalle-tarifa-remarcador'>
             </table>
         </div>
 

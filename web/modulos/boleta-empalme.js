@@ -29,13 +29,11 @@ function getRemarcadoresNumEmpalmeBoleta() {
     //En BD, el mismo numero de empalme puede tener ID distintos para efectos de asigrnación a las bodegas
     
     var numempalme = $('#select-empalme option:selected').text();
-    var fechaini = $('#fecha-ini').val();
-    var fechafin = $('#fecha-fin').val();
+    var mes = $('#mes').val();
     var datos = {
         tipo: 'get-remarcadores-numempalme-boleta',
         numempalme: numempalme,
-        fechaini: fechaini,
-        fechafin: fechafin
+        mes: mes
     };
     $.ajax({
         url: 'RemarcadorController',
@@ -92,8 +90,7 @@ function getSelectEmpalmesNumEmpalmesInstalacion() {
 function validarCampos() {
     var idinstalacion = $('#select-instalacion').val();
     var idempalme = $('#select-empalme').val();
-    var fechaini = $('#fecha-ini').val();
-    var fechafin = $('#fecha-fin').val();
+    var mes = $('#mes').val();
 
     if (idinstalacion === '0' || idinstalacion === '' || idinstalacion === null || idinstalacion === undefined || idinstalacion === 0) {
         alert("Debe seleccionar una Instalación del listado.");
@@ -103,17 +100,8 @@ function validarCampos() {
         alert("Debe seleccionar un Empalme del listado.");
         return false;
     }
-    if(fechaini.length < 10){
-        alert("la fecha de inicio es inválida.");
-        return false;
-    }
-    if(fechafin.length < 10){
-        alert("la fecha de fin es inválida.");
-        return false;
-    }
-    
-    if(fechaini >= fechafin){
-        alert("La fecha de inicio no puede ser posterior a la fecha de fin");
+    if(mes.length < 6){
+        alert("El mes indicado es incorrecto.");
         return false;
     }
     return true;
@@ -143,9 +131,10 @@ function buscar() {
     }
 }
 
-function calcular(idremarcador, numremarcador, consumo, fechaini, fechafin, lecturaanterior, lecturaactual){
+function calcular(idremarcador, numremarcador, numserie,consumo, mes, lecturaanterior, lecturaactual, fechalecturaini, fechalecturafin){
+    //console.log("modulos/boleta-empalme/mask-boleta-empalme.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&consumo=" + consumo + "&mes='" + mes + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual + "&fechalecturaini='" + fechalecturaini + "'&fechalecturafin='" + fechalecturafin + "'");
     $('#modal').modal();
-    $('#modal-body').load("modulos/boleta-empalme/mask-boleta-empalme.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&consumo=" + consumo + "&fechaini='" + fechaini + "'&fechafin='" + fechafin + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual);
+    $('#modal-body').load("modulos/boleta-empalme/mask-boleta-empalme.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&numserie='" + numserie + "'&consumo=" + consumo + "&mes='" + mes + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual + "&fechalecturaini='" + fechalecturaini + "'&fechalecturafin='" + fechalecturafin + "'");
 }
 
 function limpiar(){

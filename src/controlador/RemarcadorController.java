@@ -74,6 +74,7 @@ public class RemarcadorController extends HttpServlet {
             while (rs.next()) {
                 filas += "<tr>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getString("NUMSERIE") + "' /><span>" + rs.getString("NUMSERIE") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
                 filas += "<td><span>" + rs.getString("MODULOS") + "</span></td>";
@@ -109,7 +110,7 @@ public class RemarcadorController extends HttpServlet {
         tabla += "<caption style='caption-side:top;'><h5>Remarcadores en el Empalme Nº: " + entrada.getString("numempalme") + "</h5></caption>";
         tabla += "<thead><tr>";
         tabla += "<th># Remarcador</th>";
-        //tabla += "<th># Empalme</th>";
+        tabla += "<th>Nº Serie</th>";
         tabla += "<th>Bodega</th>";
         tabla += "<th>Cliente</th>";
         tabla += "<th>Módulos</th>";
@@ -119,9 +120,10 @@ public class RemarcadorController extends HttpServlet {
         JSONArray remarcadores = new JSONArray();
         try {
             while (rs.next()) {
+                String numserie = rs.getString("NUMSERIE");
                 filas += "<tr>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
-                //filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + numserie + "' /><span>" + numserie + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
                 filas += "<td><span>" + rs.getString("NOMCLIENTE") + "</span></td>";
                 filas += "<td><span>" + rs.getString("MODULOS") + "</span></td>";
@@ -130,6 +132,7 @@ public class RemarcadorController extends HttpServlet {
                 remarcador = new JSONObject();
                 remarcador.put("idremarcador", rs.getInt("IDREMARCADOR"));
                 remarcador.put("numremarcador", rs.getString("NUMREMARCADOR"));
+                remarcador.put("numserie", numserie);
                 remarcador.put("idparque", rs.getInt("IDPARQUE"));
                 remarcador.put("modulos", rs.getString("MODULOS"));
                 remarcador.put("idinstalacion", rs.getInt("IDINSTALACION"));
@@ -156,8 +159,7 @@ public class RemarcadorController extends HttpServlet {
         int kwtotal = 0;
         String query = "CALL SP_GET_REMARCADORES_NUMEMPALME_BOLETA("
                 + "'" + entrada.getString("numempalme") + "',"
-                + "'" + entrada.getString("fechaini") + "',"
-                + "'" + entrada.getString("fechafin") + "'"
+                + "'" + entrada.getString("mes") + "'"
                 + ")";
         System.out.println(query);
         Conexion c = new Conexion();
@@ -169,6 +171,7 @@ public class RemarcadorController extends HttpServlet {
         tabla += "<caption style='caption-side:top;'><h5>Remarcadores en el Empalme Nº: " + entrada.getString("numempalme") + "</h5></caption>";
         tabla += "<thead><tr class='table-info'>";
         tabla += "<th># Remarcador</th>";
+        tabla += "<th>Nº Serie</th>";
         tabla += "<th>Bodega</th>";
         tabla += "<th>Cliente</th>";
         tabla += "<th>Módulos</th>";
@@ -184,6 +187,7 @@ public class RemarcadorController extends HttpServlet {
             while (rs.next()) {
                 filas += "<tr>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getString("NUMSERIE") + "' /><span>" + rs.getString("NUMSERIE") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
                 filas += "<td><span>" + rs.getString("NOMCLIENTE") + "</span></td>";
                 filas += "<td><span>" + rs.getString("MODULOS") + "</span></td>";
@@ -191,12 +195,13 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td><span>" + rs.getString("LECTURAANTERIOR") + "</span></td>";
                 filas += "<td><span>" + rs.getString("LECTURAACTUAL") + "</span></td>";
                 filas += "<td><span>" + rs.getInt("CONSUMO") + "</span></td>";
-                filas += "<td><button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("fechaini") + "\", \"" + entrada.getString("fechafin") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
+                filas += "<td><button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("mes") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
                 filas += "</tr>";
                 kwtotal += rs.getInt("CONSUMO");
                 remarcador = new JSONObject();
                 remarcador.put("idremarcador", rs.getInt("IDREMARCADOR"));
                 remarcador.put("numremarcador", rs.getString("NUMREMARCADOR"));
+                remarcador.put("numserie", rs.getString("NUMSERIE"));
                 remarcador.put("idparque", rs.getInt("IDPARQUE"));
                 remarcador.put("modulos", rs.getString("MODULOS"));
                 remarcador.put("idinstalacion", rs.getInt("IDINSTALACION"));
@@ -204,22 +209,22 @@ public class RemarcadorController extends HttpServlet {
                 remarcadores.put(remarcador);
             }
             filas += "<tr class='table-info'>";
-            filas += "<td colspan='7' style='text-align: right; padding-right:5px; font-weight: bold;'>Consumo Total Remarcadores: </td>";
+            filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>Consumo Total Remarcadores: </td>";
             filas += "<td>" + kwtotal + " kW</td>";
             filas += "</tr>";
 
             filas += "<tr>";
-            filas += "<td colspan='7' style='vertical-align: middle; text-align: right; padding-right:5px; font-weight: bold;'>Consumo Facturado del Empalme: " + entrada.getString("numempalme") + "</td>";
+            filas += "<td colspan='8' style='vertical-align: middle; text-align: right; padding-right:5px; font-weight: bold;'>Consumo Facturado del Empalme: " + entrada.getString("numempalme") + "</td>";
             filas += "<td><input type='number' onkeyup='calcularDiferencia();' class='form-control form-control-sm small' style='font-size: 0.9em; padding-top: 0px; padding-bottom: 0px;' id='consumo-facturado-empalme'/></td>";
             filas += "</tr>";
 
             filas += "<tr>";
-            filas += "<td colspan='7' style='text-align: right; padding-right:5px; font-weight: bold;'>KW Diferencia: </td>";
+            filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>KW Diferencia: </td>";
             filas += "<td><span id='kw-diferencia'></span></td>";
             filas += "</tr>";
 
             filas += "<tr>";
-            filas += "<td colspan='7' style='text-align: right; padding-right:5px; font-weight: bold;'>% Diferencia: </td>";
+            filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>% Diferencia: </td>";
             filas += "<td><span id='porc-diferencia'></span></td>";
             filas += "</tr>";
 
@@ -230,7 +235,7 @@ public class RemarcadorController extends HttpServlet {
             salida.put("kwtotal", kwtotal);
             salida.put("estado", "ok");
         } catch (JSONException | SQLException ex) {
-            System.out.println("Problemas en controlador.RemarcadorController.getRemarcadoresIdEmpalme().");
+            System.out.println("Problemas en controlador.RemarcadorController.getRemarcadoresNumEmpalmeBoleta().");
             System.out.println(ex);
             ex.printStackTrace();
             salida.put("estado", "error");
@@ -264,6 +269,7 @@ public class RemarcadorController extends HttpServlet {
             while (rs.next()) {
                 filas += "<tr>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getString("NUMSERIE") + "' /><span>" + rs.getString("NUMSERIE") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
                 filas += "<td><span>" + rs.getString("MODULOS") + "</span></td>";
@@ -294,6 +300,7 @@ public class RemarcadorController extends HttpServlet {
         String tabla = "<table style='font-size: 10px;' id='tabla-remarcadores-asignados' class='table table-bordered table-sm small'>";
         tabla += "<thead><tr>";
         tabla += "<th># Remarcador</th>";
+        tabla += "<th>Nº Serie</th>";
         tabla += "<th># Empalme</th>";
         tabla += "<th>Bodega</th>";
         tabla += "<th>Módulos</th>";
@@ -305,6 +312,7 @@ public class RemarcadorController extends HttpServlet {
             while (rs.next()) {
                 filas += "<tr>";
                 filas += "<td>" + rs.getInt("NUMREMARCADOR") + "</td>";
+                filas += "<td>" + rs.getString("NUMSERIE") + "</td>";
                 filas += "<td>" + rs.getString("NUMEMPALME") + "</td>";
                 filas += "<td>" + rs.getString("NOMPARQUE") + "</td>";
                 filas += "<td>" + rs.getString("MODULOS") + "</td>";
@@ -335,6 +343,7 @@ public class RemarcadorController extends HttpServlet {
                 + "" + entrada.getInt("idempalme") + ","
                 + "" + entrada.getInt("idparque") + ","
                 + "'" + entrada.getString("numremarcador") + "',"
+                + "'" + entrada.getString("numserie") + "',"
                 + "'" + entrada.getString("modulos") + "'"
                 + ")";
         Conexion c = new Conexion();
@@ -361,6 +370,7 @@ public class RemarcadorController extends HttpServlet {
                 remarcador.put("idempalme", rs.getInt("IDEMPALME"));
                 remarcador.put("idequipomodbus", rs.getInt("IDEQUIPOMODBUS"));
                 remarcador.put("numremarcador", rs.getInt("NUMREMARCADOR"));
+                remarcador.put("numserie", rs.getString("NUMSERIE"));
                 remarcador.put("modulos", rs.getString("MODULOS"));
                 remarcador.put("idinstalacion", rs.getInt("IDINSTALACION"));
                 remarcador.put("numempalme", rs.getString("NUMEMPALME"));
@@ -395,6 +405,7 @@ public class RemarcadorController extends HttpServlet {
             while (rs.next()) {
                 remarcador.put("idremarcador", rs.getInt("IDREMARCADOR"));
                 remarcador.put("numremarcador", rs.getInt("NUMREMARCADOR"));
+                remarcador.put("numserie", rs.getString("NUMSERIE"));
                 remarcador.put("idcliente", rs.getInt("IDCLIENTE"));
                 remarcador.put("rutcliente", rs.getInt("RUTCLIENTE"));
                 remarcador.put("dvcliente", rs.getString("DVCLIENTE"));
@@ -406,7 +417,7 @@ public class RemarcadorController extends HttpServlet {
                 remarcador.put("fono", rs.getInt("FONO"));
                 remarcador.put("email", rs.getString("EMAIL"));
                 remarcador.put("idempalme", rs.getInt("IDEMPALME"));
-                remarcador.put("numempalme", rs.getString("EMAIL"));
+                remarcador.put("numempalme", rs.getString("NUMEMPALME"));
                 remarcador.put("idinstalacion", rs.getInt("IDINSTALACION"));
                 remarcador.put("nominstalacion", rs.getString("NOMINSTALACION"));
                 remarcador.put("idcomuna", rs.getInt("IDCOMUNA"));
@@ -444,27 +455,19 @@ public class RemarcadorController extends HttpServlet {
         String filas = "";
         String tabla = "<table style='font-size: 10px;' id='tabla-detalle-remarcador' class='table table-bordered table-hover table-sm small'>";
         tabla += "<thead><tr>";
-        tabla += "<th>TIMESTAMP</th>";
-        tabla += "<th>FECHA</th>";
-        tabla += "<th>AÑO</th>";
-        tabla += "<th>MES</th>";
-        tabla += "<th>DIA</th>";
-        tabla += "<th>HORA</th>";
-        tabla += "<th>ITEM95</th>";
-        tabla += "<th>ITEM96</th>";
+        tabla += "<th>FECHA REGISTRO</th>";
+        tabla += "<th>ID REMARCADOR</th>";
+        tabla += "<th>ENERGIA ACTIVA CONSUMIDA (KWH)</th>";
+        tabla += "<th>POTENCIA ACTIVA TOTAL (KW)</th>";
         tabla += "</tr></thead><tbody>";
         int cont = 0;
         try {
             while (rs.next()) {
                 filas += "<tr>";
-                filas += "<td><span>" + rs.getString("TIMESTAMP") + "</span></td>";
-                filas += "<td><span>" + rs.getString("FECHA") + "</span></td>";
-                filas += "<td><span>" + rs.getString("ANIO") + "</span></td>";
-                filas += "<td><span>" + rs.getString("MES") + "</span></td>";
-                filas += "<td><span>" + rs.getString("DIA") + "</span></td>";
-                filas += "<td><span>" + rs.getString("HORA") + "</span></td>";
-                filas += "<td><span>" + rs.getString("ITEM95") + "</span></td>";
-                filas += "<td><span>" + rs.getString("ITEM96") + "</span></td>";
+                filas += "<td><span>" + rs.getString("FECHAREGISTRO") + "</span></td>";
+                filas += "<td><span>" + rs.getInt("IDREMARCADOR") + "</span></td>";
+                filas += "<td><span>" + rs.getInt("EnergiaActivaConsumida_KWH") + "</span></td>";
+                filas += "<td><span>" + rs.getInt("PotenciaActivaTotal_KW") + "</span></td>";
                 filas += "</tr>";
                 cont++;
             }
@@ -490,7 +493,9 @@ public class RemarcadorController extends HttpServlet {
                 + remarcador.getInt("idempalme") + ","
                 + remarcador.getInt("idparque") + ","
                 + remarcador.getInt("numremarcador") + ","
+                + "'" + remarcador.getString("numserie") + "',"
                 + "'" + remarcador.getString("modulos") + "')";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

@@ -1,7 +1,6 @@
 <script src="modulos/remarcador.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        //getSelectEmpalme();
         getSelectInstalacion();
         getRemarcadores();
     });
@@ -33,10 +32,13 @@
                     <select class="form-control-sm form-control small" id="select-empalme">
                     </select>
                 </div>
-                
                 <div class="form-group">
                     <label for="num-remarcador" >ID Remarcador</label>
                     <input type="text" class="form-control form-control-sm small" maxlength="11" id="num-remarcador" />
+                </div>
+                <div class="form-group">
+                    <label for="num-serie" >Nº Serie Equipo</label>
+                    <input type="text" class="form-control form-control-sm small" maxlength="50" id="num-serie" />
                 </div>
                 <div class="form-group">
                     <label for="modulos" >Módulos</label>
@@ -55,6 +57,7 @@
                 <thead>
                     <tr>
                         <th>ID Remarcador</th>
+                        <th>Nº Serie</th>
                         <th># Empalme</th>
                         <th>Bodega</th>
                         <th>Módulos</th>

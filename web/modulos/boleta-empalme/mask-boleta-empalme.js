@@ -56,21 +56,26 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 $('#persona').html(remcli.persona);
                 $('#fono').html(remcli.fono);
                 $('#email').html(remcli.email);
+                $('#num-empalme-boleta').html(remcli.numempalme);
                 getSelectTarifasIdComuna(remcli.idcomuna);
 
                 $('#num-cliente').html($.formatRut(remcli.rutcliente + "-" + remcli.dvcliente) + '<br /><br />');
-                $('#fecha-emision').html(formatFechaDDMMYYYY(FECHAFIN) + '<br /><br />');
-                var dt = new Date(FECHAFIN);
+                var fechaemision = new Date();
+                $('#fecha-emision').html(formatFechaDDMMYYYY(formatFechaYYYYMMDD(fechaemision)) + '<br /><br />');
+                var dt = new Date(MES + '-01');
                 var nextfecha = new Date(dt.setMonth(dt.getMonth() + 1));
                 nextfecha = formatFechaDDMMYYYY(formatFechaYYYYMMDD(nextfecha));
                 $('#fecha-prox-lectura').html(nextfecha + '<br /><br />');
                 $('#direccion-suministro').html(remcli.direccion + '<br /><br />');
 
-                $('#desde').html(formatFechaDDMMYYYY(FECHAINI) + '<br /><br />');
-                $('#hasta').html(formatFechaDDMMYYYY(FECHAFIN) + '<br /><br />');
+                $('#desde').html(formatFechaDDMMYYYY(FECHA_LECTURA_INICIAL) + '<br /><br />');
+                $('#hasta').html(formatFechaDDMMYYYY(FECHA_LECTURA_FINAL) + '<br /><br />');
                 $('#suministradas').html(formatMiles(remcli.dmps) + '<br /><br />');
                 $('#horas-punta').html(formatMiles(remcli.dmplhp) + '<br /><br />');
                 $('#consumo-total-kwh').html(formatMiles(CONSUMO) + '<br /><br />');
+                $('#nomred').html(remcli.nomred);
+                $('#num-serie').html(NUMSERIE);
+                $('#num-remarcador-boleta').html(NUMREMARCADOR);
             }
         },
         error: function (a, b, c) {
@@ -91,8 +96,7 @@ function armarDetalleTarifa() {
         idtarifa: idtarifa,
         idred: idred,
         consumo: CONSUMO,
-        numremarcador: numremarcador,
-        fechafin: fechafin
+        numremarcador: numremarcador
     };
     $('#tarifa').html($('#select-tarifa option:selected').html() + '<br /><br />');
     $.ajax({

@@ -62,11 +62,12 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 $('#num-cliente').html($.formatRut(remcli.rutcliente + "-" + remcli.dvcliente) + '<br /><br />');
                 var fechaemision = new Date();
                 $('#fecha-emision').html(formatFechaDDMMYYYY(formatFechaYYYYMMDD(fechaemision)) + '<br /><br />');
-                var dt = new Date(MES + '-01');
+                var dt = new Date(MES + '-1');
                 var nextfecha = new Date(dt.setMonth(dt.getMonth() + 1));
+                nextfecha.setDate(nextfecha.getDate() - 1);
                 nextfecha = formatFechaDDMMYYYY(formatFechaYYYYMMDD(nextfecha));
                 $('#fecha-prox-lectura').html(nextfecha + '<br /><br />');
-                $('#direccion-suministro').html(remcli.direccion + '<br /><br />');
+                //$('#direccion-suministro').html(remcli.direccion + '<br /><br />');
 
                 $('#desde').html(formatFechaDDMMYYYY(FECHA_LECTURA_INICIAL) + '<br /><br />');
                 $('#hasta').html(formatFechaDDMMYYYY(FECHA_LECTURA_FINAL) + '<br /><br />');

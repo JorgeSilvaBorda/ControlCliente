@@ -9,11 +9,16 @@
     <!-- Modal -->
     <div class="modal fade" id="modal">
         <div class="modal-dialog modal-lg" style="width: 50em;">
-            <div class="modal-content" style="width: 50em;">
+            <div class="modal-content" style="width: 55em;">
 
                 <!-- Header -->
                 <div class="modal-header">
-                    <h4 id="modal-title" class="modal-title"></h4>
+                    <div class="col-md-3">
+                        <div class="form-group" style="font-size: 11px;">
+                            <label data-html2canvas-ignore="true" for="select-tarifa">Tarifa: </label>
+                            <select data-html2canvas-ignore="true" onchange="armarDetalleTarifa();" class="form-control form-control-sm small" style="font-size: 11px;" id="select-tarifa"></select>
+                        </div>
+                    </div>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 

@@ -116,7 +116,7 @@ public class Util {
     }
 
     public static String formatMiles(String numero) {
-        int num = Integer.parseInt(numero);
+        BigDecimal num = BigDecimal.valueOf(Double.parseDouble(numero));
         String pattern = "###,###,###.##";
         //Si no le paso ningun Locale, toma el del sistema, que en mi caso es Locale("es","MX");
         DecimalFormat myFormatter = new DecimalFormat(pattern);

@@ -134,8 +134,17 @@ public class BoletaController extends HttpServlet {
         System.out.println(query);
         String tabla = "<thead>"
                 + "<tr>"
-                + "<th colspan='3' style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;'>"
+                + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;'>"
                 + "Cargos"
+                + "</th>"
+                + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;'>"
+                + "Unidad"
+                + "</th>"
+                + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;'>"
+                + "Cantidad"
+                + "</th>"
+                + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;'>"
+                + "$ Unitario"
                 + "</th>"
                 + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white; '>"
                 + "Valores ($)"
@@ -148,61 +157,82 @@ public class BoletaController extends HttpServlet {
         try{
             while(rs.next()){
                 tabla += "<tr>";
-                tabla += "<td colspan='3' style='padding-right: 100px; font-weight: bold;'>";
-                tabla += rs.getString("NOMCONCEPTO") + " (" + rs.getString("UMEDIDA") + ")";
+                tabla += "<td style='font-weight: bold;'>";
+                tabla += rs.getString("NOMCONCEPTO");
                 tabla += "</td>";
-                tabla += "<td>";
-                tabla += Util.formatMiles(rs.getInt("TOTAL"));
+                
+                tabla += "<td style='font-weight: bold;'>";
+                tabla += rs.getString("UMEDIDA");
+                tabla += "</td>";
+                
+                tabla += "<td style='font-weight: bold; text-align: right;'>";
+                Double cant = Double.parseDouble(rs.getBigDecimal("CANTIDAD").toString());
+                tabla += Util.formatMiles(Double.toString(cant));
+                tabla += "</td>";
+                
+                tabla += "<td style='font-weight: bold; text-align: right;'>";
+                Double net = Double.parseDouble(rs.getBigDecimal("VALORNETO").toString());
+                tabla += Util.formatMiles(Double.toString(net));
+                tabla += "</td>";
+                
+                tabla += "<td style='text-align: right; '>";
+                Double tot = Double.parseDouble(rs.getBigDecimal("TOTAL").toString());
+                //tabla += Util.formatMiles(rs.getBigDecimal("TOTAL").toString());
+                tabla += Util.formatMiles(Double.toString(Math.floor(tot)));
                 tabla += "</td>";
                 tabla += "</tr>";
                 if(rs.getInt("IDCONCEPTO") != 2){
                     total += rs.getInt("TOTAL");
                 }else{
                     exento = rs.getInt("TOTAL");
+                    total += rs.getInt("TOTAL");
                 }
             }
             
+            //Separador --------------------------------------------------------------------------------
+            tabla += "<tr><td colspan='5' style='border-bottom: 1px solid white;'></td></tr>";
+            
             tabla += "<tr>";
-            tabla += "<td colspan='3' style='text-align: right; padding-right: 25px; font-weight: bold;'>";
+            tabla += "<td colspan='4' style='text-align: right; padding-right: 25px; font-weight: bold;'>";
             tabla += "Total Monto Neto ";
             tabla += "</td>";
-            tabla += "<td>";
+            tabla += "<td style='text-align: right;'>";
             tabla += Util.formatMiles(total);
             tabla += "</td>";
             tabla += "</tr>";
             
-            tabla += "<tr>";
-            tabla += "<td colspan='3' style='text-align: right; padding-right: 25px; font-weight: bold;'>";
-            tabla += "Total I.V.A. ";
+            tabla += "<tr style='text-align: right;'>";
+            tabla += "<td colspan='4' style='text-align: right; padding-right: 25px; font-weight: bold;'>";
+            tabla += "Total I.V.A.(19%)";
             tabla += "</td>";
-            tabla += "<td>";
+            tabla += "<td style='text-align: right;'>";
             tabla += Util.formatMiles(Integer.parseInt(Double.toString(total * 0.19).split("\\.")[0]));
             tabla += "</td>";
             tabla += "</tr>";
             
             tabla += "<tr>";
-            tabla += "<td colspan='3' style='text-align: right; padding-right: 25px; font-weight: bold;'>";
+            tabla += "<td colspan='4' style='text-align: right; padding-right: 25px; font-weight: bold;'>";
             tabla += "Monto Exento ";
             tabla += "</td>";
-            tabla += "<td>";
+            tabla += "<td style='text-align: right;'>";
             tabla += Util.formatMiles(exento);
             tabla += "</td>";
             tabla += "</tr>";
             
             tabla += "<tr>";
-            tabla += "<td colspan='3' style='text-align: right; padding-right: 25px; font-weight: bold;'>";
+            tabla += "<td colspan='4' style='text-align: right; padding-right: 25px; font-weight: bold;'>";
             tabla += "Monto Total ";
             tabla += "</td>";
-            tabla += "<td>";
+            tabla += "<td style='text-align: right;'>";
             tabla += Util.formatMiles(total + Integer.parseInt(Double.toString(total * 0.19).split("\\.")[0]) + exento);
             tabla += "</td>";
             tabla += "</tr>";
             
             tabla += "<tr style='border-top: 2px solid white;'>";
-            tabla += "<td colspan='3' style='border-top: 2px solid white;background-color: white; text-align: right; padding-right: 25px; font-weight: bold;'>";
+            tabla += "<td colspan='4' style='border-top: 2px solid white;background-color: white; text-align: right; padding-right: 25px; font-weight: bold;'>";
             tabla += "Total a Pagar ";
             tabla += "</td>";
-            tabla += "<td style='border-top: 2px solid white;'>";
+            tabla += "<td style='border-top: 2px solid white; text-align: right;'>";
             tabla += Util.formatMiles(total + Integer.parseInt(Double.toString(total * 0.19).split("\\.")[0]) + exento);
             tabla += "</td>";
             tabla += "</tr>";

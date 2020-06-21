@@ -8,8 +8,8 @@
 <div class="container-fluid">
     <!-- Modal -->
     <div class="modal fade" id="modal">
-        <div class="modal-dialog modal-lg" style="width: 55em;">
-            <div class="modal-content" style="width: 55em;">
+        <div class="modal-dialog modal-lg" style="width: 50em;">
+            <div class="modal-content" style="width: 50em;">
 
                 <!-- Header -->
                 <div class="modal-header">
@@ -18,7 +18,7 @@
                 </div>
 
                 <!-- Body -->
-                <div id="modal-body" class="modal-body" style="height: 50em; width: 55em;">
+                <div id="modal-body" class="modal-body" style="height: 50em; width: 50em;">
 
                 </div>
 

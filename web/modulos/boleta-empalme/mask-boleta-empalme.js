@@ -51,7 +51,7 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 REMCLI = obj.remarcador;
                 var remcli = obj.remarcador;
                 $('#rut-cliente').html($.formatRut(remcli.rutcliente + "-" + remcli.dvcliente));
-                $('#nom-cliente').html(remcli.nomcliente);
+                $('#nom-cliente').html(remcli.razoncliente);
                 $('#direccion').html(remcli.direccion);
                 $('#persona').html(remcli.persona);
                 $('#fono').html(remcli.fono);
@@ -125,5 +125,5 @@ function generar() {
     // Choose the element and save the PDF for our user.
     html2pdf()
             .from(element)
-            .save("boleta.pdf");
+            .save("Detalle-" + REMCLI.nomcliente + "-" + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
 }

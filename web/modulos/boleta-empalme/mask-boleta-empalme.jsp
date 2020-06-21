@@ -35,10 +35,10 @@
         </div>
         <div class="col-md-4"></div>
         <div class="col-md-3 float-right" style="right: 0px;" >
-            <div style="border: 3px solid #FD8104; width: 100%; text-align: center; font-weight: bold; font-size: 14px;">
+            <div style="border: 3px solid #FD8104; width: 18em; text-align: center; font-weight: bold; font-size: 14px;">
                 RUT: 99.593.200-8
                 <br />
-                COMPROBANTE DE COBRO
+                DETALLE DE COMPLEMENTO<br /> SERVICIOS DE ADMINISTRACIÓN
                 <br />
                 Nº 00000000
             </div>

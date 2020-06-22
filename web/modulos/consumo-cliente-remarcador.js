@@ -78,32 +78,48 @@ function getDatosRemarcador() {
     });
 }
 
-function armarDetalleRemarcador(remarcador){
+function armarDetalleRemarcador(remarcador) {
     var tabla = '<table>' +
-                '<tr>' +
-                    '<td><strong># Remarcador:</strong></td>' +
-                    '<td>' + remarcador.numremarcador + '</td>' +
-                '</tr>' +
-                '<tr>' +
-                    '<td><strong># Empalme:</strong></td>' +
-                    '<td>' + remarcador.numempalme + '</td>' +
-                '</tr>' +
-                '<tr>' +
-                    '<td><strong>Bodega:</strong></td>' +
-                    '<td>' + remarcador.nomparque + '</td>' +
-                '</tr>' +
-                '<tr>' +
-                    '<td><strong>Instalación:</strong></td>' +
-                    '<td>' + remarcador.nominstalacion + '</td>' +
-                '</tr>' +
-                '<tr>' +
-                    '<td><strong>Dirección:</strong></td>' +
-                    '<td>' + remarcador.direccion + '</td>' +
-                '</tr>' +
-                '<tr>' +
-                    '<td><strong>Comuna:</strong></td>' +
-                    '<td>' + remarcador.nomcomuna + '</td>' +
-                '</tr>' +
+            '<tr>' +
+            '<td><strong># Empalme:</strong></td>' +
+            '<td>' + remarcador.numempalme + '</td>' +
+            '</tr>' +
+            
+            '<tr>' +
+            '<td><strong># Remarcador:</strong></td>' +
+            '<td>' + remarcador.numremarcador + '</td>' +
+            '</tr>' +
+            
+            '<tr>' +
+            '<td><strong>Nº Serie: </strong></td>' +
+            '<td>' + remarcador.numserie + '</td>' +
+            '</tr>' +
+            
+            '<tr>' +
+            '<td><strong>Bodega:</strong></td>' +
+            '<td>' + remarcador.nomparque + '</td>' +
+            '</tr>' +
+            
+            '<tr>' +
+            '<td><strong>Instalación:</strong></td>' +
+            '<td>' + remarcador.nominstalacion + '</td>' +
+            '</tr>' +
+            
+            '<tr>' +
+            '<td><strong>Dirección:</strong></td>' +
+            '<td>' + remarcador.direccion + '</td>' +
+            '</tr>' +
+            
+            '<tr>' +
+            '<td><strong>Módulos:</strong></td>' +
+            '<td>' + remarcador.modulos + '</td>' +
+            '</tr>' +
+            
+            '<tr>' +
+            '<td><strong>Comuna:</strong></td>' +
+            '<td>' + remarcador.nomcomuna + '</td>' +
+            '</tr>' +
+            
             '</table>';
     $('#detalle-remarcador').html(tabla);
 }
@@ -132,8 +148,8 @@ function graficar(idremarcador) {
             if (obj.estado === 'ok') {
                 for (var i in obj.data.datasets) {
                     var color = colorDinamicoArr();
-                    obj.data.datasets[i].borderColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] +  ", 1.0)";
-                    obj.data.datasets[i].backgroundColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] +  ", 0.3)";
+                    obj.data.datasets[i].borderColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 1.0)";
+                    obj.data.datasets[i].backgroundColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 0.3)";
                 }
                 GRAFICO.destroy();
                 GRAFICO = new Chart(document.getElementById("grafico"), {

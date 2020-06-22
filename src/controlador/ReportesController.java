@@ -38,7 +38,7 @@ public class ReportesController extends HttpServlet {
 
     private JSONObject consumoClienteRemarcador(JSONObject entrada) {
         JSONObject salida = new JSONObject();
-        //Obtener Labels remarcadores
+
         String query = "CALL SP_GET_CONSUMO_13_MESES_REMARCADOR(" + entrada.getInt("numremarcador") + ")";
         System.out.println(query);
         Conexion c = new Conexion();

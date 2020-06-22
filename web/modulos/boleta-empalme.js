@@ -1,4 +1,30 @@
 var KWTOTAL = null;
+var IDCOMUNA = null;
+function getSelectTarifasIdComuna(idcomuna) {
+    var datos = {
+        idcomuna: idcomuna,
+        tipo: "get-select-tarifas-idcomuna"
+    };
+
+    $.ajax({
+        url: 'TarifaController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (res) {
+            var obj = JSON.parse(res);
+            if (obj.estado === 'ok') {
+                $('#select-tarifa').html(obj.options);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
 
 function getSelectInstalacion() {
     var datos = {
@@ -47,6 +73,8 @@ function getRemarcadoresNumEmpalmeBoleta() {
                 $('.dataTable').DataTable().destroy();
                 $('#detalle-remarcadores').html(obj.tabla);
                 KWTOTAL = obj.kwtotal;
+                IDCOMUNA = obj.idcomuna;
+                getSelectTarifasIdComuna(IDCOMUNA);
                 $('.loader').fadeOut(500);
             }
         },
@@ -110,8 +138,6 @@ function validarCampos() {
 function calcularDiferencia(){
     var kwtotal = KWTOTAL;
     var facturadoempalme = $('#consumo-facturado-empalme').val();
-    
-    
     var resta = kwtotal - facturadoempalme;
     var porc = 100 - ((facturadoempalme * 100) / kwtotal);
     
@@ -131,10 +157,15 @@ function buscar() {
     }
 }
 
-function calcular(idremarcador, numremarcador, numserie,consumo, mes, lecturaanterior, lecturaactual, fechalecturaini, fechalecturafin){
+function calcular(idremarcador, numremarcador, numserie,consumo, mes, lecturaanterior, lecturaactual, maxdemandaleida, maxdemandahorapunta, fechalecturaini, fechalecturafin){
     //console.log("modulos/boleta-empalme/mask-boleta-empalme.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&consumo=" + consumo + "&mes='" + mes + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual + "&fechalecturaini='" + fechalecturaini + "'&fechalecturafin='" + fechalecturafin + "'");
+    var idtarifa = $('#select-tarifa').val();
+    if(idtarifa === '0' || idtarifa === 0 || idtarifa === '' || idtarifa === null || idtarifa === undefined){
+        alert("Debe seleccionar una tarifa para poder calcular la boleta.");
+        return false;
+    }
     $('#modal').modal();
-    $('#modal-body').load("modulos/boleta-empalme/mask-boleta-empalme.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&numserie='" + numserie + "'&consumo=" + consumo + "&mes='" + mes + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual + "&fechalecturaini='" + fechalecturaini + "'&fechalecturafin='" + fechalecturafin + "'");
+    $('#modal-body').load("modulos/boleta-empalme/mask-boleta-empalme.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&numserie='" + numserie + "'&consumo=" + consumo + "&mes='" + mes + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual + "&maxdemandaleida=" + maxdemandaleida + "&maxdemandahorapunta=" + maxdemandahorapunta + "&fechalecturaini='" + fechalecturaini + "'&fechalecturafin='" + fechalecturafin + "'");
 }
 
 function limpiar(){

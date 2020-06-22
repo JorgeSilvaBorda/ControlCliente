@@ -123,6 +123,14 @@ public class Util {
         String output = myFormatter.format(num);
         return output;
     }
+    
+    public static String formatMiles(BigDecimal numero) {
+        String pattern = "###,###,###.##";
+        //Si no le paso ningun Locale, toma el del sistema, que en mi caso es Locale("es","MX");
+        DecimalFormat myFormatter = new DecimalFormat(pattern);
+        String output = myFormatter.format(numero);
+        return output;
+    }
 
     public static String armarBody(ResultSet rs, String[] arrCampos) throws SQLException {
         String salida = "<thead><tr>";

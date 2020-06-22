@@ -1,31 +1,5 @@
 var REMCLI = null;
 
-function getSelectTarifasIdComuna(idcomuna) {
-    var datos = {
-        idcomuna: idcomuna,
-        tipo: "get-select-tarifas-idcomuna"
-    };
-
-    $.ajax({
-        url: 'TarifaController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (res) {
-            var obj = JSON.parse(res);
-            if (obj.estado === 'ok') {
-                $('#select-tarifa').html(obj.options);
-            }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
-}
-
 function getRemarcadorClienteIdRemarcador(idremarcador) {
     $('#rut-cliente').html('');
     $('#nom-cliente').html('');
@@ -56,27 +30,39 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 $('#persona').html(remcli.persona);
                 $('#fono').html(remcli.fono);
                 $('#email').html(remcli.email);
-                $('#num-empalme-boleta').html(remcli.numempalme);
-                getSelectTarifasIdComuna(remcli.idcomuna);
+                $('#num-empalme-boleta').html(remcli.numempalme + '<br /><br />');
+                //getSelectTarifasIdComuna(remcli.idcomuna);
 
-                $('#num-cliente').html($.formatRut(remcli.rutcliente + "-" + remcli.dvcliente) + '<br /><br />');
+                //$('#num-cliente').html($.formatRut(remcli.rutcliente + "-" + remcli.dvcliente) + '<br /><br />');
                 var fechaemision = new Date();
                 $('#fecha-emision').html(formatFechaDDMMYYYY(formatFechaYYYYMMDD(fechaemision)) + '<br /><br />');
                 var dt = new Date(MES + '-1');
                 var nextfecha = new Date(dt.setMonth(dt.getMonth() + 1));
+                nextfecha.setMonth(nextfecha.getMonth() + 1);
                 nextfecha.setDate(nextfecha.getDate() - 1);
+                
                 nextfecha = formatFechaDDMMYYYY(formatFechaYYYYMMDD(nextfecha));
                 $('#fecha-prox-lectura').html(nextfecha + '<br /><br />');
                 //$('#direccion-suministro').html(remcli.direccion + '<br /><br />');
-
+                var fechadesde = new Date(FECHA_LECTURA_INICIAL);
+                fechadesde.setDate(fechadesde.getDate() + 2);
+                var fechahasta = new Date(FECHA_LECTURA_FINAL);
+                fechahasta.setDate(fechahasta.getDate() + 2);
+                /*
                 $('#desde').html(formatFechaDDMMYYYY(FECHA_LECTURA_INICIAL) + '<br /><br />');
                 $('#hasta').html(formatFechaDDMMYYYY(FECHA_LECTURA_FINAL) + '<br /><br />');
-                $('#suministradas').html(formatMiles(remcli.dmps) + '<br /><br />');
-                $('#horas-punta').html(formatMiles(remcli.dmplhp) + '<br /><br />');
+                */
+                $('#desde').html(formatFechaDDMMYYYY(formatFechaYYYYMMDD(fechadesde)) + '<br /><br />');
+                $('#hasta').html(formatFechaDDMMYYYY(formatFechaYYYYMMDD(fechahasta)) + '<br /><br />');
+                $('#suministradas').html(remcli.dmps + '<br /><br />');
+                $('#horas-punta').html(remcli.dmplhp + '<br /><br />');
+                $('#leidas-suministradas').html(MAX_DEMANDA_LEIDA + '<br /><br />');
+                $('#leidas-horas-punta').html(MAX_DEMANDA_HORA_PUNTA + '<br /><br />');
                 $('#consumo-total-kwh').html(formatMiles(CONSUMO) + '<br /><br />');
-                $('#nomred').html(remcli.nomred);
-                $('#num-serie').html(NUMSERIE);
-                $('#num-remarcador-boleta').html(NUMREMARCADOR);
+                $('#nomred').html(remcli.nomred + '<br /><br />');
+                $('#num-serie').html(NUMSERIE + '<br /><br />');
+                $('#num-remarcador-boleta').html(NUMREMARCADOR + '<br /><br />');
+                armarDetalleTarifa();
             }
         },
         error: function (a, b, c) {

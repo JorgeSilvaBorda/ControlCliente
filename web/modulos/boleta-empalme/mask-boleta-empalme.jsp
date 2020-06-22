@@ -9,6 +9,8 @@
     var MES = <%out.print(request.getParameter("mes"));%>;
     var FECHA_LECTURA_INICIAL = <%out.print(request.getParameter("fechalecturaini"));%>;
     var FECHA_LECTURA_FINAL = <%out.print(request.getParameter("fechalecturafin"));%>;
+    var MAX_DEMANDA_LEIDA = '<%out.print(request.getParameter("maxdemandaleida").toString());%>';
+    var MAX_DEMANDA_HORA_PUNTA = '<%out.print(request.getParameter("maxdemandahorapunta").toString());%>';
     var NUMSERIE = <%out.print(request.getParameter("numserie"));%>;
     var lecturaactual = <%out.print(request.getParameter("lecturaactual"));%>;
     var lecturaanterior = <%out.print(request.getParameter("lecturaanterior"));%>;
@@ -18,15 +20,15 @@
 </script>
 <style>
     .modal-lg{
-        max-width: 60%;
+        max-width: 100%;
         max-height: 120%;
     }
     table.print-friendly tr td, table.print-friendly tr th {
         page-break-inside: avoid;
     }
 </style>
-<div class="container-fluid" id="cont-boleta" style="height: 100%;">
-    <div class="row" style="height: 100%;">
+<div class="container-fluid" id="cont-boleta" style="height: 100%; width:50em;">
+    <div class="row" style="height: 100%; width: 55em;">
         <div class="col-md-3">
             <!--div class="form-group" style="font-size: 11px;">
                 <label data-html2canvas-ignore="true" for="select-tarifa">Tarifa: </label>
@@ -34,7 +36,7 @@
             </div-->
         </div>
         <div class="col-md-4"></div>
-        <div class="col-md-3 float-right" style="right: 0px; left: 8em;" >
+        <div class="col-md-3 float-right" style="right: 0px; left: -1em;" >
             <div style="border: 3px solid #FD8104; width: 18em; text-align: center; font-weight: bold; font-size: 14px;">
                 RUT: 99.593.200-8
                 <br />
@@ -128,11 +130,11 @@
     </div>
     <div class="row">
         <div class="col-md-9 float-left" style="position: absolute; top: 1em; left: 0px;">
-            <table style="border-collapse: collapse; font-size: 12px; width: 80%;" id="cabecera">
+            <table style="border-collapse: collapse; font-size: 12px; width: 100%;" id="cabecera">
                 <tbody>
                     <tr style="vertical-align: top;">
                         <td rowspan="3">
-                            <img width="200" height="100" src="img/logo.jpg" alt="Bodenor"/>
+                            <img width="150" height="75" src="img/logo.jpg" alt="Bodenor"/>
                         </td>
                         <td style="font-weight: bold;">
                             <ul>

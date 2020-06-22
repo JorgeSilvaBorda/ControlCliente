@@ -183,6 +183,7 @@ public class RemarcadorController extends HttpServlet {
         tabla += "<th>Acción</th>";
         tabla += "</tr></thead><tbody>";
         JSONObject remarcador;
+        int idcomuna = 0;
         JSONArray remarcadores = new JSONArray();
         try {
             while (rs.next()) {
@@ -196,9 +197,10 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td style='text-align: right;'><span>" + Util.formatMiles(rs.getString("LECTURAANTERIOR")) + "</span></td>";
                 filas += "<td style='text-align: right;'><span>" + Util.formatMiles(rs.getString("LECTURAACTUAL")) + "</span></td>";
                 filas += "<td style='text-align: right;'><span>" + Util.formatMiles(rs.getInt("CONSUMO")) + "</span></td>";
-                filas += "<td><button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("mes") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
+                filas += "<td><button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("mes") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", " + rs.getBigDecimal("MAX_DEMANDA_LEIDA") + ", " + rs.getBigDecimal("MAX_DEMANDA_HORA_PUNTA") + ", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
                 filas += "</tr>";
                 kwtotal += rs.getInt("CONSUMO");
+                idcomuna = rs.getInt("IDCOMUNA");
                 remarcador = new JSONObject();
                 remarcador.put("idremarcador", rs.getInt("IDREMARCADOR"));
                 remarcador.put("numremarcador", rs.getString("NUMREMARCADOR"));
@@ -234,6 +236,7 @@ public class RemarcadorController extends HttpServlet {
             salida.put("tabla", tabla);
             salida.put("remarcadores", remarcadores);
             salida.put("kwtotal", kwtotal);
+            salida.put("idcomuna", idcomuna);
             salida.put("estado", "ok");
         } catch (JSONException | SQLException ex) {
             System.out.println("Problemas en controlador.RemarcadorController.getRemarcadoresNumEmpalmeBoleta().");
@@ -425,8 +428,8 @@ public class RemarcadorController extends HttpServlet {
                 remarcador.put("nomcomuna", rs.getString("NOMCOMUNA"));
                 remarcador.put("idred", rs.getInt("IDRED"));
                 remarcador.put("nomred", rs.getString("NOMRED"));
-                remarcador.put("dmps", rs.getInt("DEM_MAX_POTENCIA_SUMINISTRADA"));
-                remarcador.put("dmplhp", rs.getInt("DEM_MAX_POTENCIA_LEIDA_H_PUNTA"));
+                remarcador.put("dmps", rs.getString("DEM_MAX_POTENCIA_SUMINISTRADA"));
+                remarcador.put("dmplhp", rs.getString("DEM_MAX_POTENCIA_LEIDA_H_PUNTA"));
             }
             salida.put("remarcador", remarcador);
             salida.put("estado", "ok");

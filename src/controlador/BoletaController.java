@@ -193,7 +193,7 @@ public class BoletaController extends HttpServlet {
             tabla += "<tr><td colspan='5' style='border-bottom: 1px solid white;'></td></tr>";
             
             tabla += "<tr>";
-            tabla += "<td colspan='4' style='text-align: right; padding-right: 25px; font-weight: bold;'>";
+            tabla += "<td colspan='4' style='text-align: right; padding-right: 2px; font-weight: bold;'>";
             tabla += "Total Monto Neto ";
             tabla += "</td>";
             tabla += "<td style='text-align: right;'>";
@@ -202,7 +202,7 @@ public class BoletaController extends HttpServlet {
             tabla += "</tr>";
             
             tabla += "<tr style='text-align: right;'>";
-            tabla += "<td colspan='4' style='text-align: right; padding-right: 25px; font-weight: bold;'>";
+            tabla += "<td colspan='4' style='text-align: right; padding-right: 2px; font-weight: bold;'>";
             tabla += "Total I.V.A.(19%)";
             tabla += "</td>";
             tabla += "<td style='text-align: right;'>";
@@ -211,7 +211,7 @@ public class BoletaController extends HttpServlet {
             tabla += "</tr>";
             
             tabla += "<tr>";
-            tabla += "<td colspan='4' style='text-align: right; padding-right: 25px; font-weight: bold;'>";
+            tabla += "<td colspan='4' style='text-align: right; padding-right: 2px; font-weight: bold;'>";
             tabla += "Monto Exento ";
             tabla += "</td>";
             tabla += "<td style='text-align: right;'>";
@@ -220,7 +220,7 @@ public class BoletaController extends HttpServlet {
             tabla += "</tr>";
             
             tabla += "<tr>";
-            tabla += "<td colspan='4' style='text-align: right; padding-right: 25px; font-weight: bold;'>";
+            tabla += "<td colspan='4' style='text-align: right; padding-right: 2px; font-weight: bold;'>";
             tabla += "Monto Total ";
             tabla += "</td>";
             tabla += "<td style='text-align: right;'>";
@@ -229,7 +229,7 @@ public class BoletaController extends HttpServlet {
             tabla += "</tr>";
             
             tabla += "<tr style='border-top: 2px solid white;'>";
-            tabla += "<td colspan='4' style='border-top: 2px solid white;background-color: white; text-align: right; padding-right: 25px; font-weight: bold;'>";
+            tabla += "<td colspan='4' style='border-top: 2px solid white;background-color: white; text-align: right; padding-right: 2px; font-weight: bold;'>";
             tabla += "Total a Pagar ";
             tabla += "</td>";
             tabla += "<td style='border-top: 2px solid white; text-align: right;'>";

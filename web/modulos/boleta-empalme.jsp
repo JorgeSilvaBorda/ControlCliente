@@ -2,28 +2,26 @@
 <script type="text/javascript">
     $(document).ready(function () {
         getSelectInstalacion();
+        //getSelectTarifasIdComuna();
     });
 
 </script>
 <div class="container-fluid">
     <!-- Modal -->
     <div class="modal fade" id="modal">
-        <div class="modal-dialog modal-lg" style="width: 50em;">
+        <div class="modal-dialog modal-lg" style="width: 55em;">
             <div class="modal-content" style="width: 55em;">
 
                 <!-- Header -->
                 <div class="modal-header">
                     <div class="col-md-3">
-                        <div class="form-group" style="font-size: 11px;">
-                            <label data-html2canvas-ignore="true" for="select-tarifa">Tarifa: </label>
-                            <select data-html2canvas-ignore="true" onchange="armarDetalleTarifa();" class="form-control form-control-sm small" style="font-size: 11px;" id="select-tarifa"></select>
-                        </div>
+
                     </div>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
                 <!-- Body -->
-                <div id="modal-body" class="modal-body" style="height: 50em; width: 50em;">
+                <div id="modal-body" class="modal-body" style="height: 50em; width: 45em;">
 
                 </div>
 
@@ -60,6 +58,10 @@
                 <div class="form-group" style="">
                     <label for="mes">Mes</label>
                     <input type="month" id="mes" class="form-control form-control-sm"/>
+                </div>
+                <div class="form-group">
+                    <label data-html2canvas-ignore="true" for="select-tarifa">Tarifa: </label>
+                    <select data-html2canvas-ignore="true" class="form-control form-control-sm small" id="select-tarifa"></select>
                 </div>
                 <!-- div class="form-group" style="">
                     <label for="fecha-fin">Fecha Fin</label>

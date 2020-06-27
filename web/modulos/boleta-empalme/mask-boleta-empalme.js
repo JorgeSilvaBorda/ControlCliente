@@ -112,5 +112,5 @@ function generar() {
     // Choose the element and save the PDF for our user.
     html2pdf()
             .from(element)
-            .save("Detalle-" + REMCLI.nomcliente + "-" + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
+            .save("Detalle-" + REMCLI.nomcliente + "-" + REMCLI.numremarcador + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
 }

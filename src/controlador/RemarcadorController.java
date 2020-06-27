@@ -342,6 +342,7 @@ public class RemarcadorController extends HttpServlet {
     }
 
     private JSONObject insRemarcador(JSONObject entrada) {
+        System.out.println(entrada);
         JSONObject salida = new JSONObject();
         String query = "CALL SP_INS_REMARCADOR("
                 + "" + entrada.getInt("idempalme") + ","
@@ -411,6 +412,7 @@ public class RemarcadorController extends HttpServlet {
                 remarcador.put("numremarcador", rs.getInt("NUMREMARCADOR"));
                 remarcador.put("numserie", rs.getString("NUMSERIE"));
                 remarcador.put("idcliente", rs.getInt("IDCLIENTE"));
+                remarcador.put("modulos", rs.getString("MODULOS"));
                 remarcador.put("rutcliente", rs.getInt("RUTCLIENTE"));
                 remarcador.put("dvcliente", rs.getString("DVCLIENTE"));
                 remarcador.put("nomcliente", rs.getString("NOMCLIENTE"));
@@ -422,6 +424,8 @@ public class RemarcadorController extends HttpServlet {
                 remarcador.put("email", rs.getString("EMAIL"));
                 remarcador.put("idempalme", rs.getInt("IDEMPALME"));
                 remarcador.put("numempalme", rs.getString("NUMEMPALME"));
+                remarcador.put("idparque", rs.getInt("IDPARQUE"));
+                remarcador.put("nomparque", rs.getString("NOMPARQUE"));
                 remarcador.put("idinstalacion", rs.getInt("IDINSTALACION"));
                 remarcador.put("nominstalacion", rs.getString("NOMINSTALACION"));
                 remarcador.put("idcomuna", rs.getInt("IDCOMUNA"));
@@ -471,7 +475,7 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td><span>" + rs.getString("FECHAREGISTRO") + "</span></td>";
                 filas += "<td><span>" + rs.getInt("IDREMARCADOR") + "</span></td>";
                 filas += "<td><span>" + rs.getInt("EnergiaActivaConsumida_KWH") + "</span></td>";
-                filas += "<td><span>" + rs.getInt("PotenciaActivaTotal_KW") + "</span></td>";
+                filas += "<td><span>" + rs.getBigDecimal("PotenciaActivaTotal_KW") + "</span></td>";
                 filas += "</tr>";
                 cont++;
             }

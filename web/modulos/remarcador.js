@@ -194,7 +194,7 @@ function insRemarcador(callback) {
         idempalme: idempalme,
         idparque: idparque,
         numremarcador: numremarcador,
-        numerie: numserie,
+        numserie: numserie,
         modulos: modulos
     };
 

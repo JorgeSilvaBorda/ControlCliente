@@ -37,7 +37,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="page-header">
-                <h1>Emitir Boleta <small>Por Empalme</small></h1>
+                <h1>Emitir Detalle <small>Complemento Servicios de Administración</small></h1>
             </div>
         </div>
     </div>

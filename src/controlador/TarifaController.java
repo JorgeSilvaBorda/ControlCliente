@@ -26,6 +26,9 @@ public class TarifaController extends HttpServlet {
             case "get-select-tarifas-idcomuna":
                 out.print(getSelectTarifasIdComuna(entrada));
                 break;
+            case "get-select-tarifas-idinstalacion":
+                out.print(getSelectTarifasIdInstalacion(entrada));
+                break;
             case "get-detalle-tarifa":
                 out.print(getDetalleTarifa(entrada));
                 break;
@@ -56,6 +59,21 @@ public class TarifaController extends HttpServlet {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_SELECT_TARIFAS_IDCOMUNA(" + entrada.getInt("idcomuna") + ")";
         Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDTARIFA", "NOMBRESELECT");
+        salida.put("options", options);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getSelectTarifasIdInstalacion(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_SELECT_TARIFAS_IDINSTALACION(" + entrada.getInt("idinstalacion") + ")";
+        Conexion c = new Conexion();
+        System.out.println(query);
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
 

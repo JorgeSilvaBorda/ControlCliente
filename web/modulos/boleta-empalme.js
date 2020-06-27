@@ -1,9 +1,9 @@
 var KWTOTAL = null;
 var IDCOMUNA = null;
-function getSelectTarifasIdComuna(idcomuna) {
+function getSelectTarifasIdInstalacion(idinstalacion) {
     var datos = {
-        idcomuna: idcomuna,
-        tipo: "get-select-tarifas-idcomuna"
+        idinstalacion: idinstalacion,
+        tipo: "get-select-tarifas-idinstalacion"
     };
 
     $.ajax({
@@ -74,7 +74,6 @@ function getRemarcadoresNumEmpalmeBoleta() {
                 $('#detalle-remarcadores').html(obj.tabla);
                 KWTOTAL = obj.kwtotal;
                 IDCOMUNA = obj.idcomuna;
-                getSelectTarifasIdComuna(IDCOMUNA);
                 $('.loader').fadeOut(500);
             }
         },
@@ -104,6 +103,8 @@ function getSelectEmpalmesNumEmpalmesInstalacion() {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
                 $('#select-empalme').html(obj.options);
+                var idinstalacion = $('#select-instalacion').val();
+                getSelectTarifasIdInstalacion(idinstalacion);
             }
         },
         error: function (a, b, c) {

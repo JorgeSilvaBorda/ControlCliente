@@ -186,6 +186,7 @@ public class BoletaController extends HttpServlet {
                         exento = rs.getInt("TOTAL");
                         //total += rs.getInt("TOTAL");
                     }
+                    
                     jsonconsumo.put("idconcepto", rs.getInt("IDCONCEPTO"));
                     jsonconsumo.put("idred", rs.getInt("IDRED"));
                     jsonconsumo.put("nomconcepto", rs.getString("NOMCONCEPTO"));
@@ -194,6 +195,7 @@ public class BoletaController extends HttpServlet {
                     jsonconsumo.put("cantidad", cant);
                     jsonconsumo.put("valorneto", net);
                     jsonconsumo.put("total", tot);
+                    
 
                 } else if (rs.getInt("IDCONCEPTO") == 7) {
                     filahpunta += "<tr>";
@@ -229,6 +231,7 @@ public class BoletaController extends HttpServlet {
                     jsonconsumo.put("cantidad", cant);
                     jsonconsumo.put("valorneto", net);
                     jsonconsumo.put("total", tot);
+                    total += rs.getInt("TOTAL");
                 } else if (rs.getInt("IDCONCEPTO") == 11) {
                     filapotencia += "<tr>";
                     filapotencia += "<td style='font-weight: bold;'>";
@@ -263,14 +266,15 @@ public class BoletaController extends HttpServlet {
                     jsonconsumo.put("cantidad", cant);
                     jsonconsumo.put("valorneto", net);
                     jsonconsumo.put("total", tot);
+                    total += rs.getInt("TOTAL");
                 }
                 consumos.put(jsonconsumo);
-                tabla += filapotencia;
-                tabla += filahpunta;
-
             }
+            tabla += filapotencia;
+            tabla += filahpunta;
 
             boleta.put("consumos", consumos);
+            
             //Separador --------------------------------------------------------------------------------
             tabla += "<tr><td colspan='5' style='border-bottom: 1px solid white;'></td></tr>";
 

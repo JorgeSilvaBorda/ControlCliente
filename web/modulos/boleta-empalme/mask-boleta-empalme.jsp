@@ -224,7 +224,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td style="padding: 0px 0px 0px 10px; text-align: right;">
+                        <td style="padding: 0px 0px 0px 10px; text-align: left;">
                             <%out.print(request.getParameter("numremarcador"));%>
                         </td>
                         <td style="padding: 0px 0px 0px 10px;">Bodenor Flex Center</td>

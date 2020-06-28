@@ -144,7 +144,7 @@ function generar() {
                 
                 //Generar PDF -----------------------------------------------------
                 const element = document.getElementById("modal-body");
-                html2pdf().from(element).save("Detalle-" + REMCLI.nomcliente + "-" + REMCLI.numremarcador + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
+                html2pdf().from(element).save("Detalle-" + REMCLI.nomcliente + "-" + REMCLI.numremarcador + "-" + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
             }
         },
         error: function (a, b, c) {

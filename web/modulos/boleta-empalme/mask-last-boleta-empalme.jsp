@@ -1,27 +1,9 @@
 <script src="modulos/boleta-empalme/mask-boleta-empalme.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
 
 <script type="text/javascript">
-
-    var idremarcador = <%out.print(request.getParameter("idremarcador"));%>;
-    var numremarcador = <%out.print(request.getParameter("numremarcador"));%>;
-    var NUMREMARCADOR = <%out.print(request.getParameter("numremarcador"));%>;
-    var CONSUMO = <%out.print(request.getParameter("consumo"));%>;
-    var mes = <%out.print(request.getParameter("mes"));%>;
-    var MES = <%out.print(request.getParameter("mes"));%>;
-    var FECHA_LECTURA_INICIAL = <%out.print(request.getParameter("fechalecturaini"));%>;
-    var FECHA_LECTURA_FINAL = <%out.print(request.getParameter("fechalecturafin"));%>;
-    var MAX_DEMANDA_LEIDA = '<%out.print(request.getParameter("maxdemandaleida").toString());%>';
-    var MAX_DEMANDA_HORA_PUNTA = '<%out.print(request.getParameter("maxdemandahorapunta").toString());%>';
-    var NUMSERIE = <%out.print(request.getParameter("numserie"));%>;
-    var lecturaactual = <%out.print(request.getParameter("lecturaactual"));%>;
-    var lecturaanterior = <%out.print(request.getParameter("lecturaanterior"));%>;
-    var LECTURA_ACTUAL = <%out.print(request.getParameter("lecturaactual"));%>;
-    var LECTURA_ANTERIOR = <%out.print(request.getParameter("lecturaanterior"));%>;
-
+    var IDBOLETA = <%out.print(request.getParameter("idboleta"));%>;
     $(document).ready(function () {
-
-        getRemarcadorClienteIdRemarcador(idremarcador);
-
+        armarLastBoleta();
     });
 </script>
 <style>
@@ -36,10 +18,6 @@
 <div class="container-fluid" id="cont-boleta" style="height: 100%; width:50em;">
     <div class="row" style="height: 100%; width: 55em;">
         <div class="col-md-3">
-            <!--div class="form-group" style="font-size: 11px;">
-                <label data-html2canvas-ignore="true" for="select-tarifa">Tarifa: </label>
-                <select data-html2canvas-ignore="true" onchange="armarDetalleTarifa();" class="form-control form-control-sm small" style="font-size: 11px;" id="select-tarifa"></select>
-            </div-->
         </div>
         <div class="col-md-4"></div>
         <div class="col-md-3 float-right" style="right: 0px; left: -1em;" >
@@ -229,17 +207,17 @@
                 <tbody>
                     <tr>
                         <td style="padding: 0px 0px 0px 10px; text-align: left;">
-                            <%out.print(request.getParameter("numremarcador"));%>
+                            <span id="num-medidor"></span>
                         </td>
                         <td style="padding: 0px 0px 0px 10px;">Bodenor Flex Center</td>
                         <td style="text-align: right;">
-                            <%out.print(modelo.Util.formatMiles(request.getParameter("lecturaanterior")));%>
+                            <span id="lectura-anterior"></span>
                         </td>
                         <td style="padding: 0px 0px 0px 10px; text-align: right;">
-                            <%out.print(modelo.Util.formatMiles(request.getParameter("lecturaactual")));%>
+                            <span id="lectura-actual"></span>
                         </td>
                         <td style="padding: 0px 0px 0px 10px; text-align: right;">
-                            <%out.print(modelo.Util.formatMiles(request.getParameter("consumo")));%>
+                            <span id="consumo"></span>
                         </td>
                     </tr>
                 </tbody>

@@ -1,6 +1,8 @@
+var GRAFICO = new Chart(document.getElementById("grafico"));
 var REMCLI = null;
 var DATOS_BOLETA = {};
 var BOLETA = {};
+
 function getRemarcadorClienteIdRemarcador(idremarcador) {
     $('#rut-cliente').html('');
     $('#nom-cliente').html('');
@@ -25,9 +27,10 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
             if (obj.estado === 'ok') {
                 REMCLI = obj.remarcador;
                 var remcli = obj.remarcador;
+                graficar(remcli.idremarcador);
                 $('#rut-cliente').html($.formatRut(remcli.rutcliente + "-" + remcli.dvcliente));
                 $('#nom-cliente').html(remcli.razoncliente);
-                $('#direccion').html(remcli.direccion);
+                $('#direccion').html(remcli.direccion + ', ' + remcli.nomcomuna);
                 $('#persona').html(remcli.persona);
                 $('#fono').html(remcli.fono);
                 $('#email').html(remcli.email);
@@ -69,7 +72,6 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 DATOS_BOLETA.maxdemandahorapuntafacturada = remcli.dmplhp;
                 DATOS_BOLETA.lecturaactual = LECTURA_ACTUAL;
                 DATOS_BOLETA.lecturaanterior = LECTURA_ANTERIOR;
-                console.log(DATOS_BOLETA);
                 armarDetalleTarifa();
             }
         },
@@ -126,6 +128,10 @@ function armarDetalleTarifa() {
 }
 
 function generar() {
+    var idtarifa = $('#select-tarifa').val();
+    var nomtarifa = $('#select-tarifa option:selected').text();
+    BOLETA.idtarifa = idtarifa;
+    BOLETA.nomtarifa = nomtarifa;
     var datos = {
         tipo: 'genera-boleta',
         remcli: REMCLI,
@@ -140,8 +146,10 @@ function generar() {
         success: function (res) {
             var obj = JSON.parse(res);
             if (obj.estado === 'ok') {
-                
-                
+                //Actualizar número de boleta antes de emitir----------------------
+                $('#num-boleta').html(obj.numboleta);
+                //Actualizar grilla de atrás---------------------------------------
+                getRemarcadoresNumEmpalmeBoleta();
                 //Generar PDF -----------------------------------------------------
                 const element = document.getElementById("modal-body");
                 html2pdf().from(element).save("Detalle-" + REMCLI.nomcliente + "-" + REMCLI.numremarcador + "-" + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
@@ -154,4 +162,126 @@ function generar() {
         }
     });
 
+}
+
+function graficar(idremarcador) {
+    var idcliente = REMCLI.idcliente;
+    var numremarcador = REMCLI.numremarcador;
+    var datos = {
+        tipo: 'consumo-cliente-remarcador',
+        idcliente: idcliente,
+        idremarcador: idremarcador,
+        numremarcador: numremarcador
+    };
+
+    $.ajax({
+        url: 'ReportesController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            //$('.loader').fadeOut(500);
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                for (var i in obj.data.datasets) {
+                    var color = colorDinamicoArr();
+                    obj.data.datasets[i].borderColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 1.0)";
+                    obj.data.datasets[i].backgroundColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 0.3)";
+                }
+                GRAFICO.destroy();
+                GRAFICO = new Chart(document.getElementById("grafico"), {
+                    type: 'bar',
+                    data: obj.data,
+                    options: {
+                        title: {
+                            display: true,
+                            text: 'Últimos 12 meses de consumo'
+                        },
+                        scales: {
+                            yAxes: [{
+                                    ticks: {
+                                        fontSize: 10
+                                    }
+
+                                }],
+                            xAxes: [{
+                                    ticks: {
+                                        fontSize: 10
+                                    }
+
+                                }]
+                        }
+                    }
+                });
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function armarLastBoleta() {
+    var datos = {
+        tipo: 'get-last-boleta-idboleta',
+        idboleta: IDBOLETA
+    };
+    $.ajax({
+        url: 'BoletaController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (res) {
+            var obj = JSON.parse(res);
+            if (obj.estado === 'ok') {
+                console.log(obj);
+                REMCLI = {
+                    idcliente: obj.boleta.IDCLIENTE,
+                    numremarcador: obj.boleta.NUMREMARCADOR
+                };
+                $('#num-medidor').html(obj.boleta.NUMREMARCADOR);
+                $('#lectura-anterior').html(formatMiles(obj.boleta.LECTURAANTERIOR));
+                $('#lectura-actual').html(formatMiles(obj.boleta.LECTURAACTUAL));
+                $('#consumo').html(formatMiles(obj.boleta.CONSUMO));
+                $('#rut-cliente').html(formatMiles(obj.boleta.RUTCLIENTE) + '-' + obj.boleta.DVCLIENTE);
+                $('#nom-cliente').html(obj.boleta.NOMCLIENTE);
+                $('#direccion').html(obj.boleta.DIRECCION + ', ' + obj.boleta.NOMCOMUNA);
+                $('#persona').html(obj.boleta.PERSONA);
+                $('#fono').html(obj.boleta.FONO);
+                $('#email').html(obj.boleta.EMAIL);
+                $('#num-boleta').html(obj.boleta.NUMBOLETA);
+                
+                $('#num-empalme-boleta').html(obj.boleta.NUMEMPALME + "<br /><br />");
+                $('#num-remarcador-boleta').html(obj.boleta.NUMREMARCADOR + "<br /><br />");
+                $('#num-serie').html(obj.boleta.NUMSERIE + "<br /><br />");
+                $('#fecha-emision').html(obj.boleta.FECHAEMISION + "<br /><br />");
+                $('#fecha-prox-lectura').html(obj.boleta.FECHAPROXLECTURA + "<br /><br />");
+                $('#num-serie').html(obj.boleta.NUMSERIE + "<br /><br />");
+                $('#tarifa').html(obj.boleta.NOMTARIFA + "<br /><br />");
+                $('#nomred').html(obj.boleta.NOMRED + "<br /><br />");
+                $('#desde').html(formatFechaDDMMYYYY(obj.boleta.FECHALECTURAANTERIOR) + "<br /><br />");
+                $('#hasta').html(formatFechaDDMMYYYY(obj.boleta.FECHALECTURAACTUAL) + "<br /><br />");
+                $('#leidas-suministradas').html(obj.boleta.DEM_MAX_SUMINISTRADA_LEIDA + "<br /><br />");
+                $('#leidas-horas-punta').html(obj.boleta.DEM_MAX_HORA_PUNTA_LEIDA + "<br /><br />");
+                $('#suministradas').html(obj.boleta.DEM_MAX_SUMINISTRADA_FACTURADA + "<br /><br />");
+                $('#horas-punta').html(obj.boleta.DEM_MAX_HORA_PUNTA_FACTURADA + "<br /><br />");
+                $('#detalle-tarifa-remarcador').html(obj.tabla);
+                graficar(obj.boleta.IDREMARCADOR);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function imprimir() {
+    const element = document.getElementById("modal-body");
+    html2pdf().from(element).save("Detalle-" + $('#nom-cliente').text() + "-" + $('#num-remarcador-boleta').text() + "-" + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
 }

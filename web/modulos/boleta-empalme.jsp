@@ -21,14 +21,15 @@
                 </div>
 
                 <!-- Body -->
-                <div id="modal-body" class="modal-body" style="height: 50em; width: 45em;">
+                <div id="modal-body" class="modal-body" style="height: 57em; width: 45em;">
 
                 </div>
 
                 <!-- Modal footer -->
                 <div id="modal-footer" class="modal-footer">
                     <button style="position: absolute; left: 4px;" type="button" class="float-right btn btn-danger" data-dismiss="modal">Cerrar</button>
-                    <button id="btn-generar" onclick="generar();" type="button" class="float-left btn btn-outline-primary">Generar</button>
+                    <button style="display:none;" id="btn-generar" onclick="generar();" type="button" class="float-left btn btn-outline-primary">Generar</button>
+                    <button style="display:none;" id="btn-imprimir" onclick="imprimir();" type="button" class="float-left btn btn-outline-primary">Imprimir</button>
                 </div>
 
             </div>
@@ -63,10 +64,6 @@
                     <label data-html2canvas-ignore="true" for="select-tarifa">Tarifa: </label>
                     <select data-html2canvas-ignore="true" class="form-control form-control-sm small" id="select-tarifa"></select>
                 </div>
-                <!-- div class="form-group" style="">
-                    <label for="fecha-fin">Fecha Fin</label>
-                    <input type="date" id="fecha-fin" class="form-control form-control-sm"/>
-                </div -->
                 <div class="form-group" style="">
                     <div class="row">
                         <div class="col-sm-6">

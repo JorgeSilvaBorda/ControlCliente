@@ -165,8 +165,19 @@ function calcular(idremarcador, numremarcador, numserie,consumo, mes, lecturaant
         alert("Debe seleccionar una tarifa para poder calcular la boleta.");
         return false;
     }
+    $('#btn-imprimir').hide();
+    $('#btn-generar').show();
+    $('#modal-body').html('');
     $('#modal').modal();
     $('#modal-body').load("modulos/boleta-empalme/mask-boleta-empalme.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&numserie='" + numserie + "'&consumo=" + consumo + "&mes='" + mes + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual + "&maxdemandaleida=" + maxdemandaleida + "&maxdemandahorapunta=" + maxdemandahorapunta + "&fechalecturaini='" + fechalecturaini + "'&fechalecturafin='" + fechalecturafin + "'");
+}
+
+function getLastBoleta(idboleta){
+    $('#btn-generar').hide();
+    $('#btn-imprimir').show();
+    $('#modal-body').html('');
+    $('#modal').modal();
+    $('#modal-body').load("modulos/boleta-empalme/mask-last-boleta-empalme.jsp?idboleta=" + idboleta);
 }
 
 function limpiar(){

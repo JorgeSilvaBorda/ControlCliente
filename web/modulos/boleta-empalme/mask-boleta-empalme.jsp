@@ -209,16 +209,16 @@
             <table style="border-collapse: collapse; border: 3px solid white; font-size: 11px; background-color: #E9EFF8; width: 100%;" id="detalle-remarcador">
                 <thead>
                     <tr>
-                        <th style="padding: 0px 0px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white; ">
+                        <th style="padding: 0px 0px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white; ">
                             Nº Medidor
                         </th>
-                        <th style="padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;">
+                        <th style="padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;">
                             Propiedad
                         </th>
-                        <th style="padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;">
+                        <th style="padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;">
                             Lectura Anterior
                         </th>
-                        <th style="padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;">
+                        <th style="padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;">
                             Lectura Actual
                         </th>
                         <th style="padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;">

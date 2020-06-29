@@ -108,7 +108,7 @@ public class Util {
     }
 
     public static String formatMiles(int numero) {
-        String pattern = "###,###,###.##";
+        String pattern = "###,###,###.###";
         //Si no le paso ningun Locale, toma el del sistema, que en mi caso es Locale("es","MX");
         DecimalFormat myFormatter = new DecimalFormat(pattern);
         String output = myFormatter.format(numero);
@@ -117,7 +117,7 @@ public class Util {
 
     public static String formatMiles(String numero) {
         BigDecimal num = BigDecimal.valueOf(Double.parseDouble(numero));
-        String pattern = "###,###,###.##";
+        String pattern = "###,###,###.###";
         //Si no le paso ningun Locale, toma el del sistema, que en mi caso es Locale("es","MX");
         DecimalFormat myFormatter = new DecimalFormat(pattern);
         String output = myFormatter.format(num);
@@ -125,7 +125,7 @@ public class Util {
     }
     
     public static String formatMiles(BigDecimal numero) {
-        String pattern = "###,###,###.##";
+        String pattern = "###,###,###.###";
         //Si no le paso ningun Locale, toma el del sistema, que en mi caso es Locale("es","MX");
         DecimalFormat myFormatter = new DecimalFormat(pattern);
         String output = myFormatter.format(numero);

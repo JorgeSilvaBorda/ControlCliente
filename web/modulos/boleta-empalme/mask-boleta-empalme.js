@@ -152,7 +152,7 @@ function generar() {
                 getRemarcadoresNumEmpalmeBoleta();
                 //Generar PDF -----------------------------------------------------
                 const element = document.getElementById("modal-body");
-                html2pdf().from(element).save("Detalle-" + REMCLI.nomcliente + "-" + REMCLI.numremarcador + "-" + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
+                html2pdf().from(element).save("Detalle-" + REMCLI.nomcliente + "-ID" + REMCLI.numremarcador + "-" + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
             }
         },
         error: function (a, b, c) {
@@ -283,5 +283,5 @@ function armarLastBoleta() {
 
 function imprimir() {
     const element = document.getElementById("modal-body");
-    html2pdf().from(element).save("Detalle-" + $('#nom-cliente').text() + "-" + $('#num-remarcador-boleta').text() + "-" + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
+    html2pdf().from(element).save("Detalle-" + $('#nom-cliente').text() + "-ID" + $('#num-remarcador-boleta').text() + "-" + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
 }

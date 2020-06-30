@@ -138,7 +138,7 @@ function getDatosRemarcador() {
                 var OPCIONES_EXCEL = [
                     {
                         extend: 'excelHtml5',
-                        title: 'Lecturas-R-' + numremarcador + "-" + mes
+                        title: 'Lecturas-ID' + numremarcador + "-" + mes
                     }
                 ];
                 OPCIONES_DATATABLES.buttons = OPCIONES_EXCEL;

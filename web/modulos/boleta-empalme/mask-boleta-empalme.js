@@ -27,7 +27,8 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
             if (obj.estado === 'ok') {
                 REMCLI = obj.remarcador;
                 var remcli = obj.remarcador;
-                graficar(remcli.idremarcador);
+                var aniomes = $('#mes').val();
+                graficarDesde(remcli.idremarcador, aniomes);
                 $('#rut-cliente').html($.formatRut(remcli.rutcliente + "-" + remcli.dvcliente));
                 $('#nom-cliente').html(remcli.razoncliente);
                 $('#direccion').html(remcli.direccion + ', ' + remcli.nomcomuna);
@@ -164,14 +165,15 @@ function generar() {
 
 }
 
-function graficar(idremarcador) {
+function graficarDesde(idremarcador, aniomes) {
     var idcliente = REMCLI.idcliente;
     var numremarcador = REMCLI.numremarcador;
     var datos = {
-        tipo: 'consumo-cliente-remarcador',
+        tipo: 'consumo-cliente-remarcador-aniomes',
         idcliente: idcliente,
         idremarcador: idremarcador,
-        numremarcador: numremarcador
+        numremarcador: numremarcador,
+        aniomes: aniomes
     };
 
     $.ajax({
@@ -189,6 +191,9 @@ function graficar(idremarcador) {
                     obj.data.datasets[i].borderColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 1.0)";
                     obj.data.datasets[i].backgroundColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 0.3)";
                 }
+                for (var i in obj.data.labels) {
+                    obj.data.labels[i] = fechaAMesPalabraCorto(obj.data.labels[i]);
+                }
                 GRAFICO.destroy();
                 GRAFICO = new Chart(document.getElementById("grafico"), {
                     type: 'bar',
@@ -202,12 +207,20 @@ function graficar(idremarcador) {
                             yAxes: [{
                                     ticks: {
                                         fontSize: 10
+                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'kWh'
                                     }
 
                                 }],
                             xAxes: [{
                                     ticks: {
                                         fontSize: 10
+                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Meses'
                                     }
 
                                 }]
@@ -243,6 +256,7 @@ function armarLastBoleta() {
                     idcliente: obj.boleta.IDCLIENTE,
                     numremarcador: obj.boleta.NUMREMARCADOR
                 };
+                var aniomes = obj.boleta.FECHALECTURAACTUAL.toString().split("-")[0] + '-' + obj.boleta.FECHALECTURAACTUAL.toString().split("-")[1];
                 $('#num-medidor').html(obj.boleta.NUMREMARCADOR);
                 $('#lectura-anterior').html(formatMiles(obj.boleta.LECTURAANTERIOR));
                 $('#lectura-actual').html(formatMiles(obj.boleta.LECTURAACTUAL));
@@ -254,7 +268,7 @@ function armarLastBoleta() {
                 $('#fono').html(obj.boleta.FONO);
                 $('#email').html(obj.boleta.EMAIL);
                 $('#num-boleta').html(obj.boleta.NUMBOLETA);
-                
+
                 $('#num-empalme-boleta').html(obj.boleta.NUMEMPALME + "<br /><br />");
                 $('#num-remarcador-boleta').html(obj.boleta.NUMREMARCADOR + "<br /><br />");
                 $('#num-serie').html(obj.boleta.NUMSERIE + "<br /><br />");
@@ -270,7 +284,7 @@ function armarLastBoleta() {
                 $('#suministradas').html(obj.boleta.DEM_MAX_SUMINISTRADA_FACTURADA + "<br /><br />");
                 $('#horas-punta').html(obj.boleta.DEM_MAX_HORA_PUNTA_FACTURADA + "<br /><br />");
                 $('#detalle-tarifa-remarcador').html(obj.tabla);
-                graficar(obj.boleta.IDREMARCADOR);
+                graficarDesde(obj.boleta.IDREMARCADOR, aniomes);
             }
         },
         error: function (a, b, c) {

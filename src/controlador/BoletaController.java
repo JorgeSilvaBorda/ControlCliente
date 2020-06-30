@@ -142,7 +142,7 @@ public class BoletaController extends HttpServlet {
                 + "Cantidad"
                 + "</th>"
                 + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;'>"
-                + "$ Unitario"
+                + "Unitario ($)"
                 + "</th>"
                 + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white; '>"
                 + "Valores ($)"
@@ -158,7 +158,7 @@ public class BoletaController extends HttpServlet {
             while (rs.next()) {
                 JSONObject jsonconsumo = new JSONObject();
 
-                if (rs.getInt("IDCONCEPTO") != 7 && rs.getInt("IDCONCEPTO") != 11) {
+                if (rs.getInt("IDCONCEPTO") != 7 && rs.getInt("IDCONCEPTO") != 11 && rs.getInt("IDCONCEPTO") != 5 && rs.getInt("IDCONCEPTO") != 9) {
                     tabla += "<tr>";
                     tabla += "<td style='font-weight: bold;'>";
                     tabla += rs.getString("NOMCONCEPTO");
@@ -200,7 +200,7 @@ public class BoletaController extends HttpServlet {
                     jsonconsumo.put("valorneto", net);
                     jsonconsumo.put("total", tot);
 
-                } else if (rs.getInt("IDCONCEPTO") == 7) {
+                } else if (rs.getInt("IDCONCEPTO") == 7 || rs.getInt("IDCONCEPTO") == 5) {
                     filahpunta += "<tr>";
                     filahpunta += "<td style='font-weight: bold;'>";
                     filahpunta += rs.getString("NOMCONCEPTO");
@@ -235,7 +235,7 @@ public class BoletaController extends HttpServlet {
                     jsonconsumo.put("valorneto", net);
                     jsonconsumo.put("total", tot);
                     total += rs.getInt("TOTAL");
-                } else if (rs.getInt("IDCONCEPTO") == 11) {
+                } else if (rs.getInt("IDCONCEPTO") == 9 || rs.getInt("IDCONCEPTO") == 11) {
                     filapotencia += "<tr>";
                     filapotencia += "<td style='font-weight: bold;'>";
                     filapotencia += rs.getString("NOMCONCEPTO");
@@ -473,6 +473,7 @@ public class BoletaController extends HttpServlet {
                 }
             }
             salida.put("boleta", boleta);
+            System.out.println(boleta);
         } catch (Exception ex) {
             System.out.println("No se puede obtener la cabecera de la última boleta.");
             System.out.println(ex);

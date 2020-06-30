@@ -43,4 +43,50 @@ function formatMiles(valor) {
         valor = valor.replace(/[^\d\.]*/g, "");
         return valor;
     }
+
+}
+
+function fechaAMesPalabraCorto(fecha) {
+    //return fecha;
+    var mes = parseInt(fecha.split("-")[1]);
+    switch (mes) {
+        case 1:
+            return "Ene";
+            break;
+        case 2:
+            return "Feb";
+            break;
+        case 3:
+            return "Mar";
+            break;
+        case 4:
+            return "Abr";
+            break;
+        case 5:
+            return "May";
+            break;
+        case 6:
+            return "Jun";
+            break;
+        case 7:
+            return "Jul";
+            break;
+        case 8:
+            return "Ago";
+            break;
+        case 9:
+            return "Sep";
+            break;
+        case 10:
+            return "Oct";
+            break;
+        case 11:
+            return "Nov";
+            break;
+        case 12:
+            return "Dic";
+            break;
+        default:
+            return "";
+    }
 }

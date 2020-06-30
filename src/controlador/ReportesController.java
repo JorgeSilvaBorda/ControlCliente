@@ -27,6 +27,9 @@ public class ReportesController extends HttpServlet {
             case "consumo-cliente-remarcador":
                 out.print(consumoClienteRemarcador(entrada));
                 break;
+            case "consumo-cliente-remarcador-aniomes":
+                out.print(consumoClienteRemarcadorAnioMes(entrada));
+                break;
             case "resumen-mes-cliente":
                 out.print(resumenMesCliente(entrada));
                 break;
@@ -75,6 +78,48 @@ public class ReportesController extends HttpServlet {
         return salida;
     }
 
+    private JSONObject consumoClienteRemarcadorAnioMes(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+
+        String query = "CALL SP_GET_CONSUMO_13_MESES_REMARCADOR_DESDE("
+                + +entrada.getInt("numremarcador") + ", "
+                + "'" + entrada.getString("aniomes") + "'"
+                + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        JSONArray labels = new JSONArray();
+        JSONArray datasets = new JSONArray();
+        JSONArray datasetData = new JSONArray();
+
+        try {
+            while (rs.next()) {
+                labels.put(Util.invertirFecha(rs.getString("FECHA")));
+                datasetData.put(rs.getInt("CONSUMO"));
+            }
+
+            JSONObject dataset = new JSONObject();
+            dataset.put("data", datasetData);
+            dataset.put("label", "Remarcador ID: " + entrada.getInt("numremarcador"));
+            dataset.put("borderWidth", "2");
+            datasets.put(dataset);
+            JSONObject data = new JSONObject();
+            data.put("labels", labels);
+            data.put("datasets", datasets);
+            salida.put("data", data);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.ReportesController.consumoClienteRemarcadorAnioMes().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
     private JSONObject resumenMesCliente(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         //Obtener Labels (Días del mes en curso) -------------------------------
@@ -93,7 +138,7 @@ public class ReportesController extends HttpServlet {
         ResultSet rs = c.ejecutarQuery(query);
         try {
             while (rs.next()) {
-                
+
                 JSONObject dataset = getDatasetRemarcadorMes(rs.getInt("NUMREMARCADOR"), -1, -1);
                 labels = dataset.getJSONArray("labels");
                 datasets.put(dataset.getJSONObject("dataset"));

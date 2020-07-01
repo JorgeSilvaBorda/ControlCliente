@@ -50,9 +50,9 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 $('#fecha-prox-lectura').html(nextfecha + '<br /><br />');
 
                 var fechadesde = new Date(FECHA_LECTURA_INICIAL);
-                fechadesde.setDate(fechadesde.getDate() + 2);
+                fechadesde.setDate(fechadesde.getDate() + 1);
                 var fechahasta = new Date(FECHA_LECTURA_FINAL);
-                fechahasta.setDate(fechahasta.getDate() + 2);
+                fechahasta.setDate(fechahasta.getDate() + 1);
 
                 $('#desde').html(formatFechaDDMMYYYY(formatFechaYYYYMMDD(fechadesde)) + '<br /><br />');
                 DATOS_BOLETA.fechadesde = formatFechaYYYYMMDD(fechadesde);

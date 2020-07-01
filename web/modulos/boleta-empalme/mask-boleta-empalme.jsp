@@ -19,7 +19,6 @@
     var LECTURA_ANTERIOR = <%out.print(request.getParameter("lecturaanterior"));%>;
 
     $(document).ready(function () {
-
         getRemarcadorClienteIdRemarcador(idremarcador);
 
     });

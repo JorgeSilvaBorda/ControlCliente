@@ -121,13 +121,15 @@ public class BoletaController extends HttpServlet {
         int idred = entrada.getInt("idred");
         int consumo = entrada.getInt("consumo");
         int numremarcador = entrada.getInt("numremarcador");
+        String mesanio = entrada.getString("mesanio");
         int total = 0;
         int exento = 0;
         String query = "CALL SP_GET_DETALLE_TARIFA_IDRED_CONSUMO_REMARCADOR("
                 + idtarifa + ", "
                 + idred + ", "
                 + consumo + ", "
-                + numremarcador
+                + numremarcador + ","
+                + "'" + mesanio + "'"
                 + ")";
         System.out.println(query);
         String tabla = "<thead>"

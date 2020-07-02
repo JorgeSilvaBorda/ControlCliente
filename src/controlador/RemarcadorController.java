@@ -409,7 +409,8 @@ public class RemarcadorController extends HttpServlet {
         int idremarcador = entrada.getInt("idremarcador");
         JSONObject salida = new JSONObject();
         JSONObject remarcador = new JSONObject();
-        String query = "CALL SP_GET_REMARCADOR_CLIENTE_IDREMARCADOR(" + idremarcador + ")";
+        String mesanio = entrada.getString("mesanio");
+        String query = "CALL SP_GET_REMARCADOR_CLIENTE_IDREMARCADOR(" + idremarcador + ", '" + mesanio + "')";
         System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();

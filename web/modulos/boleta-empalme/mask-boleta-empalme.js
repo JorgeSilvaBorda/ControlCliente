@@ -13,7 +13,8 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
 
     var datos = {
         tipo: 'get-remarcador-cliente-idremarcador',
-        idremarcador: idremarcador
+        idremarcador: idremarcador,
+        mesanio: MES
     };
 
     $.ajax({
@@ -88,13 +89,15 @@ function armarDetalleTarifa() {
     var idtarifa = $('#select-tarifa').val();
     var idred = REMCLI.idred;
     var numremarcador = REMCLI.numremarcador;
+    var mesanio = MES;
     // var consumo = CONSUMO;
     var datos = {
         tipo: 'get-detalle-tarifa-id-red-consumo-remarcador',
         idtarifa: idtarifa,
         idred: idred,
         consumo: CONSUMO,
-        numremarcador: numremarcador
+        numremarcador: numremarcador,
+        mesanio: mesanio
     };
     $('#tarifa').html($('#select-tarifa option:selected').html() + '<br /><br />');
     $.ajax({

@@ -189,14 +189,26 @@ function graficarDesde(idremarcador, aniomes) {
             //$('.loader').fadeOut(500);
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
-                for (var i in obj.data.datasets) {
-                    var color = colorDinamicoArr();
-                    obj.data.datasets[i].borderColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 1.0)";
-                    obj.data.datasets[i].backgroundColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 0.3)";
-                }
+                var fondo = [];
+                var borde = [];
+                var cont = 0;
                 for (var i in obj.data.labels) {
                     obj.data.labels[i] = fechaAMesPalabraCorto(obj.data.labels[i]);
+                    if(cont === obj.data.labels.length - 1){
+                        fondo.push("rgba(5, 82, 16, 0.65)");
+                        borde.push("rgba(5, 82, 16, 1)");
+                    }else if(cont === obj.data.labels.length - 2){
+                        fondo.push("rgba(117, 0, 0, 0.15)");
+                        borde.push("rgba(117, 0, 0, 0.9)");
+                    }else{
+                        fondo.push("rgba(117, 0, 0, 0.65)");
+                        borde.push("rgba(117, 0, 0, 1)");
+                    }
+                    cont ++;
                 }
+                obj.data.datasets[0].backgroundColor = fondo;
+                obj.data.datasets[0].borderColor = borde;
+                
                 GRAFICO.destroy();
                 GRAFICO = new Chart(document.getElementById("grafico"), {
                     type: 'bar',

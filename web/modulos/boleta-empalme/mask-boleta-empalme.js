@@ -206,6 +206,9 @@ function graficarDesde(idremarcador, aniomes) {
                             display: true,
                             text: 'Últimos 12 meses de consumo'
                         },
+                        tooltips:{
+                            enabled: false
+                        },
                         scales: {
                             yAxes: [{
                                     ticks: {

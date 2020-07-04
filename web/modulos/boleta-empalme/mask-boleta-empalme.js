@@ -121,6 +121,9 @@ function armarDetalleTarifa() {
                 BOLETA.nextfecha = DATOS_BOLETA.nextfecha;
                 BOLETA.fechadesde = DATOS_BOLETA.fechadesde;
                 BOLETA.fechahasta = DATOS_BOLETA.fechahasta;
+                if (MASA) {
+                    generar();
+                }
             }
         },
         error: function (a, b, c) {
@@ -150,13 +153,18 @@ function generar() {
         success: function (res) {
             var obj = JSON.parse(res);
             if (obj.estado === 'ok') {
-                //Actualizar número de boleta antes de emitir----------------------
-                $('#num-boleta').html(obj.numboleta);
-                //Actualizar grilla de atrás---------------------------------------
-                getRemarcadoresNumEmpalmeBoleta();
-                //Generar PDF -----------------------------------------------------
-                const element = document.getElementById("modal-body");
-                html2pdf().from(element).save("Detalle-" + REMCLI.nomcliente + "-ID" + REMCLI.numremarcador + "-" + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
+                if (MASA) {
+                    $('#num-boleta').html(obj.numboleta);
+                    $('#btn-cerrar-modal').click();
+                } else {
+                    //Actualizar número de boleta antes de emitir----------------------
+                    $('#num-boleta').html(obj.numboleta);
+                    //Actualizar grilla de atrás---------------------------------------
+                    getRemarcadoresNumEmpalmeBoleta();
+                    //Generar PDF -----------------------------------------------------
+                    const element = document.getElementById("modal-body");
+                    html2pdf().from(element).save("Detalle-" + REMCLI.nomcliente + "-ID" + REMCLI.numremarcador + "-" + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
+                }
             }
         },
         error: function (a, b, c) {
@@ -194,21 +202,21 @@ function graficarDesde(idremarcador, aniomes) {
                 var cont = 0;
                 for (var i in obj.data.labels) {
                     obj.data.labels[i] = fechaAMesPalabraCorto(obj.data.labels[i]);
-                    if(cont === obj.data.labels.length - 1){
+                    if (cont === obj.data.labels.length - 1) {
                         fondo.push("rgba(5, 82, 16, 0.65)");
                         borde.push("rgba(5, 82, 16, 1)");
-                    }else if(cont === obj.data.labels.length - 2){
+                    } else if (cont === obj.data.labels.length - 2) {
                         fondo.push("rgba(117, 0, 0, 0.15)");
                         borde.push("rgba(117, 0, 0, 0.9)");
-                    }else{
+                    } else {
                         fondo.push("rgba(117, 0, 0, 0.65)");
                         borde.push("rgba(117, 0, 0, 1)");
                     }
-                    cont ++;
+                    cont++;
                 }
                 obj.data.datasets[0].backgroundColor = fondo;
                 obj.data.datasets[0].borderColor = borde;
-                
+
                 GRAFICO.destroy();
                 GRAFICO = new Chart(document.getElementById("grafico"), {
                     type: 'bar',
@@ -218,7 +226,7 @@ function graficarDesde(idremarcador, aniomes) {
                             display: true,
                             text: 'Últimos 12 meses de consumo'
                         },
-                        tooltips:{
+                        tooltips: {
                             enabled: false
                         },
                         scales: {
@@ -243,7 +251,7 @@ function graficarDesde(idremarcador, aniomes) {
 
                                 }]
                         },
-                        tooltips:{
+                        tooltips: {
                             enabled: false
                         }
                     }

@@ -1,5 +1,6 @@
 var KWTOTAL = null;
 var IDCOMUNA = null;
+var MASIVO = false;
 function getSelectTarifasIdInstalacion(idinstalacion) {
     var datos = {
         idinstalacion: idinstalacion,
@@ -169,7 +170,20 @@ function calcular(idremarcador, numremarcador, numserie,consumo, mes, lecturaant
     $('#btn-generar').show();
     $('#modal-body').html('');
     $('#modal').modal();
-    $('#modal-body').load("modulos/boleta-empalme/mask-boleta-empalme.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&numserie='" + numserie + "'&consumo=" + consumo + "&mes='" + mes + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual + "&maxdemandaleida=" + maxdemandaleida + "&maxdemandahorapunta=" + maxdemandahorapunta + "&fechalecturaini='" + fechalecturaini + "'&fechalecturafin='" + fechalecturafin + "'");
+    $('#modal-body').load("modulos/boleta-empalme/mask-boleta-empalme.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&numserie='" + numserie + "'&consumo=" + consumo + "&mes='" + mes + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual + "&maxdemandaleida=" + maxdemandaleida + "&maxdemandahorapunta=" + maxdemandahorapunta + "&fechalecturaini='" + fechalecturaini + "'&fechalecturafin='" + fechalecturafin + "'&masivo=" + MASIVO);
+}
+
+function generarTodas(){
+    /*
+    MASIVO = true;
+    var cont = 0;
+    var largo = $('#tabla-remarcadores-empalme tr').length - 4;
+    for(var i = cont; i < largo; i++){
+        var fila = $('#tabla-remarcadores-empalme tr')[i];
+        $(fila.children[9].children[0]).click();
+    }
+    */
+    //getRemarcadoresNumEmpalmeBoleta();
 }
 
 function getLastBoleta(idboleta){

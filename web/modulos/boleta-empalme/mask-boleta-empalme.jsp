@@ -17,10 +17,10 @@
     var lecturaanterior = <%out.print(request.getParameter("lecturaanterior"));%>;
     var LECTURA_ACTUAL = <%out.print(request.getParameter("lecturaactual"));%>;
     var LECTURA_ANTERIOR = <%out.print(request.getParameter("lecturaanterior"));%>;
+    var MASA = <%out.print(request.getParameter("masivo"));%>;
 
     $(document).ready(function () {
         getRemarcadorClienteIdRemarcador(idremarcador);
-
     });
 </script>
 <style>

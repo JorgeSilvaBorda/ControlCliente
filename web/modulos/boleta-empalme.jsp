@@ -36,7 +36,7 @@
 
                 <!-- Modal footer -->
                 <div id="modal-footer" class="modal-footer">
-                    <button style="position: absolute; left: 4px;" type="button" class="float-right btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button style="position: absolute; left: 4px;" type="button" class="float-right btn btn-danger" data-dismiss="modal" id="btn-cerrar-modal">Cerrar</button>
                     <button style="display:none;" id="btn-generar" onclick="generar();" type="button" class="float-left btn btn-outline-primary">Generar</button>
                     <button style="display:none;" id="btn-imprimir" onclick="imprimir();" type="button" class="float-left btn btn-outline-primary">Imprimir</button>
                 </div>

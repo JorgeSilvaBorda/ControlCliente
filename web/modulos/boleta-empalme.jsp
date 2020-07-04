@@ -47,7 +47,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="page-header">
-                <h1>Emitir Detalle <small>Complemento Servicios de Administración</small></h1>
+                <h1>Emitir Detalle <small>Complemento Servicios de Administraciï¿½n</small></h1>
             </div>
         </div>
     </div>
@@ -55,7 +55,7 @@
         <div class="col-sm-2">
             <form class="form small"  role="form">
                 <div class="form-group">
-                    <label for="select-instalacion" >Instalación</label>
+                    <label for="select-instalacion" >Instalaciï¿½n</label>
                     <select onchange="getSelectEmpalmesNumEmpalmesInstalacion()" class="form-control form-control-sm small" id="select-instalacion">
                     </select>
                 </div>
@@ -91,9 +91,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- button type="button" class="btn btn-outline-primary btn-sm float-right" onclick="limpiar()">Limpiar</button-->
-
                 </div>
             </form>
         </div>

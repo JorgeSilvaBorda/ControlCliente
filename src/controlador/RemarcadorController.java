@@ -170,7 +170,7 @@ public class RemarcadorController extends HttpServlet {
 
         String tabla = "<table style='font-size: 10px;' id='tabla-remarcadores-empalme' class='table table-bordered table-condensed table-sm'>";
         tabla += "<caption style='caption-side:top;'><h5>Remarcadores en el Empalme Nº: " + entrada.getString("numempalme") + "</h5></caption>";
-        tabla += "<thead><tr class='table-info'>";
+        tabla += "<thead style='text-align: center;' ><tr class='table-info'>";
         tabla += "<th># Remarcador</th>";
         tabla += "<th>Nº Serie</th>";
         tabla += "<th>Bodega</th>";
@@ -181,7 +181,7 @@ public class RemarcadorController extends HttpServlet {
         tabla += "<th>Lectura<br />Actual</th>";
         tabla += "<th>Consumo (kW)</th>";
         tabla += "<th>Emitir</th>";
-        tabla += "<th>Ult. Boleta</th>";
+        tabla += "<th>Última<br />Boleta</th>";
         tabla += "</tr></thead><tbody>";
         JSONObject remarcador;
         int idcomuna = 0;
@@ -189,23 +189,34 @@ public class RemarcadorController extends HttpServlet {
         try {
             while (rs.next()) {
                 filas += "<tr>";
-                filas += "<td><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
+                filas += "<td style='text-align: center;' ><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getString("NUMSERIE") + "' /><span>" + rs.getString("NUMSERIE") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
                 filas += "<td><span>" + rs.getString("NOMCLIENTE") + "</span></td>";
-                filas += "<td><span>" + rs.getString("MODULOS") + "</span></td>";
+                filas += "<td style='text-align: center;' ><span>" + rs.getString("MODULOS") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
                 filas += "<td style='text-align: right;'><span>" + Util.formatMiles(rs.getString("LECTURAANTERIOR")) + "</span></td>";
                 filas += "<td style='text-align: right;'><span>" + Util.formatMiles(rs.getString("LECTURAACTUAL")) + "</span></td>";
                 filas += "<td style='text-align: right;'><span>" + Util.formatMiles(rs.getInt("CONSUMO")) + "</span></td>";
-                filas += "<td><button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("mes") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", " + rs.getBigDecimal("MAX_DEMANDA_LEIDA") + ", " + rs.getBigDecimal("MAX_DEMANDA_HORA_PUNTA") + ", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
 
-                if(rs.getInt("IDBOLETA") == 0){
+                if (rs.getInt("IDBOLETA") == 0) {
+                    filas += "<td><button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("mes") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", " + rs.getBigDecimal("MAX_DEMANDA_LEIDA") + ", " + rs.getBigDecimal("MAX_DEMANDA_HORA_PUNTA") + ", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
+                } else {
+                    filas += "<td>"
+                            + "<div id='botones_" + rs.getInt("IDREMARCADOR") + "' style='display:none;' class='btn-group' role='group' aria-label='Sobreescritura'>"
+                            + "<button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("mes") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", " + rs.getBigDecimal("MAX_DEMANDA_LEIDA") + ", " + rs.getBigDecimal("MAX_DEMANDA_HORA_PUNTA") + ", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Sobreescribir</button>"
+                            + "<button type='button' onclick='deshabilitarSobreescritura(" + rs.getInt("IDREMARCADOR") + ");' class='btn btn-sm btn-warning' style='padding: 0px 2px 0px 2px;'>X</button>"
+                            + "</div>"
+                            + "<button id='btn_" + rs.getInt("IDREMARCADOR") + "' type='button' onclick='habilitarSobreescritura(" + rs.getInt("IDREMARCADOR") + ");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Habilitar</button>"
+                            + "</td>";
+                }
+
+                if (rs.getInt("IDBOLETA") == 0) {
                     filas += "<td style='text-align: right;'>-</td>";
-                }else{
+                } else {
                     filas += "<td style='text-align: right;'><a href='#' onclick=getLastBoleta(" + rs.getInt("IDBOLETA") + "); >" + rs.getString("NUMBOLETA") + "</a></td>";
                 }
-                
+
                 filas += "</tr>";
                 kwtotal += rs.getInt("CONSUMO");
                 idcomuna = rs.getInt("IDCOMUNA");

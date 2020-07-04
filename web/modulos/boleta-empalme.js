@@ -180,6 +180,16 @@ function getLastBoleta(idboleta){
     $('#modal-body').load("modulos/boleta-empalme/mask-last-boleta-empalme.jsp?idboleta=" + idboleta);
 }
 
+function habilitarSobreescritura(id){
+    $('#botones_' + id).show();
+    $('#btn_' + id).hide();
+}
+
+function deshabilitarSobreescritura(id){
+    $('#botones_' + id).hide();
+    $('#btn_' + id).show();
+}
+
 function limpiar(){
     KWTOTAL = null;
 }

@@ -105,7 +105,7 @@
                     <td id="hasta" style="font-weight: bold;"></td>
                 </tr>
                 <tr>
-                    <td colspan="2">Demandas Máxmias Leídas kW</td>
+                    <td colspan="2">Demandas Máximas Leídas kW</td>
                 </tr>
                 <tr>
                     <td>Suministradas</td>
@@ -116,7 +116,7 @@
                     <td id="leidas-horas-punta" style="font-weight: bold;"></td>
                 </tr>
                 <tr>
-                    <td colspan="2">Demandas Máxmias Facturadas kW</td>
+                    <td colspan="2">Demandas Máximas Facturadas kW</td>
                 </tr>
                 <tr>
                     <td>Suministradas</td>
@@ -168,7 +168,7 @@
                     </tr>
                     <tr style="vertical-align: top;">
                         <td rowspan="3">
-                            Bodenor Flexcenter S.A. Parques logísticos 
+                            Bodenor Flexcenter S.A. Parques Logísticos 
                             <br />R.U.T.: 99.593.200-8
                             <br />Alonso de Córdova 2700 of. 41, Vitacura.
                         </td>
@@ -204,7 +204,7 @@
                 </tbody>
             </table>
             <br />
-            <h5><strong>Detalle de consumo del remarcador</strong></h5>
+            <h5><strong>Detalle de consumo</strong></h5>
             <table style="border-collapse: collapse; border: 3px solid white; font-size: 11px; background-color: #E9EFF8; width: 100%;" id="detalle-remarcador">
                 <thead>
                     <tr>

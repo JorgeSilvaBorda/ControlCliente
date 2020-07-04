@@ -441,8 +441,8 @@ public class RemarcadorController extends HttpServlet {
                 remarcador.put("nomcomuna", rs.getString("NOMCOMUNA"));
                 remarcador.put("idred", rs.getInt("IDRED"));
                 remarcador.put("nomred", rs.getString("NOMRED"));
-                remarcador.put("dmps", rs.getString("DEM_MAX_POTENCIA_SUMINISTRADA"));
-                remarcador.put("dmplhp", rs.getString("DEM_MAX_POTENCIA_LEIDA_H_PUNTA"));
+                remarcador.put("dmps", rs.getDouble("DEM_MAX_POTENCIA_SUMINISTRADA"));
+                remarcador.put("dmplhp", rs.getDouble("DEM_MAX_POTENCIA_LEIDA_H_PUNTA"));
             }
             salida.put("remarcador", remarcador);
             salida.put("estado", "ok");

@@ -227,6 +227,9 @@ function graficarDesde(idremarcador, aniomes) {
                                     }
 
                                 }]
+                        },
+                        tooltips:{
+                            enabled: false
                         }
                     }
                 });

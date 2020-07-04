@@ -220,8 +220,8 @@ public class RemarcadorController extends HttpServlet {
                 remarcadores.put(remarcador);
             }
             filas += "<tr class='table-info'>";
-            filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>Consumo Total Remarcadores: </td>";
-            filas += "<td>" + kwtotal + " kW</td>";
+            filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>Consumo Total Remarcadores(KW): </td>";
+            filas += "<td style='font-weight: bold; text-align:right;' >" + Util.formatMiles(kwtotal) + "</td>";
             filas += "</tr>";
 
             filas += "<tr>";

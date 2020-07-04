@@ -3,6 +3,15 @@
     $(document).ready(function () {
         getSelectInstalacion();
         //getSelectTarifasIdComuna();
+        var fec = new Date();
+        var m = '';
+        if (fec.getMonth() + 1 < 10) {
+            m = '0' + (fec.getMonth() + 1).toString();
+        } else {
+            m = (fec.getMonth() + 1).toString();
+        }
+        var aniomes = fec.getFullYear().toString() + "-" + m;
+        $('#mes').val(aniomes);
     });
 
 </script>

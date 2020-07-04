@@ -146,7 +146,7 @@ function calcularDiferencia(){
     porc = porc * -1;
     
     $('#kw-diferencia').html(parseInt(resta) + " kW");
-    $('#porc-diferencia').html(porc.toFixed(4) + " %");
+    $('#porc-diferencia').html(porc.toFixed(2) + " %");
 }
 
 function buscar() {

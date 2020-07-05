@@ -39,6 +39,9 @@ public class BoletaController extends HttpServlet {
             case "get-boletas-emitidas-idempalme-aniomes":
                 out.print(getBoletasEmitidasIdempalmeAniomes(entrada));
                 break;
+            case "get-resumen-pagos":
+                out.print(getResumenPagos(entrada));
+                break;
         }
     }
 
@@ -706,12 +709,12 @@ public class BoletaController extends HttpServlet {
 
         try {
             while (rs.next()) {
-                if(rs.getInt("ACUMULADAS")== 1){
+                if (rs.getInt("ACUMULADAS") == 1) {
                     tabla += "<tr class='table-info'>";
-                }else{
+                } else {
                     tabla += "<tr>";
                 }
-                
+
                 tabla += "<td style='text-align:right;'><a href='#' onclick='getLastBoleta(" + rs.getInt("IDBOLETA") + ")'>" + rs.getString("NUMBOLETA") + "</a></td>";
                 // tabla += "<td style='text-align:center;'>" + Util.mesAPalabraCorto(rs.getInt("MES")) + " " + rs.getInt("ANIO") + "</td>";
                 tabla += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
@@ -736,6 +739,136 @@ public class BoletaController extends HttpServlet {
             salida.put("estado", "ok");
         } catch (Exception ex) {
             System.out.println("No se puede obtener el listado de boletas emitidas.");
+            System.out.println(ex);
+            salida.put("estado", "error");
+        }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getResumenPagos(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+
+        String query = "CALL SP_GET_PAGOS("
+                + "'" + entrada.getString("mes") + "'"
+                + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String cuerpoBFC = "";
+        String cuerpoNormal = "";
+        int[] totalesNormales = new int[5];
+        int[] totalesBFC = new int[5];
+        String tabla = "";
+        tabla = "<table id='tabla-resumen-pagos' class='table table-condensed table-bordered table-hover table-responsive-sm table-sm small' style='font-size: 0.6em'>"
+                + "<thead style='text-align: center;'>"
+                + "<tr>"
+                + "<th style='width:5em; vertical-align: middle;'>Número</th>"
+                + "<th style='vertical-align: middle; max-width: 6em;' >Remarcador</th>"
+                + "<th style='vertical-align: middle;' >Serie</th>"
+                + "<th style='vertical-align: middle;' >Bodega</th>"
+                + "<th style='vertical-align: middle;'>Cliente</th>"
+                + "<th style='vertical-align: middle;'>Módulos</th>"
+                + "<th style='vertical-align: middle;'>Instalación</th>"
+                + "<th style='vertical-align: middle;' >Lectura<br />Anterior</th>"
+                + "<th style='vertical-align: middle;' >Lectura<br />Actual</th>"
+                + "<th style='vertical-align: middle;' >(KW)<br />Consumo</th>"
+                + "<th style='vertical-align: middle;' >Neto</th>"
+                + "<th style='vertical-align: middle;' >$<br />Iva (19%)</th>"
+                + "<th style='vertical-align: middle; max-width: 3em;' >$<br />Exento</th>"
+                + "<th style='vertical-align: middle;' >$<br />Total</th>"
+                + "</tr>"
+                + "</thead>"
+                + "<tbody>";
+        int filastotales = 0;
+        try {
+            while (rs.next()) {
+                
+                if (rs.getString("NOMCLIENTE").equals("BFC")) {
+                    cuerpoBFC += "<tr>";
+                    cuerpoBFC += "<td>" + rs.getString("NUMBOLETA") + "</td>";
+                    cuerpoBFC += "<td style='text-align:center;'>" + rs.getString("NUMREMARCADOR") + "</td>";
+                    cuerpoBFC += "<td style='text-align:center;'>" + rs.getString("NUMSERIE") + "</td>";
+                    cuerpoBFC += "<td>" + rs.getString("NOMPARQUE") + "</td>";
+                    cuerpoBFC += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
+                    cuerpoBFC += "<td style='text-align:center;'>" + rs.getString("MODULOS") + "</td>";
+                    cuerpoBFC += "<td>" + rs.getString("NOMINSTALACION") + "</td>";
+                    cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURAANTERIOR")) + "</td>";
+                    cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURAACTUAL")) + "</td>";
+                    cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("CONSUMO")) + "</td>";
+                    cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("TOTALNETO")) + "</td>";
+                    cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("IVA")) + "</td>";
+                    cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("EXENTO")) + "</td>";
+                    cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("TOTAL")) + "</td>";
+                    cuerpoBFC += "</tr>";
+                    totalesBFC[0] += rs.getInt("CONSUMO");
+                    totalesBFC[1] += rs.getInt("TOTALNETO");
+                    totalesBFC[2] += rs.getInt("IVA");
+                    totalesBFC[3] += rs.getInt("EXENTO");
+                    totalesBFC[4] += rs.getInt("TOTAL");
+                } else {
+                    cuerpoNormal += "<tr>";
+                    cuerpoNormal += "<td>" + rs.getString("NUMBOLETA") + "</td>";
+                    cuerpoNormal += "<td style='text-align:center;'>" + rs.getString("NUMREMARCADOR") + "</td>";
+                    cuerpoNormal += "<td style='text-align:center;'>" + rs.getString("NUMSERIE") + "</td>";
+                    cuerpoNormal += "<td>" + rs.getString("NOMPARQUE") + "</td>";
+                    cuerpoNormal += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
+                    cuerpoNormal += "<td style='text-align:center;'>" + rs.getString("MODULOS") + "</td>";
+                    cuerpoNormal += "<td>" + rs.getString("NOMINSTALACION") + "</td>";
+                    cuerpoNormal += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURAANTERIOR")) + "</td>";
+                    cuerpoNormal += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURAACTUAL")) + "</td>";
+                    cuerpoNormal += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("CONSUMO")) + "</td>";
+                    cuerpoNormal += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("TOTALNETO")) + "</td>";
+                    cuerpoNormal += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("IVA")) + "</td>";
+                    cuerpoNormal += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("EXENTO")) + "</td>";
+                    cuerpoNormal += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("TOTAL")) + "</td>";
+                    cuerpoNormal += "</tr>";
+                    totalesNormales[0] += rs.getInt("CONSUMO");
+                    totalesNormales[1] += rs.getInt("TOTALNETO");
+                    totalesNormales[2] += rs.getInt("IVA");
+                    totalesNormales[3] += rs.getInt("EXENTO");
+                    totalesNormales[4] += rs.getInt("TOTAL");
+                }
+                filastotales++;
+            }
+            tabla += cuerpoNormal;
+            tabla += "<tr class='table-info' style='border-top: 2px solid black;'>";
+            tabla += "<td colspan='9' style='text-align: right; padding-right: 4px; font-weight: bold;'>Subtotal:</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesNormales[0]) + "</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesNormales[1]) + "</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesNormales[2]) + "</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesNormales[3]) + "</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesNormales[4]) + "</td>";
+            tabla += "</tr>";
+            
+            tabla += cuerpoBFC;
+            tabla += "<tr class='table-info' style='border-top: 2px solid black;'>";
+            tabla += "<td colspan='9' style='text-align: right; padding-right: 4px; font-weight: bold;'>Subtotal BFC:</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[0]) + "</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[1]) + "</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[2]) + "</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[3]) + "</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[4]) + "</td>";
+            tabla += "</tr>";
+            
+            tabla += "<tr class='table-primary' style='border-top: 2px solid black;'>";
+            tabla += "<td colspan='9' style='text-align: right; padding-right: 4px; font-weight: bold;'>Total General:</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[0] + totalesNormales[0]) + "</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[1] + totalesNormales[1]) + "</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[2] + totalesNormales[2]) + "</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[3] + totalesNormales[3]) + "</td>";
+            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[4] + totalesNormales[4]) + "</td>";
+            tabla += "</tr>";
+            tabla += "</tbody>";
+            tabla += "</table>";
+            if (filastotales > 0){
+                tabla = "<button type='button' onclick='exportExcel(\"tabla-resumen-pagos\");' class='btn btn-success btn-sm' >Excel</button><br /><br />" + tabla;
+            }
+            salida.put("tabla", tabla);
+            salida.put("estado", "ok");
+        } catch (Exception ex) {
+            System.out.println("No se puede obtener el listado de pagos.");
             System.out.println(ex);
             salida.put("estado", "error");
         }

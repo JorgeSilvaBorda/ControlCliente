@@ -205,9 +205,6 @@ function graficarDesde(idremarcador, aniomes) {
                     if (cont === obj.data.labels.length - 1) {
                         fondo.push("rgba(5, 82, 16, 0.65)");
                         borde.push("rgba(5, 82, 16, 1)");
-                    } else if (cont === obj.data.labels.length - 2) {
-                        fondo.push("rgba(117, 0, 0, 0.15)");
-                        borde.push("rgba(117, 0, 0, 0.9)");
                     } else {
                         fondo.push("rgba(117, 0, 0, 0.65)");
                         borde.push("rgba(117, 0, 0, 1)");

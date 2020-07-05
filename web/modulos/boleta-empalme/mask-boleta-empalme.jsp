@@ -10,8 +10,8 @@
     var MES = <%out.print(request.getParameter("mes"));%>;
     var FECHA_LECTURA_INICIAL = <%out.print(request.getParameter("fechalecturaini"));%>;
     var FECHA_LECTURA_FINAL = <%out.print(request.getParameter("fechalecturafin"));%>;
-    var MAX_DEMANDA_LEIDA = '<%out.print(request.getParameter("maxdemandaleida").toString());%>';
-    var MAX_DEMANDA_HORA_PUNTA = '<%out.print(request.getParameter("maxdemandahorapunta").toString());%>';
+    var MAX_DEMANDA_LEIDA = '<%out.print(request.getParameter("maxdemandaleida"));%>';
+    var MAX_DEMANDA_HORA_PUNTA = '<%out.print(request.getParameter("maxdemandahorapunta"));%>';
     var NUMSERIE = <%out.print(request.getParameter("numserie"));%>;
     var lecturaactual = <%out.print(request.getParameter("lecturaactual"));%>;
     var lecturaanterior = <%out.print(request.getParameter("lecturaanterior"));%>;

@@ -138,16 +138,19 @@ function validarCampos() {
 }
 
 function calcularDiferencia(){
+    var text = $('#consumo-facturado-empalme').val().replaceAll("\\.", "");
+    var num = text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    $('#consumo-facturado-empalme').val(num);
     var kwtotal = KWTOTAL;
-    var facturadoempalme = $('#consumo-facturado-empalme').val();
+    var facturadoempalme = $('#consumo-facturado-empalme').val().replaceAll("\\.", "");
     var resta = kwtotal - facturadoempalme;
     var porc = 100 - ((facturadoempalme * 100) / kwtotal);
     
     resta = resta * -1;
     porc = porc * -1;
     
-    $('#kw-diferencia').html(parseInt(resta) + " kW");
-    $('#porc-diferencia').html(porc.toFixed(2) + " %");
+    $('#kw-diferencia').text(formatMiles(parseInt(resta)));
+    $('#porc-diferencia').text(porc.toFixed(2) + " %");
 }
 
 function buscar() {

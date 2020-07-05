@@ -166,7 +166,7 @@ public class BoletaController extends HttpServlet {
             while (rs.next()) {
                 JSONObject jsonconsumo = new JSONObject();
 
-                if (rs.getInt("IDCONCEPTO") != 7 && rs.getInt("IDCONCEPTO") != 11 && rs.getInt("IDCONCEPTO") != 5 && rs.getInt("IDCONCEPTO") != 9) {
+                if (rs.getInt("IDCONCEPTO") < 5) {
                     tabla += "<tr>";
                     tabla += "<td style='font-weight: bold;'>";
                     tabla += rs.getString("NOMCONCEPTO");
@@ -178,7 +178,8 @@ public class BoletaController extends HttpServlet {
 
                     tabla += "<td style='font-weight: bold; text-align: right;'>";
                     Double cant = Double.parseDouble(rs.getBigDecimal("CANTIDAD").toString());
-                    tabla += Util.formatMiles(Double.toString(cant));
+                    //tabla += Util.formatMiles(Double.toString(cant));
+                    tabla += rs.getString("CANTIDAD_STRING");
                     tabla += "</td>";
 
                     tabla += "<td style='font-weight: bold; text-align: right;'>";
@@ -208,7 +209,7 @@ public class BoletaController extends HttpServlet {
                     jsonconsumo.put("valorneto", net);
                     jsonconsumo.put("total", tot);
 
-                } else if (rs.getInt("IDCONCEPTO") == 7 || rs.getInt("IDCONCEPTO") == 5) {
+                } else if (rs.getInt("IDCONCEPTO") >= 7 || rs.getInt("IDCONCEPTO") <= 5) {
                     filahpunta += "<tr>";
                     filahpunta += "<td style='font-weight: bold;'>";
                     filahpunta += rs.getString("NOMCONCEPTO");
@@ -220,7 +221,8 @@ public class BoletaController extends HttpServlet {
 
                     filahpunta += "<td style='font-weight: bold; text-align: right;'>";
                     Double cant = Double.parseDouble(rs.getBigDecimal("CANTIDAD").toString());
-                    filahpunta += Util.formatMiles(Double.toString(cant));
+                    //filahpunta += Util.formatMiles(Double.toString(cant));
+                    filahpunta += rs.getString("CANTIDAD_STRING");
                     filahpunta += "</td>";
 
                     filahpunta += "<td style='font-weight: bold; text-align: right;'>";
@@ -243,7 +245,7 @@ public class BoletaController extends HttpServlet {
                     jsonconsumo.put("valorneto", net);
                     jsonconsumo.put("total", tot);
                     total += rs.getInt("TOTAL");
-                } else if (rs.getInt("IDCONCEPTO") == 9 || rs.getInt("IDCONCEPTO") == 11) {
+                } else if (rs.getInt("IDCONCEPTO") >= 9 && rs.getInt("IDCONCEPTO") <= 11) {
                     filapotencia += "<tr>";
                     filapotencia += "<td style='font-weight: bold;'>";
                     filapotencia += rs.getString("NOMCONCEPTO");
@@ -255,7 +257,8 @@ public class BoletaController extends HttpServlet {
 
                     filapotencia += "<td style='font-weight: bold; text-align: right;'>";
                     Double cant = Double.parseDouble(rs.getBigDecimal("CANTIDAD").toString());
-                    filapotencia += Util.formatMiles(Double.toString(cant));
+                    //filapotencia += Util.formatMiles(Double.toString(cant));
+                    rs.getString("CANTIDAD_STRING");
                     filapotencia += "</td>";
 
                     filapotencia += "<td style='font-weight: bold; text-align: right;'>";
@@ -784,7 +787,7 @@ public class BoletaController extends HttpServlet {
         int filastotales = 0;
         try {
             while (rs.next()) {
-                
+
                 if (rs.getString("NOMCLIENTE").equals("BFC")) {
                     cuerpoBFC += "<tr>";
                     cuerpoBFC += "<td>" + rs.getString("NUMBOLETA") + "</td>";
@@ -841,7 +844,7 @@ public class BoletaController extends HttpServlet {
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesNormales[3]) + "</td>";
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesNormales[4]) + "</td>";
             tabla += "</tr>";
-            
+
             tabla += cuerpoBFC;
             tabla += "<tr class='table-info' style='border-top: 2px solid black;'>";
             tabla += "<td colspan='9' style='text-align: right; padding-right: 4px; font-weight: bold;'>Subtotal BFC:</td>";
@@ -851,7 +854,7 @@ public class BoletaController extends HttpServlet {
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[3]) + "</td>";
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[4]) + "</td>";
             tabla += "</tr>";
-            
+
             tabla += "<tr class='table-primary' style='border-top: 2px solid black;'>";
             tabla += "<td colspan='9' style='text-align: right; padding-right: 4px; font-weight: bold;'>Total General:</td>";
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[0] + totalesNormales[0]) + "</td>";
@@ -862,7 +865,7 @@ public class BoletaController extends HttpServlet {
             tabla += "</tr>";
             tabla += "</tbody>";
             tabla += "</table>";
-            if (filastotales > 0){
+            if (filastotales > 0) {
                 tabla = "<button type='button' onclick='exportExcel(\"tabla-resumen-pagos\");' class='btn btn-success btn-sm' >Excel</button><br /><br />" + tabla;
             }
             salida.put("tabla", tabla);

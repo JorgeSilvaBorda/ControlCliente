@@ -28,6 +28,7 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
             if (obj.estado === 'ok') {
                 REMCLI = obj.remarcador;
                 var remcli = obj.remarcador;
+                console.log(remcli);
                 var aniomes = $('#mes').val();
                 graficarDesde(remcli.idremarcador, aniomes);
                 $('#rut-cliente').html($.formatRut(remcli.rutcliente + "-" + remcli.dvcliente));
@@ -59,8 +60,8 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 DATOS_BOLETA.fechadesde = formatFechaYYYYMMDD(fechadesde);
                 $('#hasta').html(formatFechaDDMMYYYY(formatFechaYYYYMMDD(fechahasta)) + '<br /><br />');
                 DATOS_BOLETA.fechahasta = formatFechaYYYYMMDD(fechahasta);
-                $('#suministradas').html(remcli.dmps + '<br /><br />');
-                $('#horas-punta').html(remcli.dmplhp + '<br /><br />');
+                $('#suministradas').html(remcli.dmps_string + '<br /><br />');
+                $('#horas-punta').html(remcli.dmplhp_string + '<br /><br />');
                 $('#leidas-suministradas').html(MAX_DEMANDA_LEIDA + '<br /><br />');
                 $('#leidas-horas-punta').html(MAX_DEMANDA_HORA_PUNTA + '<br /><br />');
                 $('#consumo-total-kwh').html(formatMiles(CONSUMO) + '<br /><br />');

@@ -202,11 +202,11 @@ public class RemarcadorController extends HttpServlet {
 
                 if (rs.getInt("IDBOLETA") == 0) {
                     boletasnoemitidas ++; //Para ver si se anota al menos un candidato a generación masiva
-                    filas += "<td><button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("mes") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", " + rs.getBigDecimal("MAX_DEMANDA_LEIDA") + ", " + rs.getBigDecimal("MAX_DEMANDA_HORA_PUNTA") + ", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
+                    filas += "<td><button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("mes") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", \"" + rs.getString("MAX_DEMANDA_LEIDA_STRING") + "\", \"" + rs.getString("MAX_DEMANDA_HORA_PUNTA_STRING") + "\", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
                 } else {
                     filas += "<td>"
                             + "<div id='botones_" + rs.getInt("IDREMARCADOR") + "' style='display:none;' class='btn-group' role='group' aria-label='Sobreescritura'>"
-                            + "<button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("mes") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", " + rs.getBigDecimal("MAX_DEMANDA_LEIDA") + ", " + rs.getBigDecimal("MAX_DEMANDA_HORA_PUNTA") + ", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Sobreescribir</button>"
+                            + "<button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("mes") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", \"" + rs.getString("MAX_DEMANDA_LEIDA_STRING") + "\", \"" + rs.getString("MAX_DEMANDA_HORA_PUNTA_STRING") + "\", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Sobreescribir</button>"
                             + "<button type='button' onclick='deshabilitarSobreescritura(" + rs.getInt("IDREMARCADOR") + ");' class='btn btn-sm btn-warning' style='padding: 0px 5px 0px 5px; vertical-align:middle;'>x</button>"
                             + "</div>"
                             + "<button id='btn_" + rs.getInt("IDREMARCADOR") + "' type='button' onclick='habilitarSobreescritura(" + rs.getInt("IDREMARCADOR") + ");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Habilitar</button>"
@@ -247,17 +247,17 @@ public class RemarcadorController extends HttpServlet {
             -----------------------------------------------------------------------------------------------------*/
             filas += "<tr>";
             filas += "<td colspan='8' style='vertical-align: middle; text-align: right; padding-right:5px; font-weight: bold;'>Consumo Facturado del Empalme: " + entrada.getString("numempalme") + "</td>";
-            filas += "<td><input type='number' onkeyup='calcularDiferencia();' class='form-control form-control-sm small' style='font-size: 0.9em; padding-top: 0px; padding-bottom: 0px; width: 120px;' id='consumo-facturado-empalme'/></td>";
+            filas += "<td><input type='text' onkeyup='calcularDiferencia();' class='form-control form-control-sm small' style='font-size: 0.9em; padding-top: 0px; padding-bottom: 0px; width: 12em; text-align: right;' id='consumo-facturado-empalme'/></td>";
             filas += "</tr>";
 
             filas += "<tr>";
             filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>KW Diferencia: </td>";
-            filas += "<td><span id='kw-diferencia'></span></td>";
+            filas += "<td style='text-align: right;' ><span id='kw-diferencia'></span></td>";
             filas += "</tr>";
 
             filas += "<tr>";
             filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>% Diferencia: </td>";
-            filas += "<td><span id='porc-diferencia'></span></td>";
+            filas += "<td style='text-align: right;'><span id='porc-diferencia' ></span></td>";
             filas += "</tr>";
 
             tabla += filas;
@@ -464,6 +464,8 @@ public class RemarcadorController extends HttpServlet {
                 remarcador.put("nomred", rs.getString("NOMRED"));
                 remarcador.put("dmps", rs.getDouble("DEM_MAX_POTENCIA_SUMINISTRADA"));
                 remarcador.put("dmplhp", rs.getDouble("DEM_MAX_POTENCIA_LEIDA_H_PUNTA"));
+                remarcador.put("dmps_string", rs.getString("DEM_MAX_POTENCIA_SUMINISTRADA_STRING"));
+                remarcador.put("dmplhp_string", rs.getString("DEM_MAX_POTENCIA_LEIDA_H_PUNTA_STRING"));
             }
             salida.put("remarcador", remarcador);
             salida.put("estado", "ok");

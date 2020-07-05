@@ -123,7 +123,7 @@ public class Util {
         String output = myFormatter.format(num);
         return output;
     }
-    
+
     public static String formatMiles(BigDecimal numero) {
         String pattern = "###,###,###.###";
         //Si no le paso ningun Locale, toma el del sistema, que en mi caso es Locale("es","MX");
@@ -194,10 +194,79 @@ public class Util {
                 b.append(p);
             }
             return b.toString().trim();
-        }else if(frase.equals("")){
+        } else if (frase.equals("")) {
             return frase;
         }
-        
+
         return frase.substring(0, 1).toUpperCase() + frase.substring(1).toLowerCase().trim();
+    }
+
+    public static String mesAPalabraCorto(int mes) {
+        switch (mes) {
+            case 1:
+                return "Ene";
+            case 2:
+                return "Feb";
+            case 3:
+                return "Mar";
+            case 4:
+                return "Abr";
+            case 5:
+                return "May";
+            case 6:
+                return "Jun";
+            case 7:
+                return "Jul";
+            case 8:
+                return "Ago";
+            case 9:
+                return "Sep";
+            case 10:
+                return "Oct";
+            case 11:
+                return "Nov";
+            case 12:
+                return "Dic";
+            default:
+                return "";
+        }
+    }
+
+    public static String mesAPalabraCorto(String mes) {
+        try {
+            int mesint = Integer.parseInt(mes);
+            switch (mesint) {
+                case 1:
+                    return "Ene";
+                case 2:
+                    return "Feb";
+                case 3:
+                    return "Mar";
+                case 4:
+                    return "Abr";
+                case 5:
+                    return "May";
+                case 6:
+                    return "Jun";
+                case 7:
+                    return "Jul";
+                case 8:
+                    return "Ago";
+                case 9:
+                    return "Sep";
+                case 10:
+                    return "Oct";
+                case 11:
+                    return "Nov";
+                case 12:
+                    return "Dic";
+                default:
+                    return "";
+            }
+        } catch (Exception ex) {
+            System.out.println("Problemas al castear desde String a int (Util.mesAPalabraCorto(String mes))");
+            return "";
+        }
+
     }
 }

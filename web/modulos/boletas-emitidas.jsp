@@ -1,8 +1,7 @@
-<script src="modulos/boleta-empalme.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
+<script src="modulos/boletas-emitidas.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         getSelectInstalacion();
-        //getSelectTarifasIdComuna();
         var fec = new Date();
         var m = '';
         if (fec.getMonth() + 1 < 10) {
@@ -47,7 +46,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="page-header">
-                <h1>Emitir Detalle <small>Complemento Servicios de Administración</small></h1>
+                <h1>Comlemento de Servicios Emitidos <small>Histórico</small></h1>
             </div>
         </div>
     </div>
@@ -56,7 +55,7 @@
             <form class="form small"  role="form">
                 <div class="form-group">
                     <label for="select-instalacion" >Instalación</label>
-                    <select onchange="getSelectEmpalmesNumEmpalmesInstalacion()" class="form-control form-control-sm small" id="select-instalacion">
+                    <select onchange="getSelectEmpalmesNumEmpalmesInstalacion();" class="form-control form-control-sm small" id="select-instalacion">
                     </select>
                 </div>
                 <div class="form-group">
@@ -68,10 +67,6 @@
                 <div class="form-group" style="">
                     <label for="mes">Mes</label>
                     <input type="month" id="mes" class="form-control form-control-sm"/>
-                </div>
-                <div class="form-group">
-                    <label data-html2canvas-ignore="true" for="select-tarifa">Tarifa: </label>
-                    <select data-html2canvas-ignore="true" class="form-control form-control-sm small" id="select-tarifa"></select>
                 </div>
                 <div class="form-group" style="">
                     <div class="row">
@@ -94,7 +89,8 @@
                 </div>
             </form>
         </div>
-        <div class="col-sm-8 float-sm-right" id="detalle-remarcadores">
+        <div class="col-sm-10 float-sm-right" id="detalle-remarcadores">
+            
         </div>
 
     </div>

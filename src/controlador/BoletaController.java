@@ -36,6 +36,9 @@ public class BoletaController extends HttpServlet {
             case "get-last-boleta-idboleta":
                 out.print(getLastBoleta(entrada));
                 break;
+            case "get-boletas-emitidas-idempalme-aniomes":
+                out.print(getBoletasEmitidasIdempalmeAniomes(entrada));
+                break;
         }
     }
 
@@ -658,8 +661,78 @@ public class BoletaController extends HttpServlet {
             salida.put("error", ex);
         }
         c.cerrar();
-        
+
         salida.put("estado", "ok");
+        return salida;
+    }
+
+    private JSONObject getBoletasEmitidasIdempalmeAniomes(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+
+        String query = "CALL SP_GET_HIST_BOLETA_IDEMPALME_MES("
+                + "'" + entrada.getString("numempalme") + "', "
+                + "'" + entrada.getString("mes") + "'"
+                + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String tabla = "";
+        tabla = "<table id='tabla-boletas-emitidas' class='table table-condensed table-bordered table-hover table-responsive-sm table-sm small' style='font-size: 0.7em'>"
+                + "<thead style='text-align: center;'>"
+                + "<tr>"
+                + "<th style='width:5em;'>Número</th>"
+                //+ "<th>Período</th>"
+                + "<th>Cliente</th>"
+                + "<th>Remarcador</th>"
+                + "<th>Serie</th>"
+                + "<th>Lectura<br />Anterior</th>"
+                + "<th>Lectura<br />Actual</th>"
+                + "<th>(KW)<br />Consumo</th>"
+                + "<th>Demanda Máx.<br />Leída</th>"
+                + "<th>Demanda Máx.<br />H. Punta Leída</th>"
+                + "<th>Neto</th>"
+                + "<th>$<br />Iva (19%)</th>"
+                + "<th>$<br />Exento</th>"
+                + "<th>$<br />Total</th>"
+                + "</tr>"
+                + "</thead>"
+                + "<tbody>";
+
+        try {
+            while (rs.next()) {
+                if(rs.getInt("ACUMULADAS")== 1){
+                    tabla += "<tr class='table-info'>";
+                }else{
+                    tabla += "<tr>";
+                }
+                
+                tabla += "<td style='text-align:right;'><a href='#' onclick='getLastBoleta(" + rs.getInt("IDBOLETA") + ")'>" + rs.getString("NUMBOLETA") + "</a></td>";
+                // tabla += "<td style='text-align:center;'>" + Util.mesAPalabraCorto(rs.getInt("MES")) + " " + rs.getInt("ANIO") + "</td>";
+                tabla += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
+                tabla += "<td style='text-align:center;'>" + rs.getString("NUMREMARCADOR") + "</td>";
+                tabla += "<td style='text-align:center;'>" + rs.getString("NUMSERIE") + "</td>";
+                tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURAANTERIOR")) + "</td>";
+                tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURAACTUAL")) + "</td>";
+                tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("CONSUMO")) + "</td>";
+                tabla += "<td style='text-align:right;'>" + rs.getDouble("DEM_MAX_SUMINISTRADA_LEIDA") + "</td>";
+                tabla += "<td style='text-align:right;'>" + rs.getDouble("DEM_MAX_HORA_PUNTA_LEIDA") + "</td>";
+                tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("TOTALNETO")) + "</td>";
+                tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("IVA")) + "</td>";
+                tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("EXENTO")) + "</td>";
+                tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("TOTAL")) + "</td>";
+                tabla += "</tr>";
+            }
+            tabla += "</tbody>";
+            tabla += "</table>";
+            salida.put("tabla", tabla);
+            salida.put("estado", "ok");
+        } catch (Exception ex) {
+            System.out.println("No se puede obtener el listado de boletas emitidas.");
+            System.out.println(ex);
+            salida.put("estado", "error");
+        }
+        c.cerrar();
         return salida;
     }
 }

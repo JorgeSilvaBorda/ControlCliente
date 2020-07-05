@@ -25,8 +25,8 @@ function getSelectInstalacion() {
 
 function getSelectBodegasInstalacion() {
     var idinstalacion = $('#select-instalacion').val();
-    $('#select-bodega').html('<option value="0" slected="selected" >Seleccione</option>');
-    $('#select-empalme').html('<option value="0" slected="selected" >Seleccione</option>');
+    $('#select-bodega').html('<option value="0" selected="selected" >Seleccione</option>');
+    $('#select-empalme').html('<option value="0" selected="selected" >Seleccione</option>');
     $('#select-remarcador').html('<option value="0" selected="selected" >Seleccione</option>');
     var datos = {
         tipo: 'get-select-bodegas-instalacion',

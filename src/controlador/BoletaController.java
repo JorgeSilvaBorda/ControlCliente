@@ -678,23 +678,28 @@ public class BoletaController extends HttpServlet {
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         String tabla = "";
-        tabla = "<table id='tabla-boletas-emitidas' class='table table-condensed table-bordered table-hover table-responsive-sm table-sm small' style='font-size: 0.7em'>"
+        tabla = "<table id='tabla-boletas-emitidas' class='table table-condensed table-bordered table-hover table-responsive-sm table-sm small' style='font-size: 0.6em'>"
                 + "<thead style='text-align: center;'>"
                 + "<tr>"
-                + "<th style='width:5em;'>Número</th>"
-                //+ "<th>Período</th>"
-                + "<th>Cliente</th>"
-                + "<th>Remarcador</th>"
-                + "<th>Serie</th>"
-                + "<th>Lectura<br />Anterior</th>"
-                + "<th>Lectura<br />Actual</th>"
-                + "<th>(KW)<br />Consumo</th>"
-                + "<th>Demanda Máx.<br />Leída</th>"
-                + "<th>Demanda Máx.<br />H. Punta Leída</th>"
-                + "<th>Neto</th>"
-                + "<th>$<br />Iva (19%)</th>"
-                + "<th>$<br />Exento</th>"
-                + "<th>$<br />Total</th>"
+                + "<th rowspan='2' style='width:5em; vertical-align: middle;'>Número</th>"
+                + "<th rowspan='2' style='vertical-align: middle;'>Cliente</th>"
+                + "<th rowspan='2' style='vertical-align: middle; max-width: 5em;' >Remarcador</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >Serie</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >Lectura<br />Anterior</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >Lectura<br />Actual</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >(KW)<br />Consumo</th>"
+                + "<th colspan='2' style='vertical-align: top;' >Demanda Máxima</th>"
+                + "<th colspan='2' style='vertical-align: top;' >Demanda Máxima H. Punta</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >Neto</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >$<br />Iva (19%)</th>"
+                + "<th rowspan='2' style='vertical-align: middle; max-width: 3em;' >$<br />Exento</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >$<br />Total</th>"
+                + "</tr>"
+                + "<tr>"
+                + "<th>Leída</th>"
+                + "<th>Facturada</th>"
+                + "<th>Leída</th>"
+                + "<th style='max-width:5em; border-right-width: 1px; border-bottom-width: 2px;'>Facturada</th>"
                 + "</tr>"
                 + "</thead>"
                 + "<tbody>";
@@ -716,7 +721,9 @@ public class BoletaController extends HttpServlet {
                 tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURAACTUAL")) + "</td>";
                 tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("CONSUMO")) + "</td>";
                 tabla += "<td style='text-align:right;'>" + rs.getDouble("DEM_MAX_SUMINISTRADA_LEIDA") + "</td>";
+                tabla += "<td style='text-align:right;'>" + rs.getDouble("DEM_MAX_SUMINISTRADA_FACTURADA") + "</td>";
                 tabla += "<td style='text-align:right;'>" + rs.getDouble("DEM_MAX_HORA_PUNTA_LEIDA") + "</td>";
+                tabla += "<td style='text-align:right;'>" + rs.getDouble("DEM_MAX_HORA_PUNTA_FACTURADA") + "</td>";
                 tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("TOTALNETO")) + "</td>";
                 tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("IVA")) + "</td>";
                 tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("EXENTO")) + "</td>";

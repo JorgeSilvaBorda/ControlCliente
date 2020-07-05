@@ -43,6 +43,14 @@ function getBoletasEmitidasIdempalmeAniomes() {
             if (obj.estado === 'ok') {
                 $('.dataTable').DataTable().destroy();
                 $('#detalle-remarcadores').html(obj.tabla);
+                
+                var OPCIONES_EXCEL = [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Boletas-' + numempalme + "-" + mes
+                    }
+                ];
+                OPCIONES_DATATABLES.buttons = OPCIONES_EXCEL;
                 $('#tabla-boletas-emitidas').DataTable(OPCIONES_DATATABLES);
                 $('.loader').fadeOut(500);
             }
@@ -97,7 +105,7 @@ function validarCampos() {
         alert("Debe seleccionar un Empalme del listado.");
         return false;
     }
-    if(mes.length < 6){
+    if (mes.length < 6) {
         alert("El mes indicado es incorrecto.");
         return false;
     }
@@ -113,7 +121,7 @@ function buscar() {
     }
 }
 
-function getLastBoleta(idboleta){
+function getLastBoleta(idboleta) {
     $('#btn-generar').hide();
     $('#btn-imprimir').show();
     $('#modal-body').html('');
@@ -121,7 +129,7 @@ function getLastBoleta(idboleta){
     $('#modal-body').load("modulos/boleta-empalme/mask-last-boleta-empalme.jsp?idboleta=" + idboleta);
 }
 
-function getLastBoleta(idboleta){
+function getLastBoleta(idboleta) {
     $('#btn-generar').hide();
     $('#btn-imprimir').show();
     $('#modal-body').html('');
@@ -129,6 +137,6 @@ function getLastBoleta(idboleta){
     $('#modal-body').load("modulos/boleta-empalme/mask-last-boleta-empalme.jsp?idboleta=" + idboleta);
 }
 
-function limpiar(){
-    
+function limpiar() {
+
 }

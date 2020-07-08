@@ -52,6 +52,10 @@
         <servlet-name>RedController</servlet-name>
         <servlet-class>controlador.RedController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>FileController</servlet-name>
+        <servlet-class>controlador.FileController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UsuarioController</servlet-name>
         <url-pattern>/UsuarioController</url-pattern>
@@ -103,6 +107,10 @@
     <servlet-mapping>
         <servlet-name>RedController</servlet-name>
         <url-pattern>/RedController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FileController</servlet-name>
+        <url-pattern>/FileController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

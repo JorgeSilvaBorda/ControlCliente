@@ -105,57 +105,25 @@ function getSelectRemarcadorIdEmpalme(idempalme) {
         }
     });
 }
-
 function getDatosRemarcador() {
     var idremarcador = $('#select-remarcador').val();
     var numremarcador = $('#select-remarcador option:selected').text();
     var mes = $('#mes').val();
     var messolo = mes.split("-")[1];
     var aniosolo = mes.split("-")[0];
-    var datos = {
-        tipo: 'get-registros-mes-remarcador',
-        idremarcador: idremarcador,
-        numremarcador: numremarcador,
-        mes: mes,
-        messolo: messolo,
-        aniosolo: aniosolo
-    };
-    console.log(datos);
-    $.ajax({
-        url: 'RemarcadorController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (resp) {
-            var obj = JSON.parse(resp);
-            if (obj.estado === 'ok') {
-                console.log(obj);
-                $('.loader').fadeOut(500);
-                $('#btn-buscar').removeAttr("disabled");
-                $('.dataTable').DataTable().destroy();
-                $('#detalle-remarcador').html(obj.tabla);
-                var OPCIONES_EXCEL = [
-                    {
-                        extend: 'excelHtml5',
-                        title: 'Lecturas-ID' + numremarcador + "-" + mes
-                    }
-                ];
-                OPCIONES_DATATABLES.buttons = OPCIONES_EXCEL;
-                $('#tabla-detalle-remarcador').DataTable(OPCIONES_DATATABLES);
-                $('.dataTables_filter').css("font-size", "12px;");
-                $('.dataTables_filter').css("font-size", 12);
-                $('.dataTables_filter').addClass("small");
-            }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
-}
+    jQuery.download = function () {
+        var form = $('<form></form>').attr('action', 'FileController').attr('method', 'post');
 
+        form.append($("<input></input>").attr('type', 'hidden').attr('name', 'idremarcador').attr('value', idremarcador));
+        form.append($("<input></input>").attr('type', 'hidden').attr('name', 'numremarcador').attr('value', numremarcador));
+        form.append($("<input></input>").attr('type', 'hidden').attr('name', 'messolo').attr('value', messolo));
+        form.append($("<input></input>").attr('type', 'hidden').attr('name', 'aniosolo').attr('value', aniosolo));
+        form.appendTo('body').submit().remove();
+        $('.loader').fadeOut(500);
+        $('#btn-buscar').removeAttr("disabled");
+    };
+    $.download();
+}
 function validarCampos() {
     var idinstalacion = $('#select-instalacion').val();
     var idparque = $('#select-bodega').val();

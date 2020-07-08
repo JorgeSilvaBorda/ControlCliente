@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="page-header">
-                <h1>Registros Lecturas Remarcador <small>en instalaciones y bodegas</small></h1>
+                <h1>Descarga Registros Remarcador</h1>
             </div>
         </div>
     </div>
@@ -50,7 +50,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <button id="btn-buscar" onclick="buscar();" type="button" class="btn btn-primary btn-sm float-sm-right ">Buscar</button>
+                            <button id="btn-buscar" onclick="buscar();" type="button" class="btn btn-primary btn-sm float-sm-right ">Descargar</button>
                         </div>
                     </div>
                 </div>

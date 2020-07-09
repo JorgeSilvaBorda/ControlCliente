@@ -3,6 +3,8 @@
     $(document).ready(function () {
         var fec = new Date();
         var m = '';
+        fec.setDate(1);
+        fec.setDate(fec.getDate()-1);
         if (fec.getMonth() + 1 < 10) {
             m = '0' + (fec.getMonth() + 1).toString();
         } else {

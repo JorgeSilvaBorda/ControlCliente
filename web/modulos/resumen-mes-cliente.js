@@ -43,9 +43,12 @@ function buscar(idcliente) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
                 $('.loader').fadeOut(500);
+                for (var i in obj.data.labels) {
+                    obj.data.labels[i] = formatFechaDDMMYYYY(obj.data.labels[i]);
+                }
                 for (var i in obj.data.datasets) {
                     var color = colorDinamicoArr();
-                    obj.data.datasets[i].borderColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] +  ", 1.0)";
+                    obj.data.datasets[i].borderColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 1.0)";
                     obj.data.datasets[i].pointRadius = "2";
                     obj.data.datasets[i].borderRadius = "1";
                     obj.data.datasets[i].lineTension = "0";
@@ -59,6 +62,28 @@ function buscar(idcliente) {
                         title: {
                             display: true,
                             text: 'Consumo Registrado Mes Actual'
+                        },
+                        scales: {
+                            yAxes: [{
+                                    ticks: {
+                                        fontSize: 10
+                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'kWh'
+                                    }
+
+                                }],
+                            xAxes: [{
+                                    ticks: {
+                                        fontSize: 10
+                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Día'
+                                    }
+
+                                }]
                         }
                     }
                 });

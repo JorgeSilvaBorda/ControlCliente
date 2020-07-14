@@ -1,3 +1,55 @@
+function getSelectInstalacion() {
+    var datos = {
+        tipo: 'get-select-instalacion'
+    };
+    $.ajax({
+        url: 'InstalacionController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-instalacion').html(obj.options);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function getSelectEmpalmesNumEmpalmesInstalacion() {
+    var idinstalacion = $('#select-instalacion').val();
+
+    var datos = {
+        tipo: 'get-select-empalmes-numempalmes-idinstalacion',
+        idinstalacion: idinstalacion
+    };
+    $.ajax({
+        url: 'EmpalmeController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-empalme').html(obj.options);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+
+}
+
 function validarCampos() {
     var mes = $('#mes').val();
     if (mes.length < 6) {
@@ -11,16 +63,17 @@ function buscar() {
     if (validarCampos()) {
         $('#btn-buscar').attr("disabled", "disabled");
         $('.loader').fadeIn(500);
-        //$('.loader').fadeIn(500);
         getPagos();
     }
 }
 
 function getPagos() {
     var mes = $('#mes').val();
+    var numempalme = $('#select-empalme').val();
     var datos = {
         tipo: 'get-resumen-pagos',
-        mes: mes
+        mes: mes,
+        numempalme: numempalme
     };
     $.ajax({
         url: 'BoletaController',

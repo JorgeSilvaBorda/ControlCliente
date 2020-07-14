@@ -61,7 +61,7 @@
                                                     + "<a onclick='cargarModulo(\"boleta-empalme\");' class='dropdown-item' href='#'>Emitir Detalle Complemento Servicios de Administración</a> \n"
                                                     //+ "<a onclick='cargarModulo(\"boletas-emitidas\");' class='dropdown-item' href='#'>Complemento de Servicios Emitidos Histórico</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-pagos\");' class='dropdown-item' href='#'>Resumen Pagos</a> \n"
-                                                    + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> \n"
+                                                    + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo de Cliente</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-mes-cliente\");' class='dropdown-item' href='#'>Resumen Mes Cliente</a> \n"
                                                     + "</div>\n"
                                                     + "</li>");
@@ -72,7 +72,7 @@
                                                     + "<a onclick='cargarModulo(\"boleta-empalme\");' class='dropdown-item' href='#'>Emitir Detalle Complemento Servicios de Administración</a> \n"
                                                     //+ "<a onclick='cargarModulo(\"boletas-emitidas\");' class='dropdown-item' href='#'>Complemento de Servicios Emitidos Histórico</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-pagos\");' class='dropdown-item' href='#'>Resumen Pagos</a> \n"
-                                                    + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo Cliente por remarcador</a> \n"
+                                                    + "<a onclick='cargarModulo(\"consumo-cliente-remarcador\");' class='dropdown-item' href='#'>Consumo de Cliente</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-mes-cliente\");' class='dropdown-item' href='#'>Resumen Mes Cliente</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-mes-remarcadores\");' class='dropdown-item' href='#'>Resumen Mes Remarcadores</a> \n"
                                                     + "</div>\n"

@@ -1,10 +1,11 @@
 <script src="modulos/resumen-pagos.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        getSelectInstalacion();
         var fec = new Date();
         var m = '';
         fec.setDate(1);
-        fec.setDate(fec.getDate()-1);
+        fec.setDate(fec.getDate() - 1);
         if (fec.getMonth() + 1 < 10) {
             m = '0' + (fec.getMonth() + 1).toString();
         } else {
@@ -54,6 +55,16 @@
     <div class="row">
         <div class="col-sm-2">
             <form class="form small"  role="form">
+                <div class="form-group">
+                    <label for="select-instalacion" >Instalación</label>
+                    <select onchange="getSelectEmpalmesNumEmpalmesInstalacion();" class="form-control form-control-sm small" id="select-instalacion">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="select-empalme" >Empalme</label>
+                    <select class="form-control form-control-sm small" id="select-empalme" >
+                    </select>
+                </div>
                 <div class="form-group" style="">
                     <label for="mes">Mes</label>
                     <input type="month" id="mes" class="form-control form-control-sm"/>
@@ -80,7 +91,7 @@
             </form>
         </div>
         <div class="col-sm-10 float-sm-right" id="resumen-pagos">
-            
+
         </div>
 
     </div>

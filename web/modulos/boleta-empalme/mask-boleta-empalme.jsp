@@ -35,10 +35,6 @@
 <div class="container-fluid" id="cont-boleta" style="height: 100%; width:50em;">
     <div class="row" style="height: 100%; width: 55em;">
         <div class="col-md-3">
-            <!--div class="form-group" style="font-size: 11px;">
-                <label data-html2canvas-ignore="true" for="select-tarifa">Tarifa: </label>
-                <select data-html2canvas-ignore="true" onchange="armarDetalleTarifa();" class="form-control form-control-sm small" style="font-size: 11px;" id="select-tarifa"></select>
-            </div-->
         </div>
         <div class="col-md-4"></div>
         <div class="col-md-3 float-right" style="right: 0px; left: -1em;" >
@@ -47,7 +43,7 @@
                 <br />
                 DETALLE DE COMPLEMENTO<br /> SERVICIOS DE ADMINISTRACIÓN
                 <br />
-                Nº <span id="num-boleta">000000000000</span>
+                Nº <span id="num-boleta">0000000</span>
             </div>
             <br />
             <table style="font-size: 10px;">

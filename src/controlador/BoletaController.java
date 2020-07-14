@@ -150,10 +150,10 @@ public class BoletaController extends HttpServlet {
                 + "Cantidad"
                 + "</th>"
                 + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;'>"
-                + "Unitario ($)"
+                + "Valor Unitario<br/>($)"
                 + "</th>"
                 + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white; '>"
-                + "Valores ($)"
+                + "Valores<br />($)"
                 + "</th>"
                 + "</tr>"
                 + "</thead><tbody>";
@@ -179,7 +179,7 @@ public class BoletaController extends HttpServlet {
                     tabla += "<td style='font-weight: bold; text-align: right;'>";
                     Double cant = Double.parseDouble(rs.getBigDecimal("CANTIDAD").toString());
                     //tabla += Util.formatMiles(Double.toString(cant));
-                    tabla += rs.getString("CANTIDAD_STRING");
+                    tabla += Util.formatMiles(rs.getString("CANTIDAD_STRING"));
                     tabla += "</td>";
 
                     tabla += "<td style='font-weight: bold; text-align: right;'>";
@@ -197,7 +197,6 @@ public class BoletaController extends HttpServlet {
                         total += rs.getInt("TOTAL");
                     } else {
                         exento = rs.getInt("TOTAL");
-                        //total += rs.getInt("TOTAL");
                     }
 
                     jsonconsumo.put("idconcepto", rs.getInt("IDCONCEPTO"));
@@ -222,7 +221,7 @@ public class BoletaController extends HttpServlet {
                     filahpunta += "<td style='font-weight: bold; text-align: right;'>";
                     Double cant = Double.parseDouble(rs.getBigDecimal("CANTIDAD").toString());
                     //filahpunta += Util.formatMiles(Double.toString(cant));
-                    filahpunta += rs.getString("CANTIDAD_STRING");
+                    filahpunta += rs.getString("CANTIDAD_STRING").replace(".", ",");
                     filahpunta += "</td>";
 
                     filahpunta += "<td style='font-weight: bold; text-align: right;'>";
@@ -258,7 +257,7 @@ public class BoletaController extends HttpServlet {
                     filapotencia += "<td style='font-weight: bold; text-align: right;'>";
                     Double cant = Double.parseDouble(rs.getBigDecimal("CANTIDAD").toString());
                     //filapotencia += Util.formatMiles(Double.toString(cant));
-                    rs.getString("CANTIDAD_STRING");
+                    rs.getString("CANTIDAD_STRING").replace(".", ",");
                     filapotencia += "</td>";
 
                     filapotencia += "<td style='font-weight: bold; text-align: right;'>";
@@ -471,7 +470,9 @@ public class BoletaController extends HttpServlet {
         JSONArray cargos = new JSONArray();
         JSONObject cargo;
         int idboleta = entrada.getInt("idboleta");
-        String query = "SELECT * FROM HIST_BOLETA WHERE IDBOLETA = " + idboleta;
+        //String query = "SELECT * FROM HIST_BOLETA WHERE IDBOLETA = " + idboleta;
+        String query = "CALL SP_GET_LAST_BOLETA(" + idboleta + ")";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -492,7 +493,10 @@ public class BoletaController extends HttpServlet {
         }
         c.cerrar();
         // Obtener el detalle de la boleta ----------------------------------------------------------------------------
-        query = "SELECT * FROM HIST_DETALLE_BOLETA WHERE IDBOLETA = " + idboleta;
+        //
+        //query = "SELECT * FROM HIST_DETALLE_BOLETA WHERE IDBOLETA = " + idboleta;
+        query = "CALL SP_GET_HIST_DETALLE_LAST_BOLETA(" + idboleta + ")";
+        System.out.println(query);
         c = new Conexion();
         c.abrir();
         rs = c.ejecutarQuery(query);
@@ -502,26 +506,26 @@ public class BoletaController extends HttpServlet {
         int exento = 0;
         String tabla = "<thead>"
                 + "<tr>"
-                + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;'>"
+                + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;'>"
                 + "Cargos"
                 + "</th>"
-                + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;'>"
+                + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;'>"
                 + "Unidad"
                 + "</th>"
-                + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;'>"
+                + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;'>"
                 + "Cantidad"
                 + "</th>"
-                + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white;'>"
-                + "$ Unitario"
+                + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white;'>"
+                + "Valor Unitario<br/>($)"
                 + "</th>"
-                + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: left; border-left: 2px solid white; border-right: 2px solid white; '>"
-                + "Valores ($)"
+                + "<th style='padding: 0px 20px 0px 10px; background-color: #FD8104; color: #525659; font-weight:bold; text-align: center; border-left: 2px solid white; border-right: 2px solid white; '>"
+                + "Valores<br />($)"
                 + "</th>"
                 + "</tr>"
                 + "</thead><tbody>";
         try {
             while (rs.next()) {
-                if (rs.getInt("IDCONCEPTO") != 7 && rs.getInt("IDCONCEPTO") != 11) {
+                if (rs.getInt("IDCONCEPTO") < 5) {
                     tabla += "<tr>";
                     tabla += "<td style='font-weight: bold;'>";
                     tabla += rs.getString("NOMCONCEPTO");
@@ -553,7 +557,7 @@ public class BoletaController extends HttpServlet {
                         exento = rs.getInt("TOTAL");
                         //total += rs.getInt("TOTAL");
                     }
-                } else if (rs.getInt("IDCONCEPTO") == 7) {
+                } else if (rs.getInt("IDCONCEPTO") >= 5 && rs.getInt("IDCONCEPTO") <= 8) {
                     filahpunta += "<tr>";
                     filahpunta += "<td style='font-weight: bold;'>";
                     filahpunta += rs.getString("NOMCONCEPTO");
@@ -564,8 +568,9 @@ public class BoletaController extends HttpServlet {
                     filahpunta += "</td>";
 
                     filahpunta += "<td style='font-weight: bold; text-align: right;'>";
-                    Double cant = Double.parseDouble(rs.getBigDecimal("CANTIDAD").toString());
-                    filahpunta += Util.formatMiles(Double.toString(cant));
+                    //Double cant = Double.parseDouble(rs.getBigDecimal("CANTIDAD").toString());
+                    //filahpunta += Util.formatMiles(Double.toString(cant));
+                    filahpunta += rs.getString("CANTIDAD_STRING");
                     filahpunta += "</td>";
 
                     filahpunta += "<td style='font-weight: bold; text-align: right;'>";
@@ -579,7 +584,7 @@ public class BoletaController extends HttpServlet {
                     filahpunta += "</td>";
                     filahpunta += "</tr>";
                     total += rs.getInt("TOTAL");
-                } else if (rs.getInt("IDCONCEPTO") == 11) {
+                } else if (rs.getInt("IDCONCEPTO") >= 9 && rs.getInt("IDCONCEPTO") <= 11) {
                     filapotencia += "<tr>";
                     filapotencia += "<td style='font-weight: bold;'>";
                     filapotencia += rs.getString("NOMCONCEPTO");
@@ -590,8 +595,9 @@ public class BoletaController extends HttpServlet {
                     filapotencia += "</td>";
 
                     filapotencia += "<td style='font-weight: bold; text-align: right;'>";
-                    Double cant = Double.parseDouble(rs.getBigDecimal("CANTIDAD").toString());
-                    filapotencia += Util.formatMiles(Double.toString(cant));
+                    //Double cant = Double.parseDouble(rs.getBigDecimal("CANTIDAD").toString());
+                    //filapotencia += Util.formatMiles(Double.toString(cant));
+                    filapotencia += rs.getString("CANTIDAD_STRING");
                     filapotencia += "</td>";
 
                     filapotencia += "<td style='font-weight: bold; text-align: right;'>";
@@ -719,7 +725,6 @@ public class BoletaController extends HttpServlet {
                 }
 
                 tabla += "<td style='text-align:right;'><a href='#' onclick='getLastBoleta(" + rs.getInt("IDBOLETA") + ")'>" + rs.getString("NUMBOLETA") + "</a></td>";
-                // tabla += "<td style='text-align:center;'>" + Util.mesAPalabraCorto(rs.getInt("MES")) + " " + rs.getInt("ANIO") + "</td>";
                 tabla += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
                 tabla += "<td style='text-align:center;'>" + rs.getString("NUMREMARCADOR") + "</td>";
                 tabla += "<td style='text-align:center;'>" + rs.getString("NUMSERIE") + "</td>";
@@ -753,7 +758,8 @@ public class BoletaController extends HttpServlet {
         JSONObject salida = new JSONObject();
 
         String query = "CALL SP_GET_PAGOS("
-                + "'" + entrada.getString("mes") + "'"
+                + "'" + entrada.getString("mes") + "',"
+                + "'" + entrada.getString("numempalme") + "'"
                 + ")";
         System.out.println(query);
         Conexion c = new Conexion();
@@ -785,6 +791,7 @@ public class BoletaController extends HttpServlet {
                 + "</thead>"
                 + "<tbody>";
         int filastotales = 0;
+        int contBFC = 0;
         try {
             while (rs.next()) {
 
@@ -810,6 +817,7 @@ public class BoletaController extends HttpServlet {
                     totalesBFC[2] += rs.getInt("IVA");
                     totalesBFC[3] += rs.getInt("EXENTO");
                     totalesBFC[4] += rs.getInt("TOTAL");
+                    contBFC++;
                 } else {
                     cuerpoNormal += "<tr>";
                     cuerpoNormal += "<td>" + rs.getString("NUMBOLETA") + "</td>";
@@ -844,16 +852,39 @@ public class BoletaController extends HttpServlet {
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesNormales[3]) + "</td>";
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesNormales[4]) + "</td>";
             tabla += "</tr>";
-
-            tabla += cuerpoBFC;
-            tabla += "<tr class='table-info' style='border-top: 2px solid black;'>";
-            tabla += "<td colspan='9' style='text-align: right; padding-right: 4px; font-weight: bold;'>Subtotal BFC:</td>";
-            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[0]) + "</td>";
-            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[1]) + "</td>";
-            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[2]) + "</td>";
-            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[3]) + "</td>";
-            tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[4]) + "</td>";
-            tabla += "</tr>";
+            if (contBFC == 0) {
+                cuerpoBFC += "<tr>";
+                cuerpoBFC += "<td></td>";
+                cuerpoBFC += "<td style='text-align:center;'></td>";
+                cuerpoBFC += "<td style='text-align:center;'></td>";
+                cuerpoBFC += "<td></td>";
+                cuerpoBFC += "<td></td>";
+                cuerpoBFC += "<td style='text-align:center;'></td>";
+                cuerpoBFC += "<td></td>";
+                cuerpoBFC += "<td style='text-align:right;'>0</td>";
+                cuerpoBFC += "<td style='text-align:right;'>0</td>";
+                cuerpoBFC += "<td style='text-align:right;'>0</td>";
+                cuerpoBFC += "<td style='text-align:right;'>0</td>";
+                cuerpoBFC += "<td style='text-align:right;'>0</td>";
+                cuerpoBFC += "<td style='text-align:right;'>0</td>";
+                cuerpoBFC += "<td style='text-align:right;'>0</td>";
+                cuerpoBFC += "</tr>";
+                totalesBFC[0] += 0;
+                totalesBFC[1] += 0;
+                totalesBFC[2] += 0;
+                totalesBFC[3] += 0;
+                totalesBFC[4] += 0;
+            } else {
+                tabla += cuerpoBFC;
+                tabla += "<tr class='table-info' style='border-top: 2px solid black;'>";
+                tabla += "<td colspan='9' style='text-align: right; padding-right: 4px; font-weight: bold;'>Subtotal BFC:</td>";
+                tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[0]) + "</td>";
+                tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[1]) + "</td>";
+                tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[2]) + "</td>";
+                tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[3]) + "</td>";
+                tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[4]) + "</td>";
+                tabla += "</tr>";
+            }
 
             tabla += "<tr class='table-primary' style='border-top: 2px solid black;'>";
             tabla += "<td colspan='9' style='text-align: right; padding-right: 4px; font-weight: bold;'>Total General:</td>";

@@ -60,10 +60,10 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 DATOS_BOLETA.fechadesde = formatFechaYYYYMMDD(fechadesde);
                 $('#hasta').html(formatFechaDDMMYYYY(formatFechaYYYYMMDD(fechahasta)) + '<br /><br />');
                 DATOS_BOLETA.fechahasta = formatFechaYYYYMMDD(fechahasta);
-                $('#suministradas').html(remcli.dmps_string + '<br /><br />');
-                $('#horas-punta').html(remcli.dmplhp_string + '<br /><br />');
-                $('#leidas-suministradas').html(MAX_DEMANDA_LEIDA + '<br /><br />');
-                $('#leidas-horas-punta').html(MAX_DEMANDA_HORA_PUNTA + '<br /><br />');
+                $('#suministradas').html(remcli.dmps_string.replace(".", ",") + '<br /><br />');
+                $('#horas-punta').html(remcli.dmplhp_string.replace(".", ",") + '<br /><br />');
+                $('#leidas-suministradas').html(MAX_DEMANDA_LEIDA.replace(".", ",") + '<br /><br />');
+                $('#leidas-horas-punta').html(MAX_DEMANDA_HORA_PUNTA.replace(".", ",") + '<br /><br />');
                 $('#consumo-total-kwh').html(formatMiles(CONSUMO) + '<br /><br />');
                 $('#nomred').html(remcli.nomred + '<br /><br />');
                 $('#num-serie').html(NUMSERIE + '<br /><br />');

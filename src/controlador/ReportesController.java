@@ -128,22 +128,29 @@ public class ReportesController extends HttpServlet {
         JSONObject data = new JSONObject();
         String query = "";
         Conexion c = new Conexion();
-
+        LinkedList<Integer> ides = new LinkedList();
         //Obtener Remarcadores asociados al cliente ----------------------------
-        query = "CALL SP_GET_SELECT_REMARCADORES_CLIENTE(" + entrada.getInt("idcliente") + ")";
+        //query = "CALL SP_GET_SELECT_REMARCADORES_CLIENTE(" + entrada.getInt("idcliente") + ")";
+        query = "CALL SP_GET_REMARCADORES_IDCLIENTE_IDINSTALACION("
+                + "" + entrada.getInt("idcliente") + ", "
+                + "" +(entrada.getInt("idinstalacion") == 0 ? "NULL" : entrada.getInt("idinstalacion"))+ ""
+        + ")";
         System.out.println(query);
         c = new Conexion();
         c.abrir();
 
         ResultSet rs = c.ejecutarQuery(query);
         try {
+            //Por cada remarcador ir a buscar el dataset
             while (rs.next()) {
-
-                JSONObject dataset = getDatasetRemarcadorMes(rs.getInt("NUMREMARCADOR"), -1, -1);
+                JSONObject dataset = getDatasetRemarcadorMes(rs.getInt("NUMREMARCADOR"), entrada.getInt("mes"), entrada.getInt("anio"));
                 labels = dataset.getJSONArray("labels");
                 datasets.put(dataset.getJSONObject("dataset"));
+                ides.add(rs.getInt("NUMREMARCADOR"));
             }
+            String tablaresumen = tablaResumenMesRemarcadores(ides, entrada.getInt("mes"), entrada.getInt("anio"));
             data.put("labels", labels);
+            data.put("tablaresumen", tablaresumen);
             data.put("datasets", datasets);
             salida.put("data", data);
             System.out.println(salida);
@@ -157,6 +164,67 @@ public class ReportesController extends HttpServlet {
         }
         c.cerrar();
         return salida;
+    }
+
+    private String tablaResumenMesRemarcadores(LinkedList<Integer> ides, int mes, int anio) {
+        String where = "(";
+        for (int i = 0; i < ides.size(); i++) {
+            if (i == ides.size() - 1) {
+                where += ides.get(i) + ")";
+            } else {
+                where += ides.get(i) + ", ";
+            }
+        }
+        String query = "SELECT "
+                + "REMARCADOR_ID, "
+                + "LECTURA_INICIAL, "
+                + "LECTURA_FINAL, "
+                + "(LECTURA_FINAL - LECTURA_INICIAL) CONSUMO, "
+                + "CAST(ROUND(MAX_DEMANDA_LEIDA, 2) AS CHAR) MAX_DEMANDA_LEIDA, "
+                + "CAST(ROUND(MAX_DEMANDA_HORA_PUNTA, 2) AS CHAR) MAX_DEMANDA_HORA_PUNTA "
+                + "FROM "
+                + "LECTURAS "
+                + "WHERE "
+                + "YEAR(FECHA_LECTURA_FINAL) = " + anio + " "
+                + "AND MONTH(FECHA_LECTURA_FINAL) = " + mes + " "
+                + "AND REMARCADOR_ID IN" + where;
+        System.out.println(query);
+        Conexion c = new Conexion();
+        String tabla = ""
+                + "<table class='table table-sm small table-condensed table-bordered' style='font-size: 10px;'>"
+                + "<thead>"
+                + "<tr>"
+                + "<th style='text-align:center;' >Remarcador</th>"
+                + "<th style='text-align:center;'>Lectura Inicial</th>"
+                + "<th style='text-align:center;'>Lectura Final</th>"
+                + "<th style='text-align:center;'>Consumo (kWh)</th>"
+                + "<th style='text-align:center;'>Demanda Máx.<br />Leída</th>"
+                + "<th style='text-align:center;'>Demanda Máx.<br />H. Punta</th>"
+                + "</tr>"
+                + "</thead>"
+                + "<tbody>";
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        try {
+            while (rs.next()) {
+                tabla += "<tr>";
+                tabla += "<td style='text-align:center;'>" + rs.getInt("REMARCADOR_ID") + "</td>";
+                tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURA_INICIAL")) + "</td>";
+                tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURA_FINAL")) + "</td>";
+                tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("CONSUMO")) + "</td>";
+                tabla += "<td style='text-align:right;'>" + rs.getString("MAX_DEMANDA_LEIDA").replace(".", ",") + "</td>";
+                tabla += "<td style='text-align:right;'>" + rs.getString("MAX_DEMANDA_HORA_PUNTA").replace(".", ",") + "</td>";
+                tabla += "</tr>";
+            }
+            tabla += "</tbody>";
+            tabla += "</table>";
+        } catch (Exception ex) {
+            System.out.println("No se puede obtener la tabla resumen de consumo de los remarcadores del cliente.");
+            System.out.println(ex);
+            tabla = "";
+        }
+        c.cerrar();
+        return tabla;
     }
 
     private JSONObject resumenMesRemarcadoresEmpalme(JSONObject entrada) {

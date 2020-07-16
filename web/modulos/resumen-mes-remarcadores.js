@@ -139,10 +139,13 @@ function graficarRemarcadores(obj) {
                 GRAFICO.destroy();
                 $('.loader').fadeOut(500);
                 $('#btn-buscar').removeAttr("disabled");
+                for (var i in obj.data.labels) {
+                    obj.data.labels[i] = formatFechaDDMMYYYY(obj.data.labels[i]);
+                }
                 for (var i in obj.data.datasets) {
                     var color = colorDinamicoArr();
                     obj.data.datasets[i].borderColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 1.0)";
-                    
+
                     obj.data.datasets[i].pointRadius = "2";
                     obj.data.datasets[i].borderWidth = "1";
                     obj.data.datasets[i].lineTension = "0";
@@ -155,6 +158,37 @@ function graficarRemarcadores(obj) {
                         title: {
                             display: true,
                             text: 'Consumo Registrado ' + $('#mes').val()
+                        },
+                        tooltips: {
+                            enabled: true,
+                            mode: 'single',
+                            callbacks: {
+                                label: function (tooltipItems, data) {
+                                    return data.datasets[tooltipItems.datasetIndex].label.replace(":", "") + ': ' + tooltipItems.yLabel + ' kWh';
+                                }
+                            }
+                        },
+                        scales: {
+                            yAxes: [{
+                                    ticks: {
+                                        fontSize: 10
+                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'kWh'
+                                    }
+
+                                }],
+                            xAxes: [{
+                                    ticks: {
+                                        fontSize: 10
+                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Fecha'
+                                    }
+
+                                }]
                         }
                     }
                 });

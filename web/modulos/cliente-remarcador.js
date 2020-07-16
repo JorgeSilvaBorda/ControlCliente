@@ -112,13 +112,41 @@ function asignar(idremarcador) {
 }
 
 function quitar(idremarcador, idcliente) {
+    if (confirm("Está seguro que desea quitar este remarcador del cliente?")) {
+        var datos = {
+            tipo: 'quitar-remarcador-cliente',
+            idcliente: idcliente,
+            idremarcador: idremarcador
+        };
+        $.ajax({
+            url: 'ClienteRemarcadorController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (resp) {
+                var obj = JSON.parse(resp);
+                if (obj.estado === 'ok') {
+                    getRemarcadoresLibres();
+                    getRemarcadoresAsignadosIdCliente(idcliente);
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            }
+        });
+    }
+
+}
+
+function verAsignados() {
     var datos = {
-        tipo: 'quitar-remarcador-cliente',
-        idcliente: idcliente,
-        idremarcador: idremarcador
+        tipo: 'get-remarcadores-asignados'
     };
     $.ajax({
-        url: 'ClienteRemarcadorController',
+        url: 'RemarcadorController',
         type: 'post',
         data: {
             datos: JSON.stringify(datos)
@@ -126,38 +154,13 @@ function quitar(idremarcador, idcliente) {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
-                getRemarcadoresLibres();
-                getRemarcadoresAsignadosIdCliente(idcliente);
-            }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
-}
-
-function verAsignados(){
-    var datos = {
-        tipo: 'get-remarcadores-asignados'
-    };
-    $.ajax({
-        url: 'RemarcadorController',
-        type: 'post',
-        data:{
-            datos: JSON.stringify(datos)
-        },
-        success: function (resp) {
-            var obj = JSON.parse(resp);
-            if (obj.estado === 'ok') {
                 $('#modal-title').html("Remarcadores asignados");
-                
+
                 $('.dataTable#tabla-remarcadores-asignados').DataTable().destroy();
                 $('#modal-body').html(obj.tabla);
                 $('#tabla-remarcadores-asignados').DataTable(OPCIONES_DATATABLES);
                 $('#modal').modal('show');
-                
+
             }
         },
         error: function (a, b, c) {

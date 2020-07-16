@@ -157,7 +157,7 @@ function graficarRemarcadores(obj) {
                     options: {
                         title: {
                             display: true,
-                            text: 'Consumo Registrado ' + $('#mes').val()
+                            text: 'Consumo Registrado ' + mesNumeroAPalabraLarga(mes) + " de " + anio
                         },
                         tooltips: {
                             enabled: true,

@@ -773,20 +773,25 @@ public class BoletaController extends HttpServlet {
         tabla = "<table id='tabla-resumen-pagos' class='table table-condensed table-bordered table-hover table-responsive-sm table-sm small' style='font-size: 0.6em'>"
                 + "<thead style='text-align: center;'>"
                 + "<tr>"
-                + "<th style='width:5em; vertical-align: middle;'>Número</th>"
-                + "<th style='vertical-align: middle; max-width: 6em;' >Remarcador</th>"
-                + "<th style='vertical-align: middle;' >Serie</th>"
-                + "<th style='vertical-align: middle;' >Bodega</th>"
-                + "<th style='vertical-align: middle;'>Cliente</th>"
-                + "<th style='vertical-align: middle;'>Módulos</th>"
-                + "<th style='vertical-align: middle;'>Instalación</th>"
-                + "<th style='vertical-align: middle;' >Lectura<br />Anterior</th>"
-                + "<th style='vertical-align: middle;' >Lectura<br />Actual</th>"
-                + "<th style='vertical-align: middle;' >(KW)<br />Consumo</th>"
-                + "<th style='vertical-align: middle;' >Neto</th>"
-                + "<th style='vertical-align: middle;' >$<br />Iva (19%)</th>"
-                + "<th style='vertical-align: middle; max-width: 3em;' >$<br />Exento</th>"
-                + "<th style='vertical-align: middle;' >$<br />Total</th>"
+                + "<th rowspan='2' style='width:5em; vertical-align: middle;'>Número</th>"
+                + "<th rowspan='2' style='vertical-align: middle; max-width: 6em;' >Remarcador</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >Bodega</th>"
+                + "<th rowspan='2' style='vertical-align: middle;'>Cliente</th>"
+                + "<th rowspan='2' style='vertical-align: middle;'>Módulos</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >Lectura<br />Anterior</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >Lectura<br />Actual</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >(kWh)<br />Consumo</th>"
+                + "<th rowspan='1' colspan='4' style='vertical-align: middle;' >Demandas Máximas</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >Neto</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >$<br />Iva (19%)</th>"
+                + "<th rowspan='2' style='vertical-align: middle; max-width: 3em;' >$<br />Exento</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >$<br />Total</th>"
+                + "</tr>"
+                + "<tr>"
+                + "<th>Leída</th>"
+                + "<th>Leída H. Punta</th>"
+                + "<th>Facturada</th>"
+                + "<th>Facturada H. Punta</th>"
                 + "</tr>"
                 + "</thead>"
                 + "<tbody>";
@@ -799,14 +804,16 @@ public class BoletaController extends HttpServlet {
                     cuerpoBFC += "<tr>";
                     cuerpoBFC += "<td>" + rs.getString("NUMBOLETA") + "</td>";
                     cuerpoBFC += "<td style='text-align:center;'>" + rs.getString("NUMREMARCADOR") + "</td>";
-                    cuerpoBFC += "<td style='text-align:center;'>" + rs.getString("NUMSERIE") + "</td>";
-                    cuerpoBFC += "<td>" + rs.getString("NOMPARQUE") + "</td>";
-                    cuerpoBFC += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
+                    cuerpoBFC += "<td style='text-align:right;'>" + rs.getString("NOMPARQUE") + "</td>";
+                    cuerpoBFC += "<td style='text-align:right;'>" + rs.getString("NOMCLIENTE") + "</td>";
                     cuerpoBFC += "<td style='text-align:center;'>" + rs.getString("MODULOS") + "</td>";
-                    cuerpoBFC += "<td>" + rs.getString("NOMINSTALACION") + "</td>";
                     cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURAANTERIOR")) + "</td>";
                     cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURAACTUAL")) + "</td>";
                     cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("CONSUMO")) + "</td>";
+                    cuerpoBFC += "<td style='text-align:right;'>" + rs.getString("DEM_MAX_SUMINISTRADA_LEIDA").replace(".", ",") + "</td>";
+                    cuerpoBFC += "<td style='text-align:right;'>" + rs.getString("DEM_MAX_HORA_PUNTA_LEIDA").replace(".", ",") + "</td>";
+                    cuerpoBFC += "<td style='text-align:right;'>" + rs.getString("DEM_MAX_SUMINISTRADA_FACTURADA").replace(".", ",") + "</td>";
+                    cuerpoBFC += "<td style='text-align:right;'>" + rs.getString("DEM_MAX_HORA_PUNTA_FACTURADA").replace(".", ",") + "</td>";
                     cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("TOTALNETO")) + "</td>";
                     cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("IVA")) + "</td>";
                     cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("EXENTO")) + "</td>";
@@ -822,14 +829,16 @@ public class BoletaController extends HttpServlet {
                     cuerpoNormal += "<tr>";
                     cuerpoNormal += "<td>" + rs.getString("NUMBOLETA") + "</td>";
                     cuerpoNormal += "<td style='text-align:center;'>" + rs.getString("NUMREMARCADOR") + "</td>";
-                    cuerpoNormal += "<td style='text-align:center;'>" + rs.getString("NUMSERIE") + "</td>";
                     cuerpoNormal += "<td>" + rs.getString("NOMPARQUE") + "</td>";
                     cuerpoNormal += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
                     cuerpoNormal += "<td style='text-align:center;'>" + rs.getString("MODULOS") + "</td>";
-                    cuerpoNormal += "<td>" + rs.getString("NOMINSTALACION") + "</td>";
                     cuerpoNormal += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURAANTERIOR")) + "</td>";
                     cuerpoNormal += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURAACTUAL")) + "</td>";
                     cuerpoNormal += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("CONSUMO")) + "</td>";
+                    cuerpoNormal += "<td style='text-align:right;'>" + rs.getString("DEM_MAX_SUMINISTRADA_LEIDA").replace(".", ",") + "</td>";
+                    cuerpoNormal += "<td style='text-align:right;'>" + rs.getString("DEM_MAX_HORA_PUNTA_LEIDA").replace(".", ",") + "</td>";
+                    cuerpoNormal += "<td style='text-align:right;'>" + rs.getString("DEM_MAX_SUMINISTRADA_FACTURADA").replace(".", ",") + "</td>";
+                    cuerpoNormal += "<td style='text-align:right;'>" + rs.getString("DEM_MAX_HORA_PUNTA_FACTURADA").replace(".", ",") + "</td>";
                     cuerpoNormal += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("TOTALNETO")) + "</td>";
                     cuerpoNormal += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("IVA")) + "</td>";
                     cuerpoNormal += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("EXENTO")) + "</td>";
@@ -845,8 +854,9 @@ public class BoletaController extends HttpServlet {
             }
             tabla += cuerpoNormal;
             tabla += "<tr class='table-info' style='border-top: 2px solid black;'>";
-            tabla += "<td colspan='9' style='text-align: right; padding-right: 4px; font-weight: bold;'>Subtotal:</td>";
+            tabla += "<td colspan='7' style='text-align: right; padding-right: 4px; font-weight: bold;'>Subtotal:</td>";
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesNormales[0]) + "</td>";
+            tabla += "<td colspan='4'></td>";
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesNormales[1]) + "</td>";
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesNormales[2]) + "</td>";
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesNormales[3]) + "</td>";
@@ -859,11 +869,13 @@ public class BoletaController extends HttpServlet {
                 cuerpoBFC += "<td style='text-align:center;'></td>";
                 cuerpoBFC += "<td></td>";
                 cuerpoBFC += "<td></td>";
-                cuerpoBFC += "<td style='text-align:center;'></td>";
-                cuerpoBFC += "<td></td>";
                 cuerpoBFC += "<td style='text-align:right;'>0</td>";
                 cuerpoBFC += "<td style='text-align:right;'>0</td>";
                 cuerpoBFC += "<td style='text-align:right;'>0</td>";
+                cuerpoBFC += "<td style='text-align:right;'>0,00</td>";
+                cuerpoBFC += "<td style='text-align:right;'>0,00</td>";
+                cuerpoBFC += "<td style='text-align:right;'>0,00</td>";
+                cuerpoBFC += "<td style='text-align:right;'>0,00</td>";
                 cuerpoBFC += "<td style='text-align:right;'>0</td>";
                 cuerpoBFC += "<td style='text-align:right;'>0</td>";
                 cuerpoBFC += "<td style='text-align:right;'>0</td>";
@@ -877,8 +889,9 @@ public class BoletaController extends HttpServlet {
             } else {
                 tabla += cuerpoBFC;
                 tabla += "<tr class='table-info' style='border-top: 2px solid black;'>";
-                tabla += "<td colspan='9' style='text-align: right; padding-right: 4px; font-weight: bold;'>Subtotal BFC:</td>";
+                tabla += "<td colspan='7' style='text-align: right; padding-right: 4px; font-weight: bold;'>Subtotal BFC:</td>";
                 tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[0]) + "</td>";
+                tabla += "<td colspan='4'></td>";
                 tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[1]) + "</td>";
                 tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[2]) + "</td>";
                 tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[3]) + "</td>";
@@ -887,8 +900,9 @@ public class BoletaController extends HttpServlet {
             }
 
             tabla += "<tr class='table-primary' style='border-top: 2px solid black;'>";
-            tabla += "<td colspan='9' style='text-align: right; padding-right: 4px; font-weight: bold;'>Total General:</td>";
+            tabla += "<td colspan='7' style='text-align: right; padding-right: 4px; font-weight: bold;'>Total General:</td>";
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[0] + totalesNormales[0]) + "</td>";
+            tabla += "<td colspan='4'></td>";
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[1] + totalesNormales[1]) + "</td>";
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[2] + totalesNormales[2]) + "</td>";
             tabla += "<td style='text-align: right; font-weight:bold;'>" + Util.formatMiles(totalesBFC[3] + totalesNormales[3]) + "</td>";

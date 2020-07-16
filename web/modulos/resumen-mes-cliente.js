@@ -55,6 +55,7 @@ function buscar() {
     if (validarCampos()) {
         $('.loader').fadeIn(500);
         var idinstalacion = $('#select-instalacion').val();
+        var nomcliente = $('#select-cliente option:selected').text();
         var idcliente = $('#select-cliente').val();
         var mesanio = $('#mes').val();
         var mes = mesanio.split("-")[1];
@@ -106,7 +107,7 @@ function buscar() {
                             },
                             title: {
                                 display: true,
-                                text: 'Consumo Registrado Mes Actual'
+                                text: 'Consumo ' + nomcliente + ' ' + mesNumeroAPalabraLarga(mes) + ' de ' + anio
                             },
                             scales: {
                                 yAxes: [{

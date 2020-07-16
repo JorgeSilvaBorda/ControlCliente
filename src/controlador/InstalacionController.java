@@ -27,8 +27,11 @@ public class InstalacionController extends HttpServlet {
             case "get-select-instalacion":
                 out.print(getSelectInstalacion());
                 break;
-                case "get-select-instalaciones-idcliente":
+            case "get-select-instalaciones-idcliente":
                 out.print(getSelectInstalacionesIdCliente(entrada));
+                break;
+            case "get-select-instalaciones-idcliente-individual":
+                out.print(getSelectInstalacionesIdClienteIndividual(entrada));
                 break;
             case "ins-instalacion":
                 out.print(insInstalacion(entrada));
@@ -102,15 +105,29 @@ public class InstalacionController extends HttpServlet {
         c.cerrar();
         return salida;
     }
-    
+
     private JSONObject getSelectInstalacionesIdCliente(JSONObject entrada) {
         JSONObject salida = new JSONObject();
-        String query = "CALL SP_GET_INSTALACIONES_IDCLIENTE(" + entrada.getInt("idcliente") +")";
+        String query = "CALL SP_GET_INSTALACIONES_IDCLIENTE(" + entrada.getInt("idcliente") + ")";
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
 
         String options = modelo.Util.armarSelect(rs, "0", "Todas", "IDINSTALACION", "NOMINSTALACION");
+        salida.put("options", options);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getSelectInstalacionesIdClienteIndividual(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_INSTALACIONES_IDCLIENTE(" + entrada.getInt("idcliente") + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDINSTALACION", "NOMINSTALACION");
         salida.put("options", options);
         salida.put("estado", "ok");
         c.cerrar();
@@ -266,7 +283,7 @@ public class InstalacionController extends HttpServlet {
         c.cerrar();
         return salida;
     }
-    
+
     private JSONObject existeDireccionInstalacionUpdate(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_EXISTE_DIRECCION_INSTALACION_UPDATE("

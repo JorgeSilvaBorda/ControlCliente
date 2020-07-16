@@ -42,6 +42,9 @@ public class RemarcadorController extends HttpServlet {
             case "get-select-remarcadores-cliente":
                 out.print(getSelectRemarcadoresCliente(entrada));
                 break;
+            case "get-select-remarcadores-idinstalacion-idcliente":
+                out.print(getSelectRemarcadoresClienteIdInstalacion(entrada));
+                break;
             case "get-remarcador-cliente-idremarcador":
                 out.print(getRemarcadorClienteIdRemarcador(entrada));
                 break;
@@ -549,6 +552,21 @@ public class RemarcadorController extends HttpServlet {
     private JSONObject getSelectRemarcadoresCliente(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_SELECT_REMARCADORES_CLIENTE(" + entrada.getInt("idcliente") + ")";
+        Conexion c = new Conexion();
+        System.out.println(query);
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDREMARCADOR", "NUMREMARCADOR");
+        salida.put("options", options);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject getSelectRemarcadoresClienteIdInstalacion(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_REMARCADORES_IDINSTALACION(" + entrada.getInt("idinstalacion") + ", " + entrada.getInt("idcliente") + ")";
         Conexion c = new Conexion();
         System.out.println(query);
         c.abrir();

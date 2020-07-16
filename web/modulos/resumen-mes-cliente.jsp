@@ -60,12 +60,8 @@
                                 </td>
                             </tr>
                         </table>
-
-
                     </div>
-
                 </div>
-
             </form>
         </div>
         <div class="col-sm-1">

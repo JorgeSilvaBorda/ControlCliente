@@ -5,7 +5,7 @@
         var fec = new Date();
         var m = '';
         fec.setDate(1);
-        fec.setDate(fec.getDate()-1);
+        fec.setDate(fec.getDate() - 1);
         if (fec.getMonth() + 1 < 10) {
             m = '0' + (fec.getMonth() + 1).toString();
         } else {
@@ -60,25 +60,35 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
-                            <button id="btn-buscar" onclick="buscar();" type="button" class="btn btn-primary btn-sm float-sm-right ">Descargar</button>
-                        </div>
+                        <table style="border: none; border-collapse: collapse">
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <button id="btn-buscar" onclick="buscar();" type="button" class="btn btn-primary btn-sm float-sm-right ">Descargar</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="loader" style="display: none; margin-top: -2.5em;"><!-- Contenedor del Spinner -->
+                                        <br />
+                                        <div class="ldio-sa9px9nknjc"> <!-- El Spinner -->
+                                            <div>
+                                            </div>
+                                            <div>
+                                                <div></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
                     </div>
+
+
                 </div>
             </form>
         </div>
-        <div class="col-sm-1">
-            <div class="loader" style="display: none;"><!-- Contenedor del Spinner -->
-                <br />
-                <div class="ldio-sa9px9nknjc"> <!-- El Spinner -->
-                    <div>
-                    </div>
-                    <div>
-                        <div></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
         <div class="col-sm-8 float-sm-right" id="detalle-remarcador">
         </div>
 

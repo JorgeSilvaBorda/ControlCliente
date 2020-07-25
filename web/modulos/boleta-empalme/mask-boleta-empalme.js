@@ -220,6 +220,9 @@ function graficarDesde(idremarcador, aniomes) {
                     type: 'bar',
                     data: obj.data,
                     options: {
+                        legend:{
+                            display: false
+                        },
                         title: {
                             display: true,
                             text: 'Últimos 12 meses de consumo'

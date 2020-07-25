@@ -1,6 +1,7 @@
 <script src="modulos/cliente-contacto.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        getContactos();
         getSelectClientes();
     });
 
@@ -38,14 +39,14 @@
                     <input type="text" class="form-control form-control-sm small" maxlength="400" id="email" />
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
-                    <button hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
+                    <button onclick="insContacto();" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
+                    <button onclick="saveContacto();" hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
                     <button onclick="limpiar();" type="button" class="btn btn-default btn-sm" id="btn-limpiar">Limpiar</button>
                 </div>
             </form>
         </div>
 
-        <div class="col-sm-7">
+        <div class="col-sm-9">
             <table id="tabla-contactos" class="table table-condensed table-borderless table-striped table-hover table-sm small">
                 <thead>
                     <tr>

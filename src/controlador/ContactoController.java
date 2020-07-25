@@ -25,8 +25,17 @@ public class ContactoController extends HttpServlet {
             case "get-contacto-idcontacto":
                 out.print(getContactoIdContacto(entrada));
                 break;
+            case "get-contactos-idcliente":
+                out.print(getContactosIdCliente(entrada));
+                break;
             case "ins-contacto":
                 out.print(insContacto(entrada));
+                break;
+            case "upd-contacto":
+                out.print(updContacto(entrada));
+                break;
+            case "del-contacto":
+                out.print(delContacto(entrada));
                 break;
         }
     }
@@ -47,12 +56,14 @@ public class ContactoController extends HttpServlet {
                 tabla += "<td>" + rs.getString("CARGO") + "</td>";
                 tabla += "<td>" + rs.getInt("FONO") + "</td>";
                 tabla += "<td>" + rs.getString("EMAIL") + "</td>";
-                tabla += "<td style='width: 10%;'>"
+                tabla += "<td style='width: 12%;'>"
                         + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
-                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>"
+                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='delContacto(this)'>Eliminar</button>"
                         + "</td>";
                 tabla += "</tr>";
             }
+            salida.put("tabla", tabla);
+            salida.put("estado", "ok");
         } catch (Exception ex) {
             System.out.println("Problemas en controlador.ContactoController.getContactos().");
             System.out.println(ex);
@@ -77,6 +88,46 @@ public class ContactoController extends HttpServlet {
                 + "'" + cargo + "', "
                 + fono + ", "
                 + "'" + email + "'"
+                + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
+        return salida;
+    }
+
+    private JSONObject updContacto(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        int idcontacto = entrada.getInt("idcontacto");
+        int idcliente = entrada.getInt("idcliente");
+        String persona = entrada.getString("persona");
+        String cargo = entrada.getString("cargo");
+        int fono = entrada.getInt("fono");
+        String email = entrada.getString("email");
+        String query = "CALL SP_UPD_CONTACTO("
+                + idcontacto + ", "
+                + idcliente + ", "
+                + "'" + persona + "', "
+                + "'" + cargo + "', "
+                + fono + ", "
+                + "'" + email + "'"
+                + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
+        return salida;
+    }
+
+    private JSONObject delContacto(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        int idcontacto = entrada.getInt("idcontacto");
+        String query = "CALL SP_DEL_CONTACTO("
+                + idcontacto + ""
                 + ")";
         System.out.println(query);
         Conexion c = new Conexion();
@@ -115,6 +166,22 @@ public class ContactoController extends HttpServlet {
             salida.put("error", ex);
         }
         c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getContactosIdCliente(JSONObject entrada) {
+        int idcliente = entrada.getInt("idcliente");
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_CONTACTOS_IDCLIENTE("
+                + idcliente
+                + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDCONTACTO", "PERSONA");
+        c.cerrar();
+        salida.put("estado", "ok");
+        salida.put("options", options);
         return salida;
     }
 }

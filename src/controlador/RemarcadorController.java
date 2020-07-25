@@ -332,11 +332,12 @@ public class RemarcadorController extends HttpServlet {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_REMARCADORES_ASIGNADOS()";
         Conexion c = new Conexion();
+        System.out.println(query);
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         String filas = "";
         String tabla = "<table style='font-size: 10px;' id='tabla-remarcadores-asignados' class='table table-bordered table-sm small'>";
-        tabla += "<thead><tr>";
+        tabla += "<thead style='text-align:center;'><tr>";
         tabla += "<th># Remarcador</th>";
         tabla += "<th>Nº Serie</th>";
         tabla += "<th># Empalme</th>";
@@ -344,6 +345,8 @@ public class RemarcadorController extends HttpServlet {
         tabla += "<th>Módulos</th>";
         tabla += "<th>Instalación</th>";
         tabla += "<th>Cliente</th>";
+        tabla += "<th>Contacto</th>";
+        tabla += "<th>Fono</th>";
         tabla += "<th style='width: 10%;'>Fecha Asignación</th>";
         tabla += "</tr></thead><tbody>";
         try {
@@ -356,6 +359,8 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td>" + rs.getString("MODULOS") + "</td>";
                 filas += "<td>" + rs.getString("NOMINSTALACION") + "</td>";
                 filas += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
+                filas += "<td>" + rs.getString("PERSONA") + "</td>";
+                filas += "<td>" + rs.getInt("FONO") + "</td>";
                 filas += "<td>" + rs.getDate("FECHAASIGNACION") + "</td>";
                 filas += "</tr>";
             }

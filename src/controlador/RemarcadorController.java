@@ -184,7 +184,7 @@ public class RemarcadorController extends HttpServlet {
         tabla += "<th>Instalación</th>";
         tabla += "<th>Lectura<br />Anterior</th>";
         tabla += "<th>Lectura<br />Actual</th>";
-        tabla += "<th>Consumo (kW)</th>";
+        tabla += "<th>Consumo (kWh)</th>";
         tabla += "<th>Emitir</th>";
         tabla += "<th>Última<br />Boleta</th>";
         tabla += "</tr></thead><tbody>";

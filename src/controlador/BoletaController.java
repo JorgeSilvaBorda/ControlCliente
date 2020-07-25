@@ -699,7 +699,7 @@ public class BoletaController extends HttpServlet {
                 + "<th rowspan='2' style='vertical-align: middle;' >Serie</th>"
                 + "<th rowspan='2' style='vertical-align: middle;' >Lectura<br />Anterior</th>"
                 + "<th rowspan='2' style='vertical-align: middle;' >Lectura<br />Actual</th>"
-                + "<th rowspan='2' style='vertical-align: middle;' >(KW)<br />Consumo</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >(kWh)<br />Consumo</th>"
                 + "<th colspan='2' style='vertical-align: top;' >Demanda Máxima</th>"
                 + "<th colspan='2' style='vertical-align: top;' >Demanda Máxima H. Punta</th>"
                 + "<th rowspan='2' style='vertical-align: middle;' >Neto</th>"

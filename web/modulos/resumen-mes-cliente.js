@@ -103,19 +103,22 @@ function buscar() {
                     for (var i in obj.datademandas.datasets) {
 
                         obj.datademandas.datasets[i].pointRadius = "2";
-                        obj.datademandas.datasets[i].borderRadius = "1";
+                        
                         obj.datademandas.datasets[i].lineTension = "0";
 
                         if (i === 0) {
                             obj.datademandas.datasets[i].borderColor = colores[0];
                             obj.datademandas.datasets[i].borderDash = [10, 5];
+                            obj.datademandas.datasets[i].borderRadius = "2";
                         } else {
                             if (i % 2 !== 0) {
                                 obj.datademandas.datasets[i].borderColor = colores[contColor];
                                 obj.datademandas.datasets[i].borderDash = [10, 5];
+                                obj.datademandas.datasets[i].borderRadius = "2";
                                 contColor++;
                             } else {
                                 obj.datademandas.datasets[i].borderColor = colores[contColor];
+                                obj.datademandas.datasets[i].borderRadius = "1";
                             }
                         }
 
@@ -187,7 +190,7 @@ function buscar() {
                                         },
                                         scaleLabel: {
                                             display: true,
-                                            labelString: 'kWh'
+                                            labelString: 'kW'
                                         }
 
                                     }],

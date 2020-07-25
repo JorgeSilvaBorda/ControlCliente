@@ -38,46 +38,6 @@
                     <input type="text" class="form-control form-control-sm small" maxlength="200" id="razoncliente" />
                 </div>
             </div>
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="direccion">Dirección Comercial</label>
-                    <input type="text" class="form-control form-control-sm small" maxlength="50" id="direccion" />
-                </div>
-            </div>
-        </div>
-        <!-- div class="row">
-            <div class="col-sm-2">
-                <div class="form-group">
-                    <label for="modulos" >Módulos</label>
-                    <input type="text" class="form-control form-control-sm small" maxlength="200" id="modulos" />
-                </div>
-            </div>
-        </div -->
-        <div class="row">
-            <div class="col-sm-2">
-                <div class="form-group">
-                    <label for="persona">Contacto</label>
-                    <input type="text" class="form-control form-control-sm small" maxlength="100" id="persona" />
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label for="cargo">Cargo</label>
-                    <input type="text" class="form-control form-control-sm small" maxlength="100" id="cargo" />
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <div class="form-group">
-                    <label for="fono">Fono</label>
-                    <input type="text" class="form-control form-control-sm small" maxlength="9" id="fono" />
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="text" class="form-control form-control-sm small" maxlength="200" id="email" />
-                </div>
-            </div>
         </div>
         <div class="row">
             <div class="col-sm-2">
@@ -98,12 +58,6 @@
                         <th>Rut</th>
                         <th>Nombre</th>
                         <th>R. Social</th>
-                        <th>Dirección</th>
-                        <!-- th>Módulos</th -->
-                        <th>Contacto</th>
-                        <th>Cargo</th>
-                        <th>Fono</th>
-                        <th>Email</th>
                         <th>Acción</th>
                     </tr>
                 </thead>

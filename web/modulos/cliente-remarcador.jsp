@@ -1,7 +1,6 @@
 <script src="modulos/cliente-remarcador.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        //getClienteRemarcadores();
         getRemarcadoresLibres();
         getSelectClientes();
     });
@@ -58,6 +57,11 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="select-contacto" >Contactos Cliente</label>
+                            <select class="form-control form-control-sm small" id="select-contacto" >
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <button type="button" onclick="verAsignados();" class="btn btn-outline-info" id="btn-mostrar-asignados">Ver todos los remarcadores asignados</button>
                         </div>
                     </form>
@@ -108,6 +112,8 @@
                                 <th>Empalme</th>
                                 <th>Bodega</th>
                                 <th>Instalación</th>
+                                <th>Contacto</th>
+                                <th>Fono</th>
                                 <th>Fecha Asignación</th>
                                 <th>Quitar</th>
                             </tr>

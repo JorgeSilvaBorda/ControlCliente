@@ -699,7 +699,7 @@ public class BoletaController extends HttpServlet {
                 + "<th rowspan='2' style='vertical-align: middle;' >Serie</th>"
                 + "<th rowspan='2' style='vertical-align: middle;' >Lectura<br />Anterior</th>"
                 + "<th rowspan='2' style='vertical-align: middle;' >Lectura<br />Actual</th>"
-                + "<th rowspan='2' style='vertical-align: middle;' >(KW)<br />Consumo</th>"
+                + "<th rowspan='2' style='vertical-align: middle;' >(kWh)<br />Consumo</th>"
                 + "<th colspan='2' style='vertical-align: top;' >Demanda Máxima</th>"
                 + "<th colspan='2' style='vertical-align: top;' >Demanda Máxima H. Punta</th>"
                 + "<th rowspan='2' style='vertical-align: middle;' >Neto</th>"
@@ -773,25 +773,29 @@ public class BoletaController extends HttpServlet {
         tabla = "<table id='tabla-resumen-pagos' class='table table-condensed table-bordered table-hover table-responsive-sm table-sm small' style='font-size: 0.6em'>"
                 + "<thead style='text-align: center;'>"
                 + "<tr>"
-                + "<th rowspan='2' style='width:5em; vertical-align: middle;'>Número</th>"
-                + "<th rowspan='2' style='vertical-align: middle; max-width: 6em;' >Remarcador</th>"
-                + "<th rowspan='2' style='vertical-align: middle;' >Bodega</th>"
-                + "<th rowspan='2' style='vertical-align: middle;'>Cliente</th>"
-                + "<th rowspan='2' style='vertical-align: middle;'>Módulos</th>"
-                + "<th rowspan='2' style='vertical-align: middle;' >Lectura<br />Anterior</th>"
-                + "<th rowspan='2' style='vertical-align: middle;' >Lectura<br />Actual</th>"
-                + "<th rowspan='2' style='vertical-align: middle;' >(kWh)<br />Consumo</th>"
-                + "<th rowspan='1' colspan='4' style='vertical-align: middle;' >Demandas Máximas</th>"
-                + "<th rowspan='2' style='vertical-align: middle;' >Neto</th>"
-                + "<th rowspan='2' style='vertical-align: middle;' >$<br />Iva (19%)</th>"
-                + "<th rowspan='2' style='vertical-align: middle; max-width: 3em;' >$<br />Exento</th>"
-                + "<th rowspan='2' style='vertical-align: middle;' >$<br />Total</th>"
+                + "<th rowspan='3' style='width:5em; vertical-align: middle;'>Número</th>"
+                + "<th rowspan='3' style='vertical-align: middle; max-width: 6em;' >Remarcador</th>"
+                + "<th rowspan='3' style='vertical-align: middle;' >Bodega</th>"
+                + "<th rowspan='3' style='vertical-align: middle;'>Cliente</th>"
+                + "<th rowspan='3' style='vertical-align: middle;'>Módulos</th>"
+                + "<th rowspan='3' style='vertical-align: middle;' >Lectura<br />Anterior</th>"
+                + "<th rowspan='3' style='vertical-align: middle;' >Lectura<br />Actual</th>"
+                + "<th rowspan='3' style='vertical-align: middle;' >(kWh)<br />Consumo</th>"
+                + "<th rowspan='1' colspan='4' style='vertical-align: middle;' >Demandas</th>"
+                + "<th rowspan='3' style='vertical-align: middle;' >Neto</th>"
+                + "<th rowspan='3' style='vertical-align: middle;' >$<br />Iva (19%)</th>"
+                + "<th rowspan='3' style='vertical-align: middle; max-width: 3em;' >$<br />Exento</th>"
+                + "<th rowspan='3' style='vertical-align: middle;' >$<br />Total</th>"
+                + "</tr>"
+                + "<tr>"
+                + "<th colspan='2'>Máxima</th>"
+                + "<th colspan='2'>Hora Punta</th>"
                 + "</tr>"
                 + "<tr>"
                 + "<th>Leída</th>"
-                + "<th>Leída H. Punta</th>"
                 + "<th>Facturada</th>"
-                + "<th>Facturada H. Punta</th>"
+                + "<th>Leída</th>"
+                + "<th>Facturada</th>"
                 + "</tr>"
                 + "</thead>"
                 + "<tbody>";
@@ -811,8 +815,8 @@ public class BoletaController extends HttpServlet {
                     cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURAACTUAL")) + "</td>";
                     cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("CONSUMO")) + "</td>";
                     cuerpoBFC += "<td style='text-align:right;'>" + rs.getString("DEM_MAX_SUMINISTRADA_LEIDA").replace(".", ",") + "</td>";
-                    cuerpoBFC += "<td style='text-align:right;'>" + rs.getString("DEM_MAX_HORA_PUNTA_LEIDA").replace(".", ",") + "</td>";
                     cuerpoBFC += "<td style='text-align:right;'>" + rs.getString("DEM_MAX_SUMINISTRADA_FACTURADA").replace(".", ",") + "</td>";
+                    cuerpoBFC += "<td style='text-align:right;'>" + rs.getString("DEM_MAX_HORA_PUNTA_LEIDA").replace(".", ",") + "</td>";
                     cuerpoBFC += "<td style='text-align:right;'>" + rs.getString("DEM_MAX_HORA_PUNTA_FACTURADA").replace(".", ",") + "</td>";
                     cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("TOTALNETO")) + "</td>";
                     cuerpoBFC += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("IVA")) + "</td>";

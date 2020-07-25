@@ -57,11 +57,6 @@ public class ClienteController extends HttpServlet {
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDCLIENTE") + "' /><span>" + modelo.Util.formatRut(rs.getString("RUTCLIENTE") + "-" + rs.getString("DVCLIENTE")) + "</span></td>";
                 filas += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
                 filas += "<td>" + rs.getString("RAZONCLIENTE") + "</td>";
-                filas += "<td>" + rs.getString("DIRECCION") + "</td>";
-                filas += "<td>" + rs.getString("PERSONA") + "</td>";
-                filas += "<td>" + rs.getString("CARGO") + "</td>";
-                filas += "<td>" + rs.getInt("FONO") + "</td>";
-                filas += "<td>" + rs.getString("EMAIL") + "</td>";
                 filas += "<td style='width: 10%;'>"
                         + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
                         + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>"
@@ -87,12 +82,7 @@ public class ClienteController extends HttpServlet {
                 + "'" + entrada.getString("rutcliente") + "',"
                 + "'" + entrada.getString("dvcliente") + "',"
                 + "'" + entrada.getString("nomcliente") + "',"
-                + "'" + entrada.getString("razoncliente") + "',"
-                + "'" + entrada.getString("direccion") + "',"
-                + "'" + entrada.getString("persona") + "',"
-                + "'" + entrada.getString("cargo") + "',"
-                + "" + entrada.getInt("fono") + ","
-                + "'" + entrada.getString("email") + "')";
+                + "'" + entrada.getString("razoncliente") + "')";
 
         Conexion c = new Conexion();
         c.abrir();
@@ -118,11 +108,6 @@ public class ClienteController extends HttpServlet {
                 cliente.put("rutfullcliente", rs.getInt("RUTCLIENTE") + "-" + rs.getString("DVCLIENTE"));
                 cliente.put("nomcliente", rs.getString("NOMCLIENTE"));
                 cliente.put("razoncliente", rs.getString("RAZONCLIENTE"));
-                cliente.put("direccion", rs.getString("DIRECCION"));
-                cliente.put("persona", rs.getString("PERSONA"));
-                cliente.put("cargo", rs.getString("CARGO"));
-                cliente.put("fono", rs.getInt("FONO"));
-                cliente.put("email", rs.getString("EMAIL"));
             }
             salida.put("cliente", cliente);
             salida.put("estado", "ok");
@@ -144,12 +129,7 @@ public class ClienteController extends HttpServlet {
                 + cliente.getInt("rutcliente") + ","
                 + "'" + cliente.getString("dvcliente") + "',"
                 + "'" + cliente.getString("nomcliente") + "',"
-                + "'" + cliente.getString("razoncliente") + "',"
-                + "'" + cliente.getString("direccion") + "',"
-                + "'" + cliente.getString("persona") + "',"
-                + "'" + cliente.getString("cargo") + "',"
-                + "" + cliente.getInt("fono") + ","
-                + "'" + cliente.getString("email") + "')";
+                + "'" + cliente.getString("razoncliente") + "')";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

@@ -55,6 +55,7 @@ public class FileController extends HttpServlet {
 
     private String getRegistrosMesRemarcadorBatch(int id, int anio, int mes, String dirbatch) {
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", dirbatch + "/" + SHELL_GENERA_ARCHIVO + " " + id + " " + anio + " " + mes);
+        System.out.println("Comando: " + SHELL_GENERA_ARCHIVO + " " + id + " " + anio + " " + mes);
         try {
             Process p = pb.start();
             InputStreamReader isr = new InputStreamReader(p.getInputStream());

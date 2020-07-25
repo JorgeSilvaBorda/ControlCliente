@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.Conexion;
+import modelo.Util;
 
 public class TarifaController extends HttpServlet {
 
@@ -22,6 +23,9 @@ public class TarifaController extends HttpServlet {
         switch (entrada.getString("tipo")) {
             case "get-select-tarifas":
                 out.print(getSelectTarifas());
+                break;
+            case "get-select-anio-tarifa":
+                out.print(getSelectAnioTarifa());
                 break;
             case "get-select-tarifas-idcomuna":
                 out.print(getSelectTarifasIdComuna(entrada));
@@ -38,6 +42,9 @@ public class TarifaController extends HttpServlet {
             case "upd-tarifa":
                 out.print(updTarifa(entrada));
                 break;
+            case "get-hist-tarifa-anio":
+                out.print(getHistTarifaAnio(entrada));
+                break;
         }
     }
 
@@ -49,6 +56,20 @@ public class TarifaController extends HttpServlet {
         ResultSet rs = c.ejecutarQuery(query);
 
         String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDTARIFA", "NOMBRESELECT");
+        salida.put("options", options);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getSelectAnioTarifa() {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_ANIO_TARIFA()";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione Año", "ANIO", "ANIO");
         salida.put("options", options);
         salida.put("estado", "ok");
         c.cerrar();
@@ -240,5 +261,85 @@ public class TarifaController extends HttpServlet {
             return -1;
         }
         return cantidad;
+    }
+
+    private JSONObject getHistTarifaAnio(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        int anio = entrada.getInt("anio");
+        int filastotales = 0;
+        String query = "CALL SP_GET_HIST_TARIFA_ANIO("
+                + anio
+                + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String tabla = "";
+        tabla += "<table id='tabla-hist-tarifa' class='table table-sm table-condensed table-bordered table-striped table-hover' style='font-size: 10px;'>";
+        tabla += "<thead style='text-align: center; vertical-align: middle;'>";
+        tabla += "<tr>";
+        tabla += "<th style='vertical-align: middle;'>Nombre</th>";
+        tabla += "<th style='vertical-align: middle;'>Comuna</th>";
+        tabla += "<th style='vertical-align: middle;'>Cargo<br />Fijo</th>";
+        tabla += "<th style='vertical-align: middle;'>Cargo por<br />Servicio Público</th>";
+        tabla += "<th style='vertical-align: middle;'>Transporte<br />Electricidad</th>";
+        tabla += "<th style='vertical-align: middle;'>Cargo<br />Energía</th>";
+
+        tabla += "<th style='vertical-align: middle;'>Dem. Máx.<br />Leída H. Punta (BTAA)</th>";
+        tabla += "<th style='vertical-align: middle;'>Dem. Máx.<br />Leída H. Punta (BTAS)</th>";
+        tabla += "<th style='vertical-align: middle;'>Dem. Máx.<br />Leída H. Punta (BTSA)</th>";
+        tabla += "<th style='vertical-align: middle;'>Dem. Máx.<br />Leída H. Punta (BTSS)</th>";
+
+        tabla += "<th style='vertical-align: middle;'>Dem. Máx.<br />Potencia (BTAA)</th>";
+        tabla += "<th style='vertical-align: middle;'>Dem. Máx.<br />Potencia (BTAS)</th>";
+        tabla += "<th style='vertical-align: middle;'>Dem. Máx.<br />Potencia (BTSA)</th>";
+        tabla += "<th style='vertical-align: middle;'>Dem. Máx.<br />Potencia (BTSS)</th>";
+
+        tabla += "<th style='vertical-align: middle;'>Acción</th>";
+        tabla += "<th style='vertical-align: middle; min-width: 65px;'>Fecha</th>";
+        tabla += "<th style='vertical-align: middle;'>Hora</th>";
+        tabla += "</tr>";
+        tabla += "</thead>";
+        tabla += "<tbody>";
+        try {
+            while (rs.next()) {
+                tabla += "<tr>";
+                tabla += "<td>" + rs.getString("NOMTARIFA") + "</td>";
+                tabla += "<td>" + rs.getString("NOMCOMUNA") + "</td>";
+                tabla += "<td style='text-align: right;'>" + Util.formatMiles(rs.getBigDecimal("CARGOFIJO")) + "</td>";
+                tabla += "<td style='text-align: right;'>" + Util.formatMiles(rs.getBigDecimal("CARGOSERVICIOPUBLICO")) + "</td>";
+                tabla += "<td style='text-align: right;'>" + Util.formatMiles(rs.getBigDecimal("TRANSPORTEELECTRICIDAD")) + "</td>";
+                tabla += "<td style='text-align: right;'>" + Util.formatMiles(rs.getBigDecimal("CARGOENERGIA")) + "</td>";
+
+                tabla += "<td style='text-align: right;'>" + Util.formatMiles(rs.getBigDecimal("CDMPLHPBTAA")) + "</td>";
+                tabla += "<td style='text-align: right;'>" + Util.formatMiles(rs.getBigDecimal("CDMPLHPBTAS")) + "</td>";
+                tabla += "<td style='text-align: right;'>" + Util.formatMiles(rs.getBigDecimal("CDMPLHPBTSA")) + "</td>";
+                tabla += "<td style='text-align: right;'>" + Util.formatMiles(rs.getBigDecimal("CDMPLHPBTSS")) + "</td>";
+
+                tabla += "<td style='text-align: right;'>" + Util.formatMiles(rs.getBigDecimal("CDMPSBTAA")) + "</td>";
+                tabla += "<td style='text-align: right;'>" + Util.formatMiles(rs.getBigDecimal("CDMPSBTAS")) + "</td>";
+                tabla += "<td style='text-align: right;'>" + Util.formatMiles(rs.getBigDecimal("CDMPSBTSA")) + "</td>";
+                tabla += "<td style='text-align: right;'>" + Util.formatMiles(rs.getBigDecimal("CDMPSBTSS")) + "</td>";
+
+                tabla += "<td style='text-align: left;'>" + rs.getString("ACCION") + "</td>";
+                tabla += "<td style='text-align: center;'>" + Util.invertirFecha(rs.getString("FECHA")) + "</td>";
+                tabla += "<td style='text-align: center;'>" + rs.getString("HORA") + "</td>";
+                tabla += "</tr>";
+
+                filastotales++;
+            }
+            tabla += "</tbody>";
+            tabla += "</table>";
+            if (filastotales > 0) {
+                tabla = "<button type='button' onclick='exportExcel(\"tabla-hist-tarifa\");' class='btn btn-success btn-sm' >Excel</button><br /><br />" + tabla;
+            }
+            salida.put("tabla", tabla);
+            salida.put("estado", "ok");
+        } catch (Exception ex) {
+            salida.put("estado", "error");
+            System.out.println("No se puede obtener el histórico de tarifas.");
+            System.out.println(ex);
+        }
+        return salida;
     }
 }

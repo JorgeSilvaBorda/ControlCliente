@@ -77,4 +77,10 @@
             <canvas id="line-chart" width="600" height="200"></canvas>
         </div>
     </div>
+    <br />
+    <div class='row'>
+        <div class='col-sm-12'>
+            <canvas id="line-chart-demandas" width="600" height="200"></canvas>
+        </div>
+    </div>
 </div>

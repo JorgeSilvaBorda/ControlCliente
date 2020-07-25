@@ -125,7 +125,9 @@ public class ReportesController extends HttpServlet {
         //Obtener Labels (Días del mes en curso) -------------------------------
         JSONArray labels = new JSONArray();
         JSONArray datasets = new JSONArray();
+        JSONArray datasetsdemandas = new JSONArray();
         JSONObject data = new JSONObject();
+        JSONObject datademandas = new JSONObject();
         String query = "";
         Conexion c = new Conexion();
         LinkedList<Integer> ides = new LinkedList();
@@ -144,15 +146,24 @@ public class ReportesController extends HttpServlet {
             //Por cada remarcador ir a buscar el dataset
             while (rs.next()) {
                 JSONObject dataset = getDatasetRemarcadorMes(rs.getInt("NUMREMARCADOR"), entrada.getInt("mes"), entrada.getInt("anio"));
+                JSONObject datasetdemandas = getDatasetDemandasRemarcadorMes(rs.getInt("NUMREMARCADOR"), entrada.getInt("mes"), entrada.getInt("anio"));
                 labels = dataset.getJSONArray("labels");
                 datasets.put(dataset.getJSONObject("dataset"));
+                datasetsdemandas.put(datasetdemandas.getJSONObject("datasetdemanda"));
+                datasetsdemandas.put(datasetdemandas.getJSONObject("datasethpunta"));
+                //datademandas.put("datasets", datasetdemandas.getJSONArray("datasets"));
                 ides.add(rs.getInt("NUMREMARCADOR"));
             }
             String tablaresumen = tablaResumenMesRemarcadores(ides, entrada.getInt("mes"), entrada.getInt("anio"));
             data.put("labels", labels);
             data.put("tablaresumen", tablaresumen);
             data.put("datasets", datasets);
+            datademandas.put("labels", labels);
+
+            datademandas.put("datasets", datasetsdemandas);
             salida.put("data", data);
+            salida.put("datademandas", datademandas);
+            //salida.put("datademandas", datasetsdemandas);
             System.out.println(salida);
             salida.put("estado", "ok");
         } catch (JSONException | SQLException ex) {
@@ -275,6 +286,42 @@ public class ReportesController extends HttpServlet {
             salida.put("labels", labels);
         } catch (JSONException | SQLException ex) {
             System.out.println("No se pudo obtener la data para el remarcador " + numremarcador);
+            System.out.println(ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject getDatasetDemandasRemarcadorMes(int numremarcador, int mes, int anio) {
+        JSONArray datasets = new JSONArray();
+        JSONObject datasetdemanda = new JSONObject();
+        JSONObject datasethpunta = new JSONObject();
+        JSONObject salida = new JSONObject();
+        JSONArray demandamax = new JSONArray();
+        JSONArray demandahpunta = new JSONArray();
+        JSONArray labels = new JSONArray();
+        String query = "CALL SP_GET_DEMANDAS_MES_REMARCADOR(" + numremarcador + ", " + mes + ", " + anio + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        System.out.println(query);
+        try {
+            while (rs.next()) {
+                demandamax.put(rs.getBigDecimal("DEMANDA_MAX"));
+                demandahpunta.put(rs.getBigDecimal("DEMANDA_MAX_H_PUNTA"));
+                labels.put(rs.getDate("FECHA"));
+            }
+            datasetdemanda.put("data", demandamax);
+            datasetdemanda.put("label", "Demanda Máx. Remarcador ID: " + numremarcador);
+            datasethpunta.put("data", demandahpunta);
+            datasethpunta.put("label", "Demanda Máx. H. Punta Remarcador ID: " + numremarcador);
+            datasets.put(datasetdemanda);
+            datasets.put(datasethpunta);
+            salida.put("datasetdemanda", datasetdemanda);
+            salida.put("datasethpunta", datasethpunta);
+            salida.put("labels", labels);
+        } catch (JSONException | SQLException ex) {
+            System.out.println("No se pudo obtener la data de demandas para el remarcador " + numremarcador);
             System.out.println(ex);
         }
         c.cerrar();

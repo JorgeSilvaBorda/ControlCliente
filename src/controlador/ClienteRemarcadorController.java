@@ -36,6 +36,7 @@ public class ClienteRemarcadorController extends HttpServlet {
         int idcliente = entrada.getInt("idcliente");
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_REMARCADORES_ASIGNADOS_IDCLIENTE(" + idcliente + ")";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -48,6 +49,8 @@ public class ClienteRemarcadorController extends HttpServlet {
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
+                filas += "<td><span>" + rs.getString("PERSONA") + "</span></td>";
+                filas += "<td><span>" + rs.getString("FONO") + "</span></td>";
                 filas += "<td><span>" + rs.getString("FECHAASIGNACION") + "</span></td>";
                 filas += "<td><a href='#' style='color:#D25E45; font-size:12px;' class='oi oi-x' onclick='quitar(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("IDCLIENTE") + ")'></a></td>";
                 filas += "</tr>";
@@ -67,7 +70,11 @@ public class ClienteRemarcadorController extends HttpServlet {
 
     private JSONObject asignarRemarcadorCliente(JSONObject entrada) {
         JSONObject salida = new JSONObject();
-        String query = "CALL SP_ASIGNAR_REMARCADOR_CLIENTE(" + entrada.getInt("idremarcador") + ", " + entrada.getInt("idcliente") + ")";
+        String query = "CALL SP_ASIGNAR_REMARCADOR_CLIENTE("
+                + entrada.getInt("idremarcador") + ", "
+                + entrada.getInt("idcliente") + ", "
+                + entrada.getInt("idcontacto")
+                + ")";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

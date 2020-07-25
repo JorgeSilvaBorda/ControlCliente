@@ -31,23 +31,13 @@ function insCliente(callback) {
     var dvcliente = $('#rut-cliente').val().split("-")[1];
     var nomcliente = $('#nomcliente').val();
     var razoncliente = $('#razoncliente').val();
-    var direccion = $('#direccion').val();
-    var persona = $('#persona').val();
-    var cargo = $('#cargo').val();
-    var fono = $('#fono').val();
-    var email = $('#email').val();
 
     var datos = {
         tipo: 'ins-cliente',
         rutcliente: rutcliente,
         dvcliente: dvcliente,
         nomcliente: nomcliente,
-        razoncliente: razoncliente,
-        direccion: direccion,
-        persona: persona,
-        cargo: cargo,
-        fono: fono,
-        email: email
+        razoncliente: razoncliente
     };
 
     $.ajax({
@@ -103,20 +93,10 @@ function armarCliente(cliente) {
     ID_CLIENTE_EDICION = cliente.idcliente;
     var nomcliente = cliente.nomcliente;
     var razoncliente = cliente.razoncliente;
-    var direccion = cliente.direccion;
-    var persona = cliente.persona;
-    var cargo = cliente.cargo;
-    var fono = cliente.fono;
-    var email = cliente.email;
     $('#rut-cliente').val(cliente.rutfullcliente);
     $('#rut-cliente').keyup();
     $('#nomcliente').val(nomcliente);
     $('#razoncliente').val(razoncliente);
-    $('#direccion').val(direccion);
-    $('#persona').val(persona);
-    $('#cargo').val(cargo);
-    $('#fono').val(fono);
-    $('#email').val(email);
     $('#btn-insert').attr("hidden", "hidden");
     $('#btn-guardar').removeAttr("hidden");
 }
@@ -127,11 +107,6 @@ function saveCliente(callback) {
     var dvcliente = $('#rut-cliente').val().split("-")[1];
     var nomcliente = $('#nomcliente').val();
     var razoncliente = $('#razoncliente').val();
-    var direccion = $('#direccion').val();
-    var persona = $('#persona').val();
-    var cargo = $('#cargo').val();
-    var fono = $('#fono').val();
-    var email = $('#email').val();
 
     var datos = {
         tipo: 'upd-cliente',
@@ -140,12 +115,7 @@ function saveCliente(callback) {
             rutcliente: rutcliente,
             dvcliente: dvcliente,
             nomcliente: nomcliente,
-            razoncliente: razoncliente,
-            direccion: direccion,
-            persona: persona,
-            cargo: cargo,
-            fono: fono,
-            email: email
+            razoncliente: razoncliente
         }
     };
 
@@ -210,11 +180,6 @@ function limpiar() {
     $('#rut-cliente').val('');
     $('#nomcliente').val('');
     $('#razoncliente').val('');
-    $('#direccion').val('');
-    $('#persona').val('');
-    $('#cargo').val('');
-    $('#fono').val('');
-    $('#email').val('');
     $('#btn-guardar').attr("hidden", "hidden");
     $('#btn-insert').removeAttr("hidden");
 }

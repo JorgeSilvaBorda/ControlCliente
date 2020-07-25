@@ -94,6 +94,7 @@
                                                     + "<a class='dropdown-item' onclick='cargarModulo(\"empalme\");' href='#'>Empalme</a>\n"
                                                     + "<a class='dropdown-item' onclick='cargarModulo(\"remarcador\");' href='#'>Remarcador</a>\n"
                                                     + "<a class='dropdown-item' onclick='cargarModulo(\"cliente\");' href='#'>Cliente</a>\n"
+                                                    + "<a class='dropdown-item' onclick='cargarModulo(\"cliente-contacto\");' href='#'>Contactos Cliente</a>\n"
                                                     + "<a class='dropdown-item' onclick='cargarModulo(\"tarifa\");' href='#'>Tarifa</a>\n"
                                                     + "</div>"
                                                     + "</li>");

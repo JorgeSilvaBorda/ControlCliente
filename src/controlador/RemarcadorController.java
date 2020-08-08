@@ -33,6 +33,9 @@ public class RemarcadorController extends HttpServlet {
             case "get-remarcadores-numempalme-boleta":
                 out.print(getRemarcadoresNumEmpalmeBoleta(entrada));
                 break;
+            case "get-remarcador-un-cliente-boleta":
+                out.print(getRemarcadorUnClienteBoleta(entrada));
+                break;
             case "get-remarcadores-libres":
                 out.print(getRemarcadoresLibres());
                 break;
@@ -212,6 +215,130 @@ public class RemarcadorController extends HttpServlet {
                     filas += "<td>"
                             + "<div id='botones_" + rs.getInt("IDREMARCADOR") + "' style='display:none;' class='btn-group' role='group' aria-label='Sobreescritura'>"
                             + "<button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("mes") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", \"" + rs.getString("MAX_DEMANDA_LEIDA_STRING") + "\", \"" + rs.getString("MAX_DEMANDA_HORA_PUNTA_STRING") + "\", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Sobreescribir</button>"
+                            + "<button type='button' onclick='deshabilitarSobreescritura(" + rs.getInt("IDREMARCADOR") + ");' class='btn btn-sm btn-warning' style='padding: 0px 5px 0px 5px; vertical-align:middle;'>x</button>"
+                            + "</div>"
+                            + "<button id='btn_" + rs.getInt("IDREMARCADOR") + "' type='button' onclick='habilitarSobreescritura(" + rs.getInt("IDREMARCADOR") + ");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Habilitar</button>"
+                            + "</td>";
+                }
+
+                if (rs.getInt("IDBOLETA") == 0) {
+                    filas += "<td style='text-align: right;'>-</td>";
+                } else {
+                    filas += "<td style='text-align: right;'><a href='#' onclick=getLastBoleta(" + rs.getInt("IDBOLETA") + "); >" + rs.getString("NUMBOLETA") + "</a></td>";
+                }
+
+                filas += "</tr>";
+                kwtotal += rs.getInt("CONSUMO");
+                idcomuna = rs.getInt("IDCOMUNA");
+                remarcador = new JSONObject();
+                remarcador.put("idremarcador", rs.getInt("IDREMARCADOR"));
+                remarcador.put("numremarcador", rs.getString("NUMREMARCADOR"));
+                remarcador.put("numserie", rs.getString("NUMSERIE"));
+                remarcador.put("idparque", rs.getInt("IDPARQUE"));
+                remarcador.put("modulos", rs.getString("MODULOS"));
+                remarcador.put("idinstalacion", rs.getInt("IDINSTALACION"));
+                remarcador.put("consumo", rs.getInt("CONSUMO"));
+                remarcadores.put(remarcador);
+            }
+            filas += "<tr class='table-info'>";
+            filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>Consumo Total Remarcadores(KW): </td>";
+            filas += "<td style='font-weight: bold; text-align:right;' >" + Util.formatMiles(kwtotal) + "</td>";
+            /**
+             * Aquí se pinta el botón de generación
+             * masiva------------------------------------------------------- No
+             * descomentar aún. if (boletasnoemitidas > 2) { filas +=
+             * "<td colspan='2' style='border: 1px solid white; background-color: white; text-align: center;'>"
+             * +
+             * "<button type='button' onclick='generarTodas();' style='padding: 0px 2px 0px 2px; height: 1.5em;' class='btn btn-sm btn-outline-primary'>Generar
+             * Todas</button></td>" + "</td>"; filas += "</tr>"; }
+             * -----------------------------------------------------------------------------------------------------
+             */
+            filas += "<tr>";
+            filas += "<td colspan='8' style='vertical-align: middle; text-align: right; padding-right:5px; font-weight: bold;'>Consumo Facturado del Empalme: " + entrada.getString("numempalme") + "</td>";
+            filas += "<td><input type='text' onkeyup='calcularDiferencia();' class='form-control form-control-sm small' style='font-size: 0.9em; padding-top: 0px; padding-bottom: 0px; width: 12em; text-align: right;' id='consumo-facturado-empalme'/></td>";
+            filas += "</tr>";
+
+            filas += "<tr>";
+            filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>KW Diferencia: </td>";
+            filas += "<td style='text-align: right;' ><span id='kw-diferencia'></span></td>";
+            filas += "</tr>";
+
+            filas += "<tr>";
+            filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>% Diferencia: </td>";
+            filas += "<td style='text-align: right;'><span id='porc-diferencia' ></span></td>";
+            filas += "</tr>";
+
+            tabla += filas;
+            tabla += "</tbody></table>";
+            salida.put("tabla", tabla);
+            salida.put("remarcadores", remarcadores);
+            salida.put("kwtotal", kwtotal);
+            salida.put("idcomuna", idcomuna);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.RemarcadorController.getRemarcadoresNumEmpalmeBoleta().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getRemarcadorUnClienteBoleta(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        int kwtotal = 0;
+        String query = "CALL SP_GET_REMARCADOR_UN_CLIENTE_BOLETA("
+                + "'" + entrada.getString("idremarcador") + "',"
+                + "'" + entrada.getString("desde") + "', "
+                + "'" + entrada.getString("hasta") + "'"
+                + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String filas = "";
+
+        String tabla = "<table style='font-size: 10px;' id='tabla-remarcadores-empalme' class='table table-bordered table-condensed table-sm'>";
+        tabla += "<caption style='caption-side:top;'><h5>Remarcadores en el Empalme Nº: " + entrada.getString("numempalme") + "</h5></caption>";
+        tabla += "<thead style='text-align: center;' ><tr class='table-info'>";
+        tabla += "<th># Remarcador</th>";
+        tabla += "<th>Nº Serie</th>";
+        tabla += "<th>Bodega</th>";
+        tabla += "<th>Cliente</th>";
+        tabla += "<th>Módulos</th>";
+        tabla += "<th>Instalación</th>";
+        tabla += "<th>Lectura<br />Anterior</th>";
+        tabla += "<th>Lectura<br />Actual</th>";
+        tabla += "<th>Consumo (kWh)</th>";
+        tabla += "<th>Emitir</th>";
+        tabla += "<th>Última<br />Boleta</th>";
+        tabla += "</tr></thead><tbody>";
+        JSONObject remarcador;
+        int idcomuna = 0;
+        int boletasnoemitidas = 0;
+        JSONArray remarcadores = new JSONArray();
+        try {
+            while (rs.next()) {
+                filas += "<tr>";
+                filas += "<td style='text-align: center;' ><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getString("NUMSERIE") + "' /><span>" + rs.getString("NUMSERIE") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
+                filas += "<td><span>" + rs.getString("NOMCLIENTE") + "</span></td>";
+                filas += "<td style='text-align: center;' ><span>" + rs.getString("MODULOS") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
+                filas += "<td style='text-align: right;'><span>" + Util.formatMiles(rs.getString("LECTURAANTERIOR")) + "</span></td>";
+                filas += "<td style='text-align: right;'><span>" + Util.formatMiles(rs.getString("LECTURAACTUAL")) + "</span></td>";
+                filas += "<td style='text-align: right;'><span>" + Util.formatMiles(rs.getInt("CONSUMO")) + "</span></td>";
+
+                if (rs.getInt("IDBOLETA") == 0) {
+                    boletasnoemitidas++; //Para ver si se anota al menos un candidato a generación masiva
+                    filas += "<td><button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("desde") + "\", \"" + entrada.getString("hasta") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", \"" + rs.getString("MAX_DEMANDA_LEIDA_STRING") + "\", \"" + rs.getString("MAX_DEMANDA_HORA_PUNTA_STRING") + "\", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
+                } else {
+                    filas += "<td>"
+                            + "<div id='botones_" + rs.getInt("IDREMARCADOR") + "' style='display:none;' class='btn-group' role='group' aria-label='Sobreescritura'>"
+                            + "<button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("desde") + "\", \"" + entrada.getString("hasta") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", \"" + rs.getString("MAX_DEMANDA_LEIDA_STRING") + "\", \"" + rs.getString("MAX_DEMANDA_HORA_PUNTA_STRING") + "\", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Sobreescribir</button>"
                             + "<button type='button' onclick='deshabilitarSobreescritura(" + rs.getInt("IDREMARCADOR") + ");' class='btn btn-sm btn-warning' style='padding: 0px 5px 0px 5px; vertical-align:middle;'>x</button>"
                             + "</div>"
                             + "<button id='btn_" + rs.getInt("IDREMARCADOR") + "' type='button' onclick='habilitarSobreescritura(" + rs.getInt("IDREMARCADOR") + ");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Habilitar</button>"
@@ -568,7 +695,7 @@ public class RemarcadorController extends HttpServlet {
         c.cerrar();
         return salida;
     }
-    
+
     private JSONObject getSelectRemarcadoresClienteIdInstalacion(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_REMARCADORES_IDINSTALACION(" + entrada.getInt("idinstalacion") + ", " + entrada.getInt("idcliente") + ")";

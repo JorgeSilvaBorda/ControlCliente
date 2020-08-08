@@ -10,11 +10,14 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
     $('#persona').html('');
     $('#fono').html('');
     $('#email').html('');
+    var mesanio = HASTA.split("-")[0] + "-" + HASTA.split("-")[1];
 
     var datos = {
         tipo: 'get-remarcador-cliente-idremarcador',
         idremarcador: idremarcador,
-        mesanio: MES
+        desde: DESDE,
+        hasta: HASTA,
+        mesanio: mesanio
     };
 
     $.ajax({
@@ -29,7 +32,7 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 REMCLI = obj.remarcador;
                 var remcli = obj.remarcador;
                 console.log(remcli);
-                var aniomes = $('#mes').val();
+                var aniomes = HASTA.split("-")[0] + "-" + HASTA.split("-")[1];
                 graficarDesde(remcli.idremarcador, aniomes);
                 $('#rut-cliente').html($.formatRut(remcli.rutcliente + "-" + remcli.dvcliente));
                 $('#nom-cliente').html(remcli.razoncliente);
@@ -43,19 +46,11 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 DATOS_BOLETA.fechaemision = formatFechaYYYYMMDD(fechaemision);
                 $('#fecha-emision').html(formatFechaDDMMYYYY(formatFechaYYYYMMDD(fechaemision)) + '<br /><br />');
 
-                var dt = new Date(MES + '-1');
-                var nextfecha = new Date(dt.setMonth(dt.getMonth() + 1));
-                nextfecha.setMonth(nextfecha.getMonth() + 1);
-                nextfecha.setDate(nextfecha.getDate() - 1);
-                DATOS_BOLETA.nextfecha = formatFechaYYYYMMDD(nextfecha);
-                nextfecha = formatFechaDDMMYYYY(formatFechaYYYYMMDD(nextfecha));
-                $('#fecha-prox-lectura').html(nextfecha + '<br /><br />');
-
-                var fechadesde = new Date(FECHA_LECTURA_INICIAL);
+                $('#fecha-prox-lectura').html('-<br /><br />');
+                var fechadesde = new Date(DESDE);
                 fechadesde.setDate(fechadesde.getDate() + 1);
-                var fechahasta = new Date(FECHA_LECTURA_FINAL);
+                var fechahasta = new Date(HASTA);
                 fechahasta.setDate(fechahasta.getDate() + 1);
-
                 $('#desde').html(formatFechaDDMMYYYY(formatFechaYYYYMMDD(fechadesde)) + '<br /><br />');
                 DATOS_BOLETA.fechadesde = formatFechaYYYYMMDD(fechadesde);
                 $('#hasta').html(formatFechaDDMMYYYY(formatFechaYYYYMMDD(fechahasta)) + '<br /><br />');
@@ -287,7 +282,8 @@ function armarLastBoleta() {
                     idcliente: obj.boleta.IDCLIENTE,
                     numremarcador: obj.boleta.NUMREMARCADOR
                 };
-                var aniomes = obj.boleta.FECHALECTURAACTUAL.toString().split("-")[0] + '-' + obj.boleta.FECHALECTURAACTUAL.toString().split("-")[1];
+                //var aniomes = obj.boleta.FECHALECTURAACTUAL.toString().split("-")[0] + '-' + obj.boleta.FECHALECTURAACTUAL.toString().split("-")[1];
+                var aniomes = HASTA.split("-")[0] + "-" + HASTA.split("-")[1];
                 $('#num-medidor').html(obj.boleta.NUMREMARCADOR);
                 $('#lectura-anterior').html(formatMiles(obj.boleta.LECTURAANTERIOR));
                 $('#lectura-actual').html(formatMiles(obj.boleta.LECTURAACTUAL));

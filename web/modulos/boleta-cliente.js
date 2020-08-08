@@ -1,6 +1,8 @@
+var IDCOMUNA = null;
+
 function getSelectClientes() {
     var datos = {
-        tipo: 'get-select-clientes'
+        tipo: 'get-select-clientes-nombre'
     };
 
     $.ajax({
@@ -23,31 +25,23 @@ function getSelectClientes() {
     });
 }
 
-function buscar(){
-    
-    var idcliente = $('#select-cliente').val();
-    var fechaini = $('#fecha-ini').val();
-    var fechafin = $('#fecha-fin').val();
-    
+function getSelectInstalacionesCliente(idcliente) {
+    $('#select-remarcador').html("");
     var datos = {
-        tipo: 'armar-pre-boleta-cliente',
-        idcliente: idcliente,
-        fechaini: fechaini,
-        fechafin: fechafin
+        tipo: 'get-select-instalaciones-idcliente-individual',
+        idcliente: idcliente
     };
-    
+
     $.ajax({
-        url: 'BoletaController',
+        url: 'InstalacionController',
         type: 'post',
-        data:{
+        data: {
             datos: JSON.stringify(datos)
         },
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
-                console.log(obj.preboleta);
-                cabeceraBoleta(obj.preboleta);
-                remarcadoresBoleta(obj.preboleta);
+                $('#select-instalacion').html(obj.options);
             }
         },
         error: function (a, b, c) {
@@ -58,25 +52,170 @@ function buscar(){
     });
 }
 
-function cabeceraBoleta(boleta){
-    $('#boleta-fecha-ini').html(boleta.fechaini);
-    $('#boleta-fecha-fin').html(boleta.fechafin);
-    $('#boleta-rut-cliente').html(boleta.rutfullcliente);
-    $('#boleta-nom-cliente').html(boleta.nomcliente);
-    $('#boleta-direccion').html(boleta.direccion);
-    $('#boleta-persona').html(boleta.persona);
-    $('#boleta-fono').html(boleta.fono);
-    $('#boleta-email').html(boleta.email);
-    $('#contenido-remarcadores').show();
-    $('#tabla-cabecera-boleta').show();
-    $('#contenido-cabecera-boleta').show();
+function getSelectRemarcadoresIdInstalacion(idinstalacion) {
+    var idcliente = $('#select-cliente').val();
+    var datos = {
+        tipo: 'get-select-remarcadores-idinstalacion-idcliente',
+        idinstalacion: idinstalacion,
+        idcliente: idcliente
+    };
+
+    $.ajax({
+        url: 'RemarcadorController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-remarcador').html(obj.options);
+                getSelectTarifasIdInstalacion(idinstalacion);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
 }
 
-function remarcadoresBoleta(boleta){
-    $('#contenido-remarcadores').html(boleta.tablaremarcadores);
-    $('#contenido-boleta').show();
+function getSelectTarifasIdInstalacion(idinstalacion) {
+    var datos = {
+        idinstalacion: idinstalacion,
+        tipo: "get-select-tarifas-idinstalacion"
+    };
+
+    $.ajax({
+        url: 'TarifaController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (res) {
+            var obj = JSON.parse(res);
+            if (obj.estado === 'ok') {
+                $('#select-tarifa').html(obj.options);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
 }
 
-function cargosBoleta(){
-    
+function validarCampos() {
+    var idcliente = $('#select-cliente').val();
+    var idinstalacion = $('#select-instalacion').val();
+    var idremarcador = $('#select-remarcador').val();
+    var desde = $('#fecha-desde').val();
+    var hasta = $('#fecha-hasta').val();
+    var idtarifa = $('#select-tarifa').val();
+
+    if (idcliente === 0 || idcliente === '0' || idcliente === '') {
+        alert("Debe seleccionar un cliente del listado.");
+        return false;
+    }
+    if (idinstalacion === 0 || idinstalacion === '0' || idinstalacion === '') {
+        alert("Debe seleccionar una instalación del listado.");
+        return false;
+    }
+    if (idremarcador === 0 || idremarcador === '0' || idremarcador === '') {
+        alert("Debe seleccionar un remarcador del listado.");
+        return false;
+    }
+    if (idtarifa === 0 || idtarifa === '0' || idtarifa === '') {
+        alert("Debe seleccionar una tarifa del listado.");
+        return false;
+    }
+    if (desde === 0 || desde === '0' || desde === '') {
+        alert("Debe indicar una fecha desde cuando inicia el cobro.");
+        return false;
+    }
+    if (hasta === 0 || hasta === '0' || hasta === '') {
+        alert("Debe indicar una fecha hasta cuando termina el cobro.");
+        return false;
+    }
+    var diferencia = diffFechaDias(desde, hasta);
+    if (diferencia < 1) {
+        alert("La fecha desde no puede ser superior a la fecha hasta.");
+        return false;
+    }
+    if (diferencia > 31) {
+        alert("El rango de fechas no puede ser superior a un mes.");
+        return false;
+    }
+    return true;
+}
+
+function buscar() {
+    if (validarCampos()) {
+        var idcliente = $('#select-cliente').val();
+        var idinstalacion = $('#select-instalacion').val();
+        var idremarcador = $('#select-remarcador').val();
+        var numremarcador = $('#select-remarcador option:selected').text();
+        var numempalme = $('#select-empalme option:selected').text();
+        var desde = $('#fecha-desde').val();
+        var hasta = $('#fecha-hasta').val();
+        var idtarifa = $('#select-tarifa').val();
+        var datos = {
+            tipo: 'get-remarcador-un-cliente-boleta',
+            idcliente: idcliente,
+            idinstalacion: idinstalacion,
+            idremarcador: idremarcador,
+            numremarcador: numremarcador,
+            numempalme: numempalme,
+            desde: desde,
+            hasta: hasta,
+            idtarifa: idtarifa
+        };
+        $.ajax({
+            url: 'RemarcadorController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (resp) {
+                var obj = JSON.parse(resp);
+                if (obj.estado === 'ok') {
+                    $('.dataTable').DataTable().destroy();
+                    $('#detalle-remarcadores').html(obj.tabla);
+                    IDCOMUNA = obj.idcomuna;
+                    $('.loader').fadeOut(500);
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            }
+        });
+    }
+}
+
+function calcular(idremarcador, numremarcador, numserie, consumo, desde, hasta, lecturaanterior, lecturaactual, maxdemandaleida, maxdemandahorapunta, fechalecturaini, fechalecturafin){
+    var idtarifa = $('#select-tarifa').val();
+    if(idtarifa === '0' || idtarifa === 0 || idtarifa === '' || idtarifa === null || idtarifa === undefined){
+        alert("Debe seleccionar una tarifa para poder calcular la boleta.");
+        return false;
+    }
+    $('#btn-imprimir').hide();
+    $('#btn-generar').show();
+    $('#modal-body').html('');
+    $('#modal').modal();
+    $('#modal-body').load("modulos/boleta-empalme/mask-boleta-cliente.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&numserie='" + numserie + "'&consumo=" + consumo + "&desde='" + desde + "'&hasta='" + hasta + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual + "&maxdemandaleida=" + maxdemandaleida + "&maxdemandahorapunta=" + maxdemandahorapunta + "&fechalecturaini='" + fechalecturaini + "'&fechalecturafin='" + fechalecturafin + "'&masivo=" + MASIVO);
+}
+
+function limpiar(){
+    getSelectClientes();
+    $('#select-instalacion').html('');
+    $('#select-remarcador').html('');
+    $('#fecha-desde').val('');
+    $('#fecha-hasta').val('');
+    $('#select-tarifa').html('');
+    $('#detalle-remarcadores').html('');
+    IDCOMUNA = null;
 }

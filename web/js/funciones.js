@@ -121,3 +121,13 @@ function mesNumeroAPalabraLarga(mes) {
         default: return "";
     }
 }
+
+function diffFechaDias(fechainferior, fechasuperior){
+    var undia = 1000 * 60 * 60 * 24;
+    var dateinferior = new Date(fechainferior);
+    var datesuperior = new Date(fechasuperior);
+    var fechainferiorms = dateinferior.getTime();
+    var fechasuperiorms = datesuperior.getTime();
+    var diffms = fechasuperiorms - fechainferiorms;
+    return Math.round(diffms/undia);
+}

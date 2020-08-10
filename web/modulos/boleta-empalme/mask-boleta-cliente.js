@@ -2,6 +2,7 @@ var GRAFICO = new Chart(document.getElementById("grafico"));
 var REMCLI = null;
 var DATOS_BOLETA = {};
 var BOLETA = {};
+var MASIVO = null;
 
 function getRemarcadorClienteIdRemarcador(idremarcador) {
     $('#rut-cliente').html('');
@@ -114,12 +115,11 @@ function armarDetalleTarifa() {
                 BOLETA.lecturaactual = DATOS_BOLETA.lecturaactual;
                 BOLETA.lecturaanterior = DATOS_BOLETA.lecturaanterior;
                 BOLETA.fechaemision = DATOS_BOLETA.fechaemision;
-                BOLETA.nextfecha = DATOS_BOLETA.nextfecha;
+                BOLETA.nextfecha = '1900-01-01';
                 BOLETA.fechadesde = DATOS_BOLETA.fechadesde;
                 BOLETA.fechahasta = DATOS_BOLETA.fechahasta;
-                if (MASA) {
-                    generar();
-                }
+                BOLETA.idtarifa = idtarifa;
+
             }
         },
         error: function (a, b, c) {
@@ -135,11 +135,12 @@ function generar() {
     var nomtarifa = $('#select-tarifa option:selected').text();
     BOLETA.idtarifa = idtarifa;
     BOLETA.nomtarifa = nomtarifa;
+    var desde = $('#desde').val();
     var datos = {
         tipo: 'genera-boleta',
         remcli: REMCLI,
         boleta: BOLETA,
-        tipoboleta: 'MENSUAL'
+        tipoboleta: 'ESPECIFICA'
     };
     $.ajax({
         url: 'BoletaController',
@@ -150,18 +151,13 @@ function generar() {
         success: function (res) {
             var obj = JSON.parse(res);
             if (obj.estado === 'ok') {
-                if (MASA) {
-                    $('#num-boleta').html(obj.numboleta);
-                    $('#btn-cerrar-modal').click();
-                } else {
-                    //Actualizar número de boleta antes de emitir----------------------
-                    $('#num-boleta').html(obj.numboleta);
-                    //Actualizar grilla de atrás---------------------------------------
-                    getRemarcadoresNumEmpalmeBoleta();
-                    //Generar PDF -----------------------------------------------------
-                    const element = document.getElementById("modal-body");
-                    html2pdf().from(element).save("Detalle-" + REMCLI.nomcliente + "-ID" + REMCLI.numremarcador + "-" + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
-                }
+                //Actualizar número de boleta antes de emitir----------------------
+                $('#num-boleta').html(obj.numboleta);
+                //Actualizar grilla de atrás---------------------------------------
+                buscar();
+                //Generar PDF -----------------------------------------------------
+                const element = document.getElementById("modal-body");
+                html2pdf().from(element).save("Detalle-" + REMCLI.nomcliente + "-ID" + REMCLI.numremarcador + "-" + MES.split("-")[1] + "-" + MES.split("-")[0] + ".pdf");
             }
         },
         error: function (a, b, c) {
@@ -191,7 +187,6 @@ function graficarDesde(idremarcador, aniomes) {
             datos: JSON.stringify(datos)
         },
         success: function (resp) {
-            //$('.loader').fadeOut(500);
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
                 var fondo = [];
@@ -216,7 +211,7 @@ function graficarDesde(idremarcador, aniomes) {
                     type: 'bar',
                     data: obj.data,
                     options: {
-                        legend:{
+                        legend: {
                             display: false
                         },
                         title: {
@@ -247,9 +242,6 @@ function graficarDesde(idremarcador, aniomes) {
                                     }
 
                                 }]
-                        },
-                        tooltips: {
-                            enabled: false
                         }
                     }
                 });

@@ -470,7 +470,6 @@ public class BoletaController extends HttpServlet {
         JSONArray cargos = new JSONArray();
         JSONObject cargo;
         int idboleta = entrada.getInt("idboleta");
-        //String query = "SELECT * FROM HIST_BOLETA WHERE IDBOLETA = " + idboleta;
         String query = "CALL SP_GET_LAST_BOLETA(" + idboleta + ")";
         System.out.println(query);
         Conexion c = new Conexion();
@@ -494,7 +493,6 @@ public class BoletaController extends HttpServlet {
         c.cerrar();
         // Obtener el detalle de la boleta ----------------------------------------------------------------------------
         //
-        //query = "SELECT * FROM HIST_DETALLE_BOLETA WHERE IDBOLETA = " + idboleta;
         query = "CALL SP_GET_HIST_DETALLE_LAST_BOLETA(" + idboleta + ")";
         System.out.println(query);
         c = new Conexion();

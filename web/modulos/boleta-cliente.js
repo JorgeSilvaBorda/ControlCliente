@@ -1,5 +1,5 @@
 var IDCOMUNA = null;
-
+var KWTOTAL = null;
 function getSelectClientes() {
     var datos = {
         tipo: 'get-select-clientes-nombre'
@@ -184,6 +184,7 @@ function buscar() {
                     $('.dataTable').DataTable().destroy();
                     $('#detalle-remarcadores').html(obj.tabla);
                     IDCOMUNA = obj.idcomuna;
+                    KWTOTAL = obj.kwtotal;
                     $('.loader').fadeOut(500);
                 }
             },
@@ -206,7 +207,41 @@ function calcular(idremarcador, numremarcador, numserie, consumo, desde, hasta, 
     $('#btn-generar').show();
     $('#modal-body').html('');
     $('#modal').modal();
-    $('#modal-body').load("modulos/boleta-empalme/mask-boleta-cliente.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&numserie='" + numserie + "'&consumo=" + consumo + "&desde='" + desde + "'&hasta='" + hasta + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual + "&maxdemandaleida=" + maxdemandaleida + "&maxdemandahorapunta=" + maxdemandahorapunta + "&fechalecturaini='" + fechalecturaini + "'&fechalecturafin='" + fechalecturafin + "'&masivo=" + MASIVO);
+    $('#modal-body').load("modulos/boleta-empalme/mask-boleta-cliente.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&numserie='" + numserie + "'&consumo=" + consumo + "&desde='" + desde + "'&hasta='" + hasta + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual + "&maxdemandaleida=" + maxdemandaleida + "&maxdemandahorapunta=" + maxdemandahorapunta + "&fechalecturaini='" + fechalecturaini + "'&fechalecturafin='" + fechalecturafin + "'");
+}
+
+function calcularDiferencia(){
+    var text = $('#consumo-facturado-empalme').val().replaceAll("\\.", "");
+    var num = text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    $('#consumo-facturado-empalme').val(num);
+    var kwtotal = KWTOTAL;
+    var facturadoempalme = $('#consumo-facturado-empalme').val().replaceAll("\\.", "");
+    var resta = kwtotal - facturadoempalme;
+    var porc = 100 - ((facturadoempalme * 100) / kwtotal);
+    
+    resta = resta * -1;
+    porc = porc * -1;
+    
+    $('#kw-diferencia').text(formatMiles(parseInt(resta)));
+    $('#porc-diferencia').text(porc.toFixed(2) + " %");
+}
+
+function getLastBoleta(idboleta){
+    $('#btn-generar').hide();
+    $('#btn-imprimir').show();
+    $('#modal-body').html('');
+    $('#modal').modal();
+    $('#modal-body').load("modulos/boleta-empalme/mask-last-boleta-cliente.jsp?idboleta=" + idboleta);
+}
+
+function habilitarSobreescritura(id){
+    $('#botones_' + id).show();
+    $('#btn_' + id).hide();
+}
+
+function deshabilitarSobreescritura(id){
+    $('#botones_' + id).hide();
+    $('#btn_' + id).show();
 }
 
 function limpiar(){
@@ -218,4 +253,5 @@ function limpiar(){
     $('#select-tarifa').html('');
     $('#detalle-remarcadores').html('');
     IDCOMUNA = null;
+    KWTOTAL = null;
 }

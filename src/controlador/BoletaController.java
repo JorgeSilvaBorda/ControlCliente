@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.LinkedList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import modelo.BoletaCliente;
 import modelo.Conexion;
 import modelo.Remarcador;
+import modelo.RemarcadorBoleta;
 import modelo.Util;
 
 public class BoletaController extends HttpServlet {
@@ -41,6 +43,9 @@ public class BoletaController extends HttpServlet {
                 break;
             case "get-resumen-pagos":
                 out.print(getResumenPagos(entrada));
+                break;
+                case "boleta-masiva":
+                out.print(generaBoletasMasivo(entrada));
                 break;
         }
     }
@@ -923,6 +928,21 @@ public class BoletaController extends HttpServlet {
             salida.put("estado", "error");
         }
         c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject generaBoletasMasivo(JSONObject entrada){
+        LinkedList<RemarcadorBoleta> remarcadoresboleta = new LinkedList();
+        JSONObject salida = new JSONObject();
+        JSONArray remarcadores = entrada.getJSONArray("remarcadores");
+        Iterator i = remarcadores.iterator();
+        while(i.hasNext()){
+            JSONObject remarcador = (JSONObject)i.next();
+            System.out.println(remarcador);
+            remarcadoresboleta.add(new RemarcadorBoleta(remarcador.getInt("idremarcador"), remarcador.getInt("consumo"), entrada.getInt("idtarifa"), entrada.getString("mesanio"), entrada.getString("fechaemision"), remarcador.getString("fechainicial"), remarcador.getString("fechafinal")));
+        }
+        System.out.println(remarcadores);
+        salida.put("estado", "ok");
         return salida;
     }
 }

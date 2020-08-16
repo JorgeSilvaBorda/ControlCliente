@@ -303,8 +303,8 @@ function armarLastBoleta() {
                 $('#num-empalme-boleta').html(obj.boleta.NUMEMPALME + "<br /><br />");
                 $('#num-remarcador-boleta').html(obj.boleta.NUMREMARCADOR + "<br /><br />");
                 $('#num-serie').html(obj.boleta.NUMSERIE + "<br /><br />");
-                $('#fecha-emision').html(obj.boleta.FECHAEMISION + "<br /><br />");
-                $('#fecha-prox-lectura').html(obj.boleta.FECHAPROXLECTURA + "<br /><br />");
+                $('#fecha-emision').html(formatFechaDDMMYYYY(obj.boleta.FECHAEMISION) + "<br /><br />");
+                $('#fecha-prox-lectura').html(formatFechaDDMMYYYY(obj.boleta.FECHAPROXLECTURA) + "<br /><br />");
                 $('#num-serie').html(obj.boleta.NUMSERIE + "<br /><br />");
                 $('#tarifa').html(obj.boleta.NOMTARIFA + "<br /><br />");
                 $('#nomred').html(obj.boleta.NOMRED + "<br /><br />");

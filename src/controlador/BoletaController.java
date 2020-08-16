@@ -4,6 +4,7 @@ import clases.json.JSONArray;
 import clases.json.JSONObject;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
@@ -44,7 +45,7 @@ public class BoletaController extends HttpServlet {
             case "get-resumen-pagos":
                 out.print(getResumenPagos(entrada));
                 break;
-                case "boleta-masiva":
+            case "boleta-masiva":
                 out.print(generaBoletasMasivo(entrada));
                 break;
         }
@@ -930,19 +931,119 @@ public class BoletaController extends HttpServlet {
         c.cerrar();
         return salida;
     }
-    
-    private JSONObject generaBoletasMasivo(JSONObject entrada){
+
+    private JSONObject generaBoletasMasivo(JSONObject entrada) {
         LinkedList<RemarcadorBoleta> remarcadoresboleta = new LinkedList();
         JSONObject salida = new JSONObject();
         JSONArray remarcadores = entrada.getJSONArray("remarcadores");
         Iterator i = remarcadores.iterator();
-        while(i.hasNext()){
-            JSONObject remarcador = (JSONObject)i.next();
-            System.out.println(remarcador);
-            remarcadoresboleta.add(new RemarcadorBoleta(remarcador.getInt("idremarcador"), remarcador.getInt("consumo"), entrada.getInt("idtarifa"), entrada.getString("mesanio"), entrada.getString("fechaemision"), remarcador.getString("fechainicial"), remarcador.getString("fechafinal")));
+        while (i.hasNext()) {
+            JSONObject remarcador = (JSONObject) i.next();
+            remarcadoresboleta.add(new RemarcadorBoleta(remarcador.getInt("idremarcador"), remarcador.getInt("consumo"), entrada.getInt("idtarifa"), entrada.getString("mesanio"), entrada.getString("fechaemision"), remarcador.getString("fechainicial"), remarcador.getString("fechafinal"), entrada.getString("nextfecha")));
         }
-        System.out.println(remarcadores);
+
+        for (int x = 0; x < remarcadoresboleta.size(); x++) {
+            JSONObject boleta = remarcadoresboleta.get(x).getBoletaJson();
+            JSONObject remcli = remarcadoresboleta.get(x).getRemcliJson();
+            boleta.put("maxdemandaleida", remarcadoresboleta.get(x).maxdemandaleida);
+            boleta.put("maxdemandafacturada", remarcadoresboleta.get(x).maxdemandafacturada);
+            boleta.put("maxdemandahorapuntaleida", remarcadoresboleta.get(x).maxdemandaleidahpunta);
+            boleta.put("maxdemandahorapuntafacturada", remarcadoresboleta.get(x).maxdemandafacturadahpunta);
+
+            System.out.println("Boleta: ");
+            System.out.println(boleta);
+            System.out.println(remcli);
+            guardarBoletaMasiva(boleta, remcli, remarcadoresboleta.get(x).maxdemandaleida, remarcadoresboleta.get(x).maxdemandafacturada, remarcadoresboleta.get(x).maxdemandaleidahpunta, remarcadoresboleta.get(x).maxdemandafacturadahpunta);
+        }
+
         salida.put("estado", "ok");
         return salida;
+    }
+
+    private void guardarBoletaMasiva(JSONObject boleta, JSONObject remcli, BigDecimal maxdemlei, BigDecimal maxdemfac, BigDecimal maxdemhplei, BigDecimal maxdemhpfac) {
+        String querycabecera = "CALL SP_INS_CABECERA_BOLETA("
+                + boleta.getInt("idtarifa") + ", "
+                + "'" + boleta.getString("nomtarifa") + "', "
+                + remcli.getInt("idcliente") + ", "
+                + "'" + remcli.getString("nomcliente") + "', "
+                + "'" + remcli.getString("razoncliente") + "', "
+                + remcli.getInt("rutcliente") + ", "
+                + "'" + remcli.getString("dvcliente") + "', "
+                + "'" + remcli.getString("direccion") + "', "
+                + "'" + remcli.getString("persona") + "', "
+                + "'" + remcli.getString("email") + "', "
+                + "'" + remcli.getInt("fono") + "', "
+                + "NOW(),"
+                + "'" + boleta.getString("nextfecha") + "', "
+                + remcli.getInt("idinstalacion") + ", "
+                + "'" + remcli.getString("nominstalacion") + "', "
+                + remcli.getInt("idparque") + ", "
+                + "'" + remcli.getString("nomparque") + "', "
+                + remcli.getInt("idempalme") + ", "
+                + "'" + remcli.getString("numempalme") + "', "
+                + remcli.getInt("idcomuna") + ", "
+                + "'" + remcli.getString("nomcomuna") + "', "
+                + remcli.getInt("idred") + ", "
+                + "'" + remcli.getString("nomred") + "', "
+                + remcli.getInt("idremarcador") + ", "
+                + remcli.getInt("numremarcador") + ", "
+                + "'" + remcli.getString("modulos") + "', "
+                + "'" + remcli.getString("numserie") + "', "
+                + boleta.getInt("lecturaanterior") + ", "
+                + boleta.getInt("lecturaactual") + ", "
+                + "'" + boleta.getString("fechadesde") + "', "
+                + "'" + boleta.getString("fechahasta") + "', "
+                + boleta.getInt("consumo") + ", "
+
+                + maxdemlei + ", "
+                + maxdemfac + ", "
+                + maxdemhplei + ", "
+                + maxdemhpfac + ", "
+                
+                + boleta.getInt("totalneto") + ", "
+                + boleta.getInt("iva") + ", "
+                + boleta.getInt("exento") + ", "
+                + boleta.getInt("total") + ""
+                + ")";
+        System.out.println("query:");
+        System.out.println(querycabecera);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(querycabecera);
+        String numboleta = "";
+        int idboleta = 0;
+        try {
+            while (rs.next()) {
+                idboleta = rs.getInt("IDBOLETA");
+                numboleta = rs.getString("NUMBOLETA");
+            }
+        } catch (Exception ex) {
+            System.out.println("Problemas en controlador.BoletaController.guardarBoletaMasiva().");
+            System.out.println(ex);
+        }
+        c.cerrar();
+
+        JSONArray consumos = boleta.getJSONArray("consumos");
+        Iterator i = consumos.iterator();
+        while (i.hasNext()) {
+
+            JSONObject consumo = new JSONObject();
+            consumo = (JSONObject) i.next();
+            String querydetalle = "CALL SP_INS_DETALLE_BOLETA("
+                    + idboleta + ", "
+                    + consumo.getInt("idconcepto") + ", "
+                    + "'" + consumo.getString("nomconcepto") + "', "
+                    + "'" + consumo.getString("umedida") + "', "
+                    + consumo.getInt("idred") + ", "
+                    + (consumo.getInt("idred") == 0 ? "NULL, " : "'" + consumo.getString("nomred") + "', ")
+                    + consumo.getInt("valorneto") + ", "
+                    + consumo.getDouble("cantidad") + ", "
+                    + consumo.getInt("total") + ""
+                    + ")";
+            c = new Conexion();
+            c.abrir();
+            c.ejecutar(querydetalle);
+            c.cerrar();
+        }
     }
 }

@@ -182,6 +182,7 @@ function calcular(idremarcador, numremarcador, numserie, consumo, mes, lecturaan
 function generarTodas() {
     var remarcadores = [];
     var REMARCADORES_MASIVO = [];
+    var mes = $('#mes').val();
     $('#tabla-remarcadores-empalme tbody tr').each(function (i) {
         var fila = $(this)[0];
         var celdas = $(fila).children('td');
@@ -201,9 +202,11 @@ function generarTodas() {
         }
     }
 
+    $('#detalle-remarcadores').html('<br /><h4 style="color: grey;">Generando boletas. Por favor espere.</h4><div class="loader"><div class="ldio-sa9px9nknjc"><div></div><div><div></div></div></div></div>');
+    
     var fechaemision = new Date();
     var fechaemisionformato = formatFechaYYYYMMDD(fechaemision);
-    var dt = new Date(MES + '-1');
+    var dt = new Date(mes + '-1');
     var nextfecha = new Date(dt.setMonth(dt.getMonth() + 1));
     nextfecha.setMonth(nextfecha.getMonth() + 1);
     nextfecha.setDate(nextfecha.getDate() - 1);
@@ -212,7 +215,7 @@ function generarTodas() {
     var datos = {
         tipo: 'boleta-masiva',
         idtarifa: $('#select-tarifa').val(),
-        mesanio: $('#mes').val(),
+        mesanio: mes,
         idinstalacion: $('#select-instalacion').val(),
         idempalme: $('#select-empalme').val(),
         fechaemision: fechaemisionformato,

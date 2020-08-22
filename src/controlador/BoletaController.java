@@ -48,6 +48,9 @@ public class BoletaController extends HttpServlet {
             case "boleta-masiva":
                 out.print(generaBoletasMasivo(entrada));
                 break;
+            case "buscar-boletas-masivo":
+                out.print(buscarBoletasMasivo(entrada));
+                break;
         }
     }
 
@@ -994,12 +997,10 @@ public class BoletaController extends HttpServlet {
                 + "'" + boleta.getString("fechadesde") + "', "
                 + "'" + boleta.getString("fechahasta") + "', "
                 + boleta.getInt("consumo") + ", "
-
                 + maxdemlei + ", "
                 + maxdemfac + ", "
                 + maxdemhplei + ", "
                 + maxdemhpfac + ", "
-                
                 + boleta.getInt("totalneto") + ", "
                 + boleta.getInt("iva") + ", "
                 + boleta.getInt("exento") + ", "
@@ -1045,5 +1046,27 @@ public class BoletaController extends HttpServlet {
             c.ejecutar(querydetalle);
             c.cerrar();
         }
+    }
+    
+    private JSONObject buscarBoletasMasivo(JSONObject entrada){
+        JSONArray ides = entrada.getJSONArray("ides");
+        JSONObject salida = new JSONObject();
+        JSONArray boletas = new JSONArray();
+        System.out.println(ides);
+        Iterator i = ides.iterator();
+        try{
+            while(i.hasNext()){
+                JSONObject jsonboleta = new JSONObject();
+                jsonboleta.put("idboleta", (int)i.next());
+                JSONObject lastBoleta = getLastBoleta(jsonboleta);
+                boletas.put(lastBoleta);
+            }
+        }catch (Exception ex) {
+            System.out.println("No se puede buscar las boletas masivo.");
+            System.out.println(ex);
+        }
+        salida.put("boletas", boletas);
+        salida.put("estado", "ok");
+        return salida;
     }
 }

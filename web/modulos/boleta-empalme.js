@@ -203,7 +203,7 @@ function generarTodas() {
     }
 
     $('#detalle-remarcadores').html('<br /><h4 style="color: grey;">Generando boletas. Por favor espere.</h4><div class="loader"><div class="ldio-sa9px9nknjc"><div></div><div><div></div></div></div></div>');
-    
+
     var fechaemision = new Date();
     var fechaemisionformato = formatFechaYYYYMMDD(fechaemision);
     var dt = new Date(mes + '-1');
@@ -240,6 +240,26 @@ function generarTodas() {
             console.log(c);
         }
     });
+}
+
+function imprimirMasivo() {
+    var ides = [];
+    var stringparameter = "%5B";
+    $('#tabla-remarcadores-empalme tbody tr').each(function (i) {
+        var fila = $(this)[0];
+        var celdas = $(fila).children('td');
+        if (celdas.length === 11) {
+            if ($($(celdas[9]).children('button')[0]).text() === 'Habilitar') {
+                var idboleta = $(celdas[10]).text();
+                idboleta = parseInt(idboleta);
+                ides.push(idboleta);
+                stringparameter += idboleta + "%2C";
+            }
+        }
+    });
+    stringparameter += "%5D";
+    console.log(stringparameter);
+    window.open('modulos/boleta-empalme/mask-boleta-masiva.jsp?jsonboletas=' + stringparameter);
 }
 
 function getLastBoleta(idboleta) {

@@ -37,6 +37,14 @@
                     <input type="text" class="form-control form-control-sm small" maxlength="11" id="num-remarcador" />
                 </div>
                 <div class="form-group">
+                    <label for="marca" >Marca</label>
+                    <input type="text" class="form-control form-control-sm small" maxlength="400" id="marca" />
+                </div>
+                <div class="form-group">
+                    <label for="modelo" >Modelo</label>
+                    <input type="text" class="form-control form-control-sm small" maxlength="400" id="modelo" />
+                </div>
+                <div class="form-group">
                     <label for="num-serie" >Nº Serie Equipo</label>
                     <input type="text" class="form-control form-control-sm small" maxlength="50" id="num-serie" />
                 </div>
@@ -57,6 +65,8 @@
                 <thead>
                     <tr>
                         <th>ID Remarcador</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
                         <th>Nº Serie</th>
                         <th># Empalme</th>
                         <th>Bodega</th>

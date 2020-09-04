@@ -3,9 +3,7 @@ package controlador;
 import clases.json.JSONArray;
 import clases.json.JSONException;
 import clases.json.JSONObject;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -83,6 +81,8 @@ public class RemarcadorController extends HttpServlet {
             while (rs.next()) {
                 filas += "<tr>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
+                filas += "<td><span>" + rs.getString("MARCA") + "</span></td>";
+                filas += "<td><span>" + rs.getString("MODELO") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getString("NUMSERIE") + "' /><span>" + rs.getString("NUMSERIE") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
@@ -507,7 +507,9 @@ public class RemarcadorController extends HttpServlet {
                 + "" + entrada.getInt("idparque") + ","
                 + "'" + entrada.getString("numremarcador") + "',"
                 + "'" + entrada.getString("numserie") + "',"
-                + "'" + entrada.getString("modulos") + "'"
+                + "'" + entrada.getString("modulos") + "',"
+                + "'" + entrada.getString("marca") + "',"
+                + "'" + entrada.getString("modelo") + "'"
                 + ")";
         Conexion c = new Conexion();
         c.abrir();
@@ -533,6 +535,8 @@ public class RemarcadorController extends HttpServlet {
                 remarcador.put("idempalme", rs.getInt("IDEMPALME"));
                 remarcador.put("idequipomodbus", rs.getInt("IDEQUIPOMODBUS"));
                 remarcador.put("numremarcador", rs.getInt("NUMREMARCADOR"));
+                remarcador.put("marca", rs.getString("MARCA"));
+                remarcador.put("modelo", rs.getString("MODELO"));
                 remarcador.put("numserie", rs.getString("NUMSERIE"));
                 remarcador.put("modulos", rs.getString("MODULOS"));
                 remarcador.put("idinstalacion", rs.getInt("IDINSTALACION"));
@@ -663,7 +667,10 @@ public class RemarcadorController extends HttpServlet {
                 + remarcador.getInt("idparque") + ","
                 + remarcador.getInt("numremarcador") + ","
                 + "'" + remarcador.getString("numserie") + "',"
-                + "'" + remarcador.getString("modulos") + "')";
+                + "'" + remarcador.getString("modulos") + "', "
+                + "'" + remarcador.getString("marca") + "', "
+                + "'" + remarcador.getString("modelo") + "'"
+                + ")";
         System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();

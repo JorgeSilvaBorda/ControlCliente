@@ -187,7 +187,8 @@ function insRemarcador(callback) {
     var numremarcador = $('#num-remarcador').val();
     var numserie = $('#num-serie').val();
     var modulos = $('#modulos').val();
-
+    var marca = $('#marca').val();
+    var modelo = $('#modelo').val();
 
     var datos = {
         tipo: 'ins-remarcador',
@@ -195,7 +196,9 @@ function insRemarcador(callback) {
         idparque: idparque,
         numremarcador: numremarcador,
         numserie: numserie,
-        modulos: modulos
+        modulos: modulos,
+        marca: marca,
+        modelo: modelo
     };
 
     if (validarCampos()) {
@@ -262,6 +265,8 @@ function saveRemarcador(callback) {
     var numremarcador = $('#num-remarcador').val();
     var numserie = $('#num-serie').val();
     var modulos = $('#modulos').val();
+    var marca = $('#marca').val();
+    var modelo = $('#modelo').val();
 
     var datos = {
         tipo: 'upd-remarcador',
@@ -271,7 +276,9 @@ function saveRemarcador(callback) {
             idparque: idparque,
             numremarcador: numremarcador,
             numserie: numserie,
-            modulos: modulos
+            modulos: modulos,
+            marca: marca,
+            modelo: modelo
         }
     };
     if (validarCampos()) {
@@ -301,6 +308,8 @@ function saveRemarcador(callback) {
 function armarRemarcador(remarcador) {
     ID_REMARCADOR_EDICION = remarcador.idremarcador;
     $('#num-remarcador').val(remarcador.numremarcador);
+    $('#marca').val(remarcador.marca);
+    $('#modelo').val(remarcador.modelo);
     $('#num-serie').val(remarcador.numserie);
     $('#select-empalme').val(remarcador.idempalme);
     $('#modulos').val(remarcador.modulos);
@@ -314,6 +323,8 @@ function limpiar() {
     $('#select-instalacion').val('0');
     $('#num-remarcador').val('');
     $('#num-serie').val('');
+    $('#marca').val('');
+    $('#modelo').val('');
     $('#select-empalme').html('');
     $('#modulos').val('');
     $('#select-parque').html('');
@@ -324,6 +335,8 @@ function limpiar() {
 function limpiarAfterInsert() {
     ID_REMARCADOR_EDICION = null;
     $('#num-remarcador').val('');
+    $('#marca').val('');
+    $('#modelo').val('');
     $('#num-serie').val('');
     $('#modulos').val('');
     $('#btn-guardar').attr("hidden", "hidden");

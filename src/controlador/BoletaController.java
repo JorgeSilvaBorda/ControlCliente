@@ -1038,8 +1038,8 @@ public class BoletaController extends HttpServlet {
                     + consumo.getInt("idred") + ", "
                     + (consumo.getInt("idred") == 0 ? "NULL, " : "'" + consumo.getString("nomred") + "', ")
                     + consumo.getBigDecimal("valorneto") + ", "
-                    + consumo.getDouble("cantidad") + ", "
-                    + consumo.getInt("total") + ""
+                    + consumo.getBigDecimal("cantidad") + ", "
+                    + consumo.getBigDecimal("total") + ""
                     + ")";
             System.out.println("Los consumos que vienen: ");
             System.out.println(consumo);

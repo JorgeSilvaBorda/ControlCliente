@@ -1037,10 +1037,14 @@ public class BoletaController extends HttpServlet {
                     + "'" + consumo.getString("umedida") + "', "
                     + consumo.getInt("idred") + ", "
                     + (consumo.getInt("idred") == 0 ? "NULL, " : "'" + consumo.getString("nomred") + "', ")
-                    + consumo.getInt("valorneto") + ", "
+                    + consumo.getBigDecimal("valorneto") + ", "
                     + consumo.getDouble("cantidad") + ", "
                     + consumo.getInt("total") + ""
                     + ")";
+            System.out.println("Los consumos que vienen: ");
+            System.out.println(consumo);
+            System.out.println("Query detalle: ");
+            System.out.println(querydetalle);
             c = new Conexion();
             c.abrir();
             c.ejecutar(querydetalle);

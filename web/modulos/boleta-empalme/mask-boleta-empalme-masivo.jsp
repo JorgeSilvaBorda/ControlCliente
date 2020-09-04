@@ -44,7 +44,7 @@
                 <br />
                 DETALLE DE COMPLEMENTO<br /> SERVICIOS DE ADMINISTRACIÓN
                 <br />
-                Nº <span id="num-boleta">0000000</span>
+                Nº <span id="num-boleta"></span>
             </div>
             <br />
             <table style="font-size: 10px;">

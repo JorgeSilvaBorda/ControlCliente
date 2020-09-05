@@ -119,7 +119,7 @@ function limpiar() {
 
 function exportExcel(tableID, filename = '') {
     var downloadLink;
-    var dataType = 'application/vnd.ms-excel;charset=utf-8';
+    var dataType = 'application/vnd.ms-excel;base64';
     var tableSelect = document.getElementById(tableID);
     var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
     filename = filename ? filename + '.xlsx' : 'Resumen-Pagos-' + $('#mes').val() + '.xlsx';

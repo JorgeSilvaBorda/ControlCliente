@@ -117,26 +117,6 @@ function limpiar() {
 
 }
 
-function exportExcel(tableID, filename = '') {
-    var downloadLink;
-    var dataType = 'application/vnd.ms-excel;charset=utf-8';
-    var tableSelect = document.getElementById(tableID);
-    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-    filename = filename ? filename + '.xlsx' : 'Resumen-Pagos-' + $('#mes').val() + '.xlsx';
-    downloadLink = document.createElement("a");
-    document.body.appendChild(downloadLink);
-    if (navigator.msSaveOrOpenBlob) {
-        var blob = new Blob(['ufeff', tableHTML], {
-            type: dataType
-        });
-        navigator.msSaveOrOpenBlob(blob, filename);
-    } else {
-        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
-        downloadLink.download = filename;
-        downloadLink.click();
-}
-}
-
 var tableToExcel = (function () {
     var uri = 'data:application/vnd.ms-excel;base64,'
             , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
@@ -152,7 +132,6 @@ var tableToExcel = (function () {
         if (!table.nodeType)
             table = document.getElementById(table);
         var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML};
-        //window.location.href = uri + base64(format(template, ctx));
         var filename = 'Resumen-Pagos-' + $('#mes').val() + '.xls';
         downloadLink = document.createElement("a");
         downloadLink.download = filename;
@@ -162,13 +141,5 @@ var tableToExcel = (function () {
         downloadLink.click();
         document.body.removeChild(downloadLink);
         delete downloadLink;
-
-        //
     };
 })();
-
-function toExcel(){
-    var datos = document.getElementById('tabla-resumen-pagos');
-    var filename = 'Resumen-Pagos-' + $('#mes').val() + '.xls';
-    Exporter.export(datos, filename, 'Pagos');
-}

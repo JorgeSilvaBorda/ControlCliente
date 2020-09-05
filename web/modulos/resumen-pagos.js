@@ -152,7 +152,6 @@ var tableToExcel = (function () {
         if (!table.nodeType)
             table = document.getElementById(table);
         var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML};
-        //window.location.href = uri + base64(format(template, ctx));
         var filename = 'Resumen-Pagos-' + $('#mes').val() + '.xls';
         downloadLink = document.createElement("a");
         downloadLink.download = filename;
@@ -166,9 +165,3 @@ var tableToExcel = (function () {
         //
     };
 })();
-
-function toExcel(){
-    var datos = document.getElementById('tabla-resumen-pagos');
-    var filename = 'Resumen-Pagos-' + $('#mes').val() + '.xls';
-    Exporter.export(datos, filename, 'Pagos');
-}

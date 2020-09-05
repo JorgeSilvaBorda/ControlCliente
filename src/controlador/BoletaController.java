@@ -922,7 +922,8 @@ public class BoletaController extends HttpServlet {
             tabla += "</tbody>";
             tabla += "</table>";
             if (filastotales > 0) {
-                tabla = "<button type='button' onclick='exportExcel(\"tabla-resumen-pagos\");' class='btn btn-success btn-sm' >Excel</button><br /><br />" + tabla;
+                //tabla = "<button type='button' onclick='exportExcel(\"tabla-resumen-pagos\");' class='btn btn-success btn-sm' >Excel</button><br /><br />" + tabla;
+                tabla = "<button type='button' onclick='tableToExcel(\"tabla-resumen-pagos\", \"Resumen-Pagos\");' class='btn btn-success btn-sm' >Excel</button><br /><br />" + tabla;
             }
             salida.put("tabla", tabla);
             salida.put("estado", "ok");

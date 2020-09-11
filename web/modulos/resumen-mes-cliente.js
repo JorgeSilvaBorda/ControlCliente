@@ -86,20 +86,22 @@ function buscar() {
                     $('#div-tabla-resumen').html(obj.data.tablaresumen);
                     $('.loader').fadeOut(500);
                     for (var i in obj.data.labels) {
-                        obj.data.labels[i] = formatFechaDDMMYYYY(obj.data.labels[i]);
+                        //obj.data.labels[i] = formatFechaDDMMYYYY(obj.data.labels[i]);
+                        obj.data.labels[i] = obj.data.labels[i].split("-")[2];
                     }
                     for (var i in obj.data.datasets) {
                         var color = colorDinamicoArr();
                         obj.data.datasets[i].borderColor = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 1.0)";
                         colores.push("rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 0.9)");
-                        coloresClaro.push("rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 0.4)");
+                        coloresClaro.push("rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", 0.9)");
                         obj.data.datasets[i].pointRadius = "2";
                         obj.data.datasets[i].borderWidth = "1";
                         obj.data.datasets[i].lineTension = "0";
                         obj.data.datasets[i].fill = false;
                     }
                     for (var i in obj.datademandas.labels) {
-                        obj.datademandas.labels[i] = formatFechaDDMMYYYY(obj.datademandas.labels[i]);
+                        //obj.datademandas.labels[i] = formatFechaDDMMYYYY(obj.datademandas.labels[i]);
+                        obj.datademandas.labels[i] = obj.datademandas.labels[i].split("-")[2];
                     }
                     var contColor = 0;
                     for (var i in obj.datademandas.datasets) {
@@ -110,12 +112,12 @@ function buscar() {
                         if (i === 0) {
                             obj.datademandas.datasets[i].borderColor = coloresClaro[0];
                             obj.datademandas.datasets[i].borderDash = [10, 5];
-                            obj.datademandas.datasets[i].borderWidth = "5";
+                            obj.datademandas.datasets[i].borderWidth = "2";
                         } else {
                             if (i % 2 !== 0) {
                                 obj.datademandas.datasets[i].borderColor = coloresClaro[contColor];
                                 obj.datademandas.datasets[i].borderDash = [10, 5];
-                                obj.datademandas.datasets[i].borderWidth = "5";
+                                obj.datademandas.datasets[i].borderWidth = "2";
                                 contColor++;
                             } else {
                                 obj.datademandas.datasets[i].borderColor = colores[contColor];

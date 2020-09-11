@@ -1,3 +1,4 @@
+var REMARCADORES = null;
 var KWTOTAL = null;
 var IDCOMUNA = null;
 var MASIVO = false;
@@ -52,9 +53,10 @@ function getSelectInstalacion() {
 }
 
 function getRemarcadoresNumEmpalmeBoleta() {
+    REMARCADORES = null;
     //Función trabaja sólo con el número de empalme.
     //En BD, el mismo numero de empalme puede tener ID distintos para efectos de asigrnación a las bodegas
-    
+
     var numempalme = $('#select-empalme option:selected').text();
     var mes = $('#mes').val();
     var datos = {
@@ -73,6 +75,7 @@ function getRemarcadoresNumEmpalmeBoleta() {
             if (obj.estado === 'ok') {
                 $('.dataTable').DataTable().destroy();
                 $('#detalle-remarcadores').html(obj.tabla);
+                REMARCADORES = obj.remarcadores;
                 KWTOTAL = obj.kwtotal;
                 IDCOMUNA = obj.idcomuna;
                 $('.loader').fadeOut(500);
@@ -130,14 +133,14 @@ function validarCampos() {
         alert("Debe seleccionar un Empalme del listado.");
         return false;
     }
-    if(mes.length < 6){
+    if (mes.length < 6) {
         alert("El mes indicado es incorrecto.");
         return false;
     }
     return true;
 }
 
-function calcularDiferencia(){
+function calcularDiferencia() {
     var text = $('#consumo-facturado-empalme').val().replaceAll("\\.", "");
     var num = text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     $('#consumo-facturado-empalme').val(num);
@@ -145,10 +148,10 @@ function calcularDiferencia(){
     var facturadoempalme = $('#consumo-facturado-empalme').val().replaceAll("\\.", "");
     var resta = kwtotal - facturadoempalme;
     var porc = 100 - ((facturadoempalme * 100) / kwtotal);
-    
+
     resta = resta * -1;
     porc = porc * -1;
-    
+
     $('#kw-diferencia').text(formatMiles(parseInt(resta)));
     $('#porc-diferencia').text(porc.toFixed(2) + " %");
 }
@@ -162,10 +165,10 @@ function buscar() {
     }
 }
 
-function calcular(idremarcador, numremarcador, numserie,consumo, mes, lecturaanterior, lecturaactual, maxdemandaleida, maxdemandahorapunta, fechalecturaini, fechalecturafin){
+function calcular(idremarcador, numremarcador, numserie, consumo, mes, lecturaanterior, lecturaactual, maxdemandaleida, maxdemandahorapunta, fechalecturaini, fechalecturafin) {
     //console.log("modulos/boleta-empalme/mask-boleta-empalme.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&consumo=" + consumo + "&mes='" + mes + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual + "&fechalecturaini='" + fechalecturaini + "'&fechalecturafin='" + fechalecturafin + "'");
     var idtarifa = $('#select-tarifa').val();
-    if(idtarifa === '0' || idtarifa === 0 || idtarifa === '' || idtarifa === null || idtarifa === undefined){
+    if (idtarifa === '0' || idtarifa === 0 || idtarifa === '' || idtarifa === null || idtarifa === undefined) {
         alert("Debe seleccionar una tarifa para poder calcular la boleta.");
         return false;
     }
@@ -176,20 +179,90 @@ function calcular(idremarcador, numremarcador, numserie,consumo, mes, lecturaant
     $('#modal-body').load("modulos/boleta-empalme/mask-boleta-empalme.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&numserie='" + numserie + "'&consumo=" + consumo + "&mes='" + mes + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual + "&maxdemandaleida=" + maxdemandaleida + "&maxdemandahorapunta=" + maxdemandahorapunta + "&fechalecturaini='" + fechalecturaini + "'&fechalecturafin='" + fechalecturafin + "'&masivo=" + MASIVO);
 }
 
-function generarTodas(){
-    /*
-    MASIVO = true;
-    var cont = 0;
-    var largo = $('#tabla-remarcadores-empalme tr').length - 4;
-    for(var i = cont; i < largo; i++){
-        var fila = $('#tabla-remarcadores-empalme tr')[i];
-        $(fila.children[9].children[0]).click();
+function generarTodas() {
+    var remarcadores = [];
+    var REMARCADORES_MASIVO = [];
+    var mes = $('#mes').val();
+    $('#tabla-remarcadores-empalme tbody tr').each(function (i) {
+        var fila = $(this)[0];
+        var celdas = $(fila).children('td');
+        if (celdas.length === 11) {
+            if ($($(celdas[9]).children('button')[0]).text() === 'Calcular Boleta') {
+                remarcadores.push($(celdas[0]).text());
+            }
+        }
+    });
+
+    for (var i = 0; i < remarcadores.length; i++) {
+        var buscado = remarcadores[i];
+        for (var x = 0; x < REMARCADORES.length; x++) {
+            if (REMARCADORES[x].numremarcador === buscado) {
+                REMARCADORES_MASIVO.push(REMARCADORES[x]);
+            }
+        }
     }
-    */
-    //getRemarcadoresNumEmpalmeBoleta();
+
+    $('#detalle-remarcadores').html('<br /><h4 style="color: grey;">Generando boletas. Por favor espere.</h4><div class="loader"><div class="ldio-sa9px9nknjc"><div></div><div><div></div></div></div></div>');
+
+    var fechaemision = new Date();
+    var fechaemisionformato = formatFechaYYYYMMDD(fechaemision);
+    var dt = new Date(mes + '-1');
+    var nextfecha = new Date(dt.setMonth(dt.getMonth() + 1));
+    nextfecha.setMonth(nextfecha.getMonth() + 1);
+    nextfecha.setDate(nextfecha.getDate() - 1);
+    var nextfechaformato = formatFechaYYYYMMDD(nextfecha);
+
+    var datos = {
+        tipo: 'boleta-masiva',
+        idtarifa: $('#select-tarifa').val(),
+        mesanio: mes,
+        idinstalacion: $('#select-instalacion').val(),
+        idempalme: $('#select-empalme').val(),
+        fechaemision: fechaemisionformato,
+        nextfecha: nextfechaformato,
+        remarcadores: REMARCADORES_MASIVO
+    };
+    $.ajax({
+        url: 'BoletaController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                buscar();
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
 }
 
-function getLastBoleta(idboleta){
+function imprimirMasivo() {
+    var ides = [];
+    var stringparameter = "%5B";
+    $('#tabla-remarcadores-empalme tbody tr').each(function (i) {
+        var fila = $(this)[0];
+        var celdas = $(fila).children('td');
+        if (celdas.length === 11) {
+            if ($($(celdas[9]).children('button')[0]).text() === 'Habilitar') {
+                var idboleta = $(celdas[10]).text();
+                idboleta = parseInt(idboleta);
+                ides.push(idboleta);
+                stringparameter += idboleta + "%2C";
+            }
+        }
+    });
+    stringparameter += "%5D";
+    console.log(stringparameter);
+    window.open('modulos/boleta-empalme/mask-boleta-masiva.jsp?jsonboletas=' + stringparameter);
+}
+
+function getLastBoleta(idboleta) {
     $('#btn-generar').hide();
     $('#btn-imprimir').show();
     $('#modal-body').html('');
@@ -197,16 +270,17 @@ function getLastBoleta(idboleta){
     $('#modal-body').load("modulos/boleta-empalme/mask-last-boleta-empalme.jsp?idboleta=" + idboleta);
 }
 
-function habilitarSobreescritura(id){
+function habilitarSobreescritura(id) {
     $('#botones_' + id).show();
     $('#btn_' + id).hide();
 }
 
-function deshabilitarSobreescritura(id){
+function deshabilitarSobreescritura(id) {
     $('#botones_' + id).hide();
     $('#btn_' + id).show();
 }
 
-function limpiar(){
+function limpiar() {
     KWTOTAL = null;
+    REMARCADORES = null;
 }

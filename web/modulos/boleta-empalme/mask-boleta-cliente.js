@@ -2,6 +2,7 @@ var GRAFICO = new Chart(document.getElementById("grafico"));
 var REMCLI = null;
 var DATOS_BOLETA = {};
 var BOLETA = {};
+var MASIVO = null;
 
 function getRemarcadorClienteIdRemarcador(idremarcador) {
     $('#rut-cliente').html('');
@@ -10,11 +11,14 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
     $('#persona').html('');
     $('#fono').html('');
     $('#email').html('');
+    var mesanio = HASTA.split("-")[0] + "-" + HASTA.split("-")[1];
 
     var datos = {
         tipo: 'get-remarcador-cliente-idremarcador',
         idremarcador: idremarcador,
-        mesanio: MES
+        desde: DESDE,
+        hasta: HASTA,
+        mesanio: mesanio
     };
 
     $.ajax({
@@ -29,7 +33,7 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 REMCLI = obj.remarcador;
                 var remcli = obj.remarcador;
                 console.log(remcli);
-                var aniomes = $('#mes').val();
+                var aniomes = HASTA.split("-")[0] + "-" + HASTA.split("-")[1];
                 graficarDesde(remcli.idremarcador, aniomes);
                 $('#rut-cliente').html($.formatRut(remcli.rutcliente + "-" + remcli.dvcliente));
                 $('#nom-cliente').html(remcli.razoncliente);
@@ -43,19 +47,11 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 DATOS_BOLETA.fechaemision = formatFechaYYYYMMDD(fechaemision);
                 $('#fecha-emision').html(formatFechaDDMMYYYY(formatFechaYYYYMMDD(fechaemision)) + '<br /><br />');
 
-                var dt = new Date(MES + '-1');
-                var nextfecha = new Date(dt.setMonth(dt.getMonth() + 1));
-                nextfecha.setMonth(nextfecha.getMonth() + 1);
-                nextfecha.setDate(nextfecha.getDate() - 1);
-                DATOS_BOLETA.nextfecha = formatFechaYYYYMMDD(nextfecha);
-                nextfecha = formatFechaDDMMYYYY(formatFechaYYYYMMDD(nextfecha));
-                $('#fecha-prox-lectura').html(nextfecha + '<br /><br />');
-
-                var fechadesde = new Date(FECHA_LECTURA_INICIAL);
+                $('#fecha-prox-lectura').html('-<br /><br />');
+                var fechadesde = new Date(DESDE);
                 fechadesde.setDate(fechadesde.getDate() + 1);
-                var fechahasta = new Date(FECHA_LECTURA_FINAL);
+                var fechahasta = new Date(HASTA);
                 fechahasta.setDate(fechahasta.getDate() + 1);
-
                 $('#desde').html(formatFechaDDMMYYYY(formatFechaYYYYMMDD(fechadesde)) + '<br /><br />');
                 DATOS_BOLETA.fechadesde = formatFechaYYYYMMDD(fechadesde);
                 $('#hasta').html(formatFechaDDMMYYYY(formatFechaYYYYMMDD(fechahasta)) + '<br /><br />');
@@ -119,12 +115,11 @@ function armarDetalleTarifa() {
                 BOLETA.lecturaactual = DATOS_BOLETA.lecturaactual;
                 BOLETA.lecturaanterior = DATOS_BOLETA.lecturaanterior;
                 BOLETA.fechaemision = DATOS_BOLETA.fechaemision;
-                BOLETA.nextfecha = DATOS_BOLETA.nextfecha;
+                BOLETA.nextfecha = '1900-01-01';
                 BOLETA.fechadesde = DATOS_BOLETA.fechadesde;
                 BOLETA.fechahasta = DATOS_BOLETA.fechahasta;
-                if (MASA) {
-                    generar();
-                }
+                BOLETA.idtarifa = idtarifa;
+
             }
         },
         error: function (a, b, c) {
@@ -140,11 +135,12 @@ function generar() {
     var nomtarifa = $('#select-tarifa option:selected').text();
     BOLETA.idtarifa = idtarifa;
     BOLETA.nomtarifa = nomtarifa;
+    var desde = $('#desde').val();
     var datos = {
         tipo: 'genera-boleta',
         remcli: REMCLI,
         boleta: BOLETA,
-        tipoboleta: 'MENSUAL'
+        tipoboleta: 'ESPECIFICA'
     };
     $.ajax({
         url: 'BoletaController',
@@ -155,18 +151,13 @@ function generar() {
         success: function (res) {
             var obj = JSON.parse(res);
             if (obj.estado === 'ok') {
-                if (MASA) {
-                    $('#num-boleta').html(obj.numboleta);
-                    $('#btn-cerrar-modal').click();
-                } else {
-                    //Actualizar número de boleta antes de emitir----------------------
-                    $('#num-boleta').html(obj.numboleta);
-                    //Actualizar grilla de atrás---------------------------------------
-                    getRemarcadoresNumEmpalmeBoleta();
-                    //Generar PDF -----------------------------------------------------
-                    const element = document.getElementById("modal-body");
-                    html2pdf().from(element).save("Detalle-" + REMCLI.nomcliente + "-ID" + REMCLI.numremarcador + "-" + $('#mes').val().split("-")[1] + "-" + $('#mes').val().split("-")[0] + ".pdf");
-                }
+                //Actualizar número de boleta antes de emitir----------------------
+                $('#num-boleta').html(obj.numboleta);
+                //Actualizar grilla de atrás---------------------------------------
+                buscar();
+                //Generar PDF -----------------------------------------------------
+                const element = document.getElementById("modal-body");
+                html2pdf().from(element).save("Detalle-" + REMCLI.nomcliente + "-ID" + REMCLI.numremarcador + "-" + MES.split("-")[1] + "-" + MES.split("-")[0] + ".pdf");
             }
         },
         error: function (a, b, c) {
@@ -196,7 +187,6 @@ function graficarDesde(idremarcador, aniomes) {
             datos: JSON.stringify(datos)
         },
         success: function (resp) {
-            //$('.loader').fadeOut(500);
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
                 var fondo = [];
@@ -221,7 +211,7 @@ function graficarDesde(idremarcador, aniomes) {
                     type: 'bar',
                     data: obj.data,
                     options: {
-                        legend:{
+                        legend: {
                             display: false
                         },
                         title: {
@@ -252,9 +242,6 @@ function graficarDesde(idremarcador, aniomes) {
                                     }
 
                                 }]
-                        },
-                        tooltips: {
-                            enabled: false
                         }
                     }
                 });
@@ -287,7 +274,8 @@ function armarLastBoleta() {
                     idcliente: obj.boleta.IDCLIENTE,
                     numremarcador: obj.boleta.NUMREMARCADOR
                 };
-                var aniomes = obj.boleta.FECHALECTURAACTUAL.toString().split("-")[0] + '-' + obj.boleta.FECHALECTURAACTUAL.toString().split("-")[1];
+                //var aniomes = obj.boleta.FECHALECTURAACTUAL.toString().split("-")[0] + '-' + obj.boleta.FECHALECTURAACTUAL.toString().split("-")[1];
+                var aniomes = HASTA.split("-")[0] + "-" + HASTA.split("-")[1];
                 $('#num-medidor').html(obj.boleta.NUMREMARCADOR);
                 $('#lectura-anterior').html(formatMiles(obj.boleta.LECTURAANTERIOR));
                 $('#lectura-actual').html(formatMiles(obj.boleta.LECTURAACTUAL));
@@ -303,8 +291,8 @@ function armarLastBoleta() {
                 $('#num-empalme-boleta').html(obj.boleta.NUMEMPALME + "<br /><br />");
                 $('#num-remarcador-boleta').html(obj.boleta.NUMREMARCADOR + "<br /><br />");
                 $('#num-serie').html(obj.boleta.NUMSERIE + "<br /><br />");
-                $('#fecha-emision').html(formatFechaDDMMYYYY(obj.boleta.FECHAEMISION) + "<br /><br />");
-                $('#fecha-prox-lectura').html(formatFechaDDMMYYYY(obj.boleta.FECHAPROXLECTURA) + "<br /><br />");
+                $('#fecha-emision').html(obj.boleta.FECHAEMISION + "<br /><br />");
+                $('#fecha-prox-lectura').html(obj.boleta.FECHAPROXLECTURA + "<br /><br />");
                 $('#num-serie').html(obj.boleta.NUMSERIE + "<br /><br />");
                 $('#tarifa').html(obj.boleta.NOMTARIFA + "<br /><br />");
                 $('#nomred').html(obj.boleta.NOMRED + "<br /><br />");

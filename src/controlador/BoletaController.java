@@ -4,9 +4,11 @@ import clases.json.JSONArray;
 import clases.json.JSONObject;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.LinkedList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import modelo.BoletaCliente;
 import modelo.Conexion;
 import modelo.Remarcador;
+import modelo.RemarcadorBoleta;
 import modelo.Util;
 
 public class BoletaController extends HttpServlet {
@@ -41,6 +44,12 @@ public class BoletaController extends HttpServlet {
                 break;
             case "get-resumen-pagos":
                 out.print(getResumenPagos(entrada));
+                break;
+            case "boleta-masiva":
+                out.print(generaBoletasMasivo(entrada));
+                break;
+            case "buscar-boletas-masivo":
+                out.print(buscarBoletasMasivo(entrada));
                 break;
         }
     }
@@ -470,7 +479,6 @@ public class BoletaController extends HttpServlet {
         JSONArray cargos = new JSONArray();
         JSONObject cargo;
         int idboleta = entrada.getInt("idboleta");
-        //String query = "SELECT * FROM HIST_BOLETA WHERE IDBOLETA = " + idboleta;
         String query = "CALL SP_GET_LAST_BOLETA(" + idboleta + ")";
         System.out.println(query);
         Conexion c = new Conexion();
@@ -494,7 +502,6 @@ public class BoletaController extends HttpServlet {
         c.cerrar();
         // Obtener el detalle de la boleta ----------------------------------------------------------------------------
         //
-        //query = "SELECT * FROM HIST_DETALLE_BOLETA WHERE IDBOLETA = " + idboleta;
         query = "CALL SP_GET_HIST_DETALLE_LAST_BOLETA(" + idboleta + ")";
         System.out.println(query);
         c = new Conexion();
@@ -915,7 +922,8 @@ public class BoletaController extends HttpServlet {
             tabla += "</tbody>";
             tabla += "</table>";
             if (filastotales > 0) {
-                tabla = "<button type='button' onclick='exportExcel(\"tabla-resumen-pagos\");' class='btn btn-success btn-sm' >Excel</button><br /><br />" + tabla;
+                //tabla = "<button type='button' onclick='exportExcel(\"tabla-resumen-pagos\");' class='btn btn-success btn-sm' >Excel</button><br /><br />" + tabla;
+                tabla = "<button type='button' onclick='tableToExcel(\"tabla-resumen-pagos\", \"Resumen-Pagos\");' class='btn btn-success btn-sm' >Excel</button><br /><br />" + tabla;
             }
             salida.put("tabla", tabla);
             salida.put("estado", "ok");
@@ -925,6 +933,145 @@ public class BoletaController extends HttpServlet {
             salida.put("estado", "error");
         }
         c.cerrar();
+        return salida;
+    }
+
+    private JSONObject generaBoletasMasivo(JSONObject entrada) {
+        LinkedList<RemarcadorBoleta> remarcadoresboleta = new LinkedList();
+        JSONObject salida = new JSONObject();
+        JSONArray remarcadores = entrada.getJSONArray("remarcadores");
+        Iterator i = remarcadores.iterator();
+        while (i.hasNext()) {
+            JSONObject remarcador = (JSONObject) i.next();
+            remarcadoresboleta.add(new RemarcadorBoleta(remarcador.getInt("idremarcador"), remarcador.getInt("consumo"), entrada.getInt("idtarifa"), entrada.getString("mesanio"), entrada.getString("fechaemision"), remarcador.getString("fechainicial"), remarcador.getString("fechafinal"), entrada.getString("nextfecha")));
+        }
+
+        for (int x = 0; x < remarcadoresboleta.size(); x++) {
+            JSONObject boleta = remarcadoresboleta.get(x).getBoletaJson();
+            JSONObject remcli = remarcadoresboleta.get(x).getRemcliJson();
+            boleta.put("maxdemandaleida", remarcadoresboleta.get(x).maxdemandaleida);
+            boleta.put("maxdemandafacturada", remarcadoresboleta.get(x).maxdemandafacturada);
+            boleta.put("maxdemandahorapuntaleida", remarcadoresboleta.get(x).maxdemandaleidahpunta);
+            boleta.put("maxdemandahorapuntafacturada", remarcadoresboleta.get(x).maxdemandafacturadahpunta);
+
+            System.out.println("Boleta: ");
+            System.out.println(boleta);
+            System.out.println(remcli);
+            guardarBoletaMasiva(boleta, remcli, remarcadoresboleta.get(x).maxdemandaleida, remarcadoresboleta.get(x).maxdemandafacturada, remarcadoresboleta.get(x).maxdemandaleidahpunta, remarcadoresboleta.get(x).maxdemandafacturadahpunta);
+        }
+
+        salida.put("estado", "ok");
+        return salida;
+    }
+
+    private void guardarBoletaMasiva(JSONObject boleta, JSONObject remcli, BigDecimal maxdemlei, BigDecimal maxdemfac, BigDecimal maxdemhplei, BigDecimal maxdemhpfac) {
+        String querycabecera = "CALL SP_INS_CABECERA_BOLETA("
+                + boleta.getInt("idtarifa") + ", "
+                + "'" + boleta.getString("nomtarifa") + "', "
+                + remcli.getInt("idcliente") + ", "
+                + "'" + remcli.getString("nomcliente") + "', "
+                + "'" + remcli.getString("razoncliente") + "', "
+                + remcli.getInt("rutcliente") + ", "
+                + "'" + remcli.getString("dvcliente") + "', "
+                + "'" + remcli.getString("direccion") + "', "
+                + "'" + remcli.getString("persona") + "', "
+                + "'" + remcli.getString("email") + "', "
+                + "'" + remcli.getInt("fono") + "', "
+                + "NOW(),"
+                + "'" + boleta.getString("nextfecha") + "', "
+                + remcli.getInt("idinstalacion") + ", "
+                + "'" + remcli.getString("nominstalacion") + "', "
+                + remcli.getInt("idparque") + ", "
+                + "'" + remcli.getString("nomparque") + "', "
+                + remcli.getInt("idempalme") + ", "
+                + "'" + remcli.getString("numempalme") + "', "
+                + remcli.getInt("idcomuna") + ", "
+                + "'" + remcli.getString("nomcomuna") + "', "
+                + remcli.getInt("idred") + ", "
+                + "'" + remcli.getString("nomred") + "', "
+                + remcli.getInt("idremarcador") + ", "
+                + remcli.getInt("numremarcador") + ", "
+                + "'" + remcli.getString("modulos") + "', "
+                + "'" + remcli.getString("numserie") + "', "
+                + boleta.getInt("lecturaanterior") + ", "
+                + boleta.getInt("lecturaactual") + ", "
+                + "'" + boleta.getString("fechadesde") + "', "
+                + "'" + boleta.getString("fechahasta") + "', "
+                + boleta.getInt("consumo") + ", "
+                + maxdemlei + ", "
+                + maxdemfac + ", "
+                + maxdemhplei + ", "
+                + maxdemhpfac + ", "
+                + boleta.getInt("totalneto") + ", "
+                + boleta.getInt("iva") + ", "
+                + boleta.getInt("exento") + ", "
+                + boleta.getInt("total") + ""
+                + ")";
+        System.out.println("query:");
+        System.out.println(querycabecera);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(querycabecera);
+        String numboleta = "";
+        int idboleta = 0;
+        try {
+            while (rs.next()) {
+                idboleta = rs.getInt("IDBOLETA");
+                numboleta = rs.getString("NUMBOLETA");
+            }
+        } catch (Exception ex) {
+            System.out.println("Problemas en controlador.BoletaController.guardarBoletaMasiva().");
+            System.out.println(ex);
+        }
+        c.cerrar();
+
+        JSONArray consumos = boleta.getJSONArray("consumos");
+        Iterator i = consumos.iterator();
+        while (i.hasNext()) {
+
+            JSONObject consumo = new JSONObject();
+            consumo = (JSONObject) i.next();
+            String querydetalle = "CALL SP_INS_DETALLE_BOLETA("
+                    + idboleta + ", "
+                    + consumo.getInt("idconcepto") + ", "
+                    + "'" + consumo.getString("nomconcepto") + "', "
+                    + "'" + consumo.getString("umedida") + "', "
+                    + consumo.getInt("idred") + ", "
+                    + (consumo.getInt("idred") == 0 ? "NULL, " : "'" + consumo.getString("nomred") + "', ")
+                    + consumo.getBigDecimal("valorneto") + ", "
+                    + consumo.getBigDecimal("cantidad") + ", "
+                    + consumo.getBigDecimal("total") + ""
+                    + ")";
+            System.out.println("Los consumos que vienen: ");
+            System.out.println(consumo);
+            System.out.println("Query detalle: ");
+            System.out.println(querydetalle);
+            c = new Conexion();
+            c.abrir();
+            c.ejecutar(querydetalle);
+            c.cerrar();
+        }
+    }
+    
+    private JSONObject buscarBoletasMasivo(JSONObject entrada){
+        JSONArray ides = entrada.getJSONArray("ides");
+        JSONObject salida = new JSONObject();
+        JSONArray boletas = new JSONArray();
+        System.out.println(ides);
+        Iterator i = ides.iterator();
+        try{
+            while(i.hasNext()){
+                JSONObject jsonboleta = new JSONObject();
+                jsonboleta.put("idboleta", (int)i.next());
+                JSONObject lastBoleta = getLastBoleta(jsonboleta);
+                boletas.put(lastBoleta);
+            }
+        }catch (Exception ex) {
+            System.out.println("No se puede buscar las boletas masivo.");
+            System.out.println(ex);
+        }
+        salida.put("boletas", boletas);
+        salida.put("estado", "ok");
         return salida;
     }
 }

@@ -1,3 +1,4 @@
+
 function getSelectInstalacion() {
     var datos = {
         tipo: 'get-select-instalacion'
@@ -24,7 +25,6 @@ function getSelectInstalacion() {
 
 function getSelectEmpalmesNumEmpalmesInstalacion() {
     var idinstalacion = $('#select-instalacion').val();
-
     var datos = {
         tipo: 'get-select-empalmes-numempalmes-idinstalacion',
         idinstalacion: idinstalacion
@@ -47,7 +47,6 @@ function getSelectEmpalmesNumEmpalmesInstalacion() {
             console.log(c);
         }
     });
-
 }
 
 function validarCampos() {
@@ -120,14 +119,14 @@ function limpiar() {
 
 function exportExcel(tableID, filename = '') {
     var downloadLink;
-    var dataType = 'application/vnd.ms-excel';
+    var dataType = 'application/vnd.ms-excel;base64';
     var tableSelect = document.getElementById(tableID);
     var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
     filename = filename ? filename + '.xlsx' : 'Resumen-Pagos-' + $('#mes').val() + '.xlsx';
     downloadLink = document.createElement("a");
     document.body.appendChild(downloadLink);
     if (navigator.msSaveOrOpenBlob) {
-        var blob = new Blob(['\ufeff', tableHTML], {
+        var blob = new Blob(['ufeff', tableHTML], {
             type: dataType
         });
         navigator.msSaveOrOpenBlob(blob, filename);
@@ -137,3 +136,32 @@ function exportExcel(tableID, filename = '') {
         downloadLink.click();
 }
 }
+
+var tableToExcel = (function () {
+    var uri = 'data:application/vnd.ms-excel;base64,'
+            , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+            , base64 = function (s) {
+                return $.base64.encode(s);
+            }
+    , format = function (s, c) {
+        return s.replace(/{(\w+)}/g, function (m, p) {
+            return c[p];
+        });
+    };
+    return function (table, name) {
+        if (!table.nodeType)
+            table = document.getElementById(table);
+        var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML};
+        var filename = 'Resumen-Pagos-' + $('#mes').val() + '.xls';
+        downloadLink = document.createElement("a");
+        downloadLink.download = filename;
+
+        downloadLink.href = uri + base64(format(template, ctx));
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        delete downloadLink;
+
+        //
+    };
+})();

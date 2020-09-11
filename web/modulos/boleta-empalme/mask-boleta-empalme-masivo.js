@@ -18,7 +18,7 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
     };
 
     $.ajax({
-        url: 'RemarcadorController',
+        url: '/ControlCliente/RemarcadorController',
         type: 'post',
         data: {
             datos: JSON.stringify(datos)
@@ -87,7 +87,7 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
 }
 
 function armarDetalleTarifa() {
-    var idtarifa = $('#select-tarifa').val();
+    var idtarifa = IDTARIFA;
     var idred = REMCLI.idred;
     var numremarcador = REMCLI.numremarcador;
     var mesanio = MES;
@@ -102,7 +102,7 @@ function armarDetalleTarifa() {
     };
     $('#tarifa').html($('#select-tarifa option:selected').html() + '<br /><br />');
     $.ajax({
-        url: 'BoletaController',
+        url: '/ControlCliente/BoletaController',
         type: 'post',
         data: {
             datos: JSON.stringify(datos)
@@ -147,7 +147,7 @@ function generar() {
         tipoboleta: 'MENSUAL'
     };
     $.ajax({
-        url: 'BoletaController',
+        url: '/ControlCliente/BoletaController',
         type: 'post',
         data: {
             datos: JSON.stringify(datos)
@@ -186,11 +186,11 @@ function graficarDesde(idremarcador, aniomes) {
         idcliente: idcliente,
         idremarcador: idremarcador,
         numremarcador: numremarcador,
-        aniomes: aniomes
+        aniomes: MES
     };
 
     $.ajax({
-        url: 'ReportesController',
+        url: '/ControlCliente/ReportesController',
         type: 'post',
         data: {
             datos: JSON.stringify(datos)
@@ -274,7 +274,7 @@ function armarLastBoleta() {
         idboleta: IDBOLETA
     };
     $.ajax({
-        url: 'BoletaController',
+        url: '/ControlCliente/BoletaController',
         type: 'post',
         data: {
             datos: JSON.stringify(datos)

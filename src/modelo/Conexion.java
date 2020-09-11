@@ -69,7 +69,7 @@ public class Conexion {
 	Connection conn;
 	try {
 	    Class.forName("com.mysql.cj.jdbc.Driver");
-	    conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + bd + "?useLegacyDatetimeCode=false", user, pass);
+	    conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + bd + "?useLegacyDatetimeCode=false&useUnicode=true&characterEncoding=utf8", user, pass);
 	    this.con = conn;
 	} catch (ClassNotFoundException | SQLException ex) {
 	    System.out.println("Problemas al abrir la conexion.");

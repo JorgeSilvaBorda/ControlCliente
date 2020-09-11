@@ -114,6 +114,7 @@ function getRemarcadoresIdEmpalme() {
 }
 
 function graficarRemarcadores(obj) {
+    var txtbodega = $('#select-bodega option:selected').text();
     var remarcadores = [];
     for (var x in obj.remarcadores) {
         remarcadores.push({idremarcador: obj.remarcadores[x].idremarcador, numremarcador: obj.remarcadores[x].numremarcador});
@@ -157,7 +158,7 @@ function graficarRemarcadores(obj) {
                     options: {
                         title: {
                             display: true,
-                            text: 'Consumo Registrado ' + mesNumeroAPalabraLarga(mes) + " de " + anio
+                            text: 'Consumo Registrado ' + mesNumeroAPalabraLarga(mes) + " de " + anio + " " + txtbodega
                         },
                         tooltips: {
                             enabled: true,

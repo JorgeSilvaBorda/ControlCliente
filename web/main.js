@@ -17,3 +17,7 @@ function salir(){
         }
     });
 }
+
+function getAlertas(){
+    
+}

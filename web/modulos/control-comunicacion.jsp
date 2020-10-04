@@ -1,7 +1,7 @@
-<script src="modulos/control-comunicacion.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
+<script src="modulos/control-comunicacion.js?=<% out.print(modelo.Util.generaRandom(10000, 99999));%>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        getEventosComunicacion();
+        $('#cont-eventos').load('modulos/control-comunicacion-nuevos.jsp');
     });
 
 </script>
@@ -9,29 +9,23 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="page-header">
-                <h1>Registro Eventos<small> de comunicación remarcadores</small></h1>
+                <h1>Eventos<small> de comunicación</small></h1>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-12">
-            
-            <table style='font-size: 12px;' id='tabla-eventos-comunicacion' class='table table-condensed table-borderless table-striped table-hover table-sm small'>
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>ID Remarcador</th>
-                        <th>Bodega</th>
-                        <th>Instalación</th>
-                        <th>Cliente</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                </tbody>
-            </table>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" onclick='cargarPestana(this, "control-comunicacion-nuevos");' href="#">Nuevos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick='cargarPestana(this, "control-comunicacion-todos");' href="#">Todos</a>
+                </li>
+            </ul>
         </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm-12' id='cont-eventos'></div>
     </div>
 </div>

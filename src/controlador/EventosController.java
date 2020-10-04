@@ -1,11 +1,13 @@
 package controlador;
 
+import clases.json.JSONArray;
 import clases.json.JSONException;
 import clases.json.JSONObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +28,14 @@ public class EventosController extends HttpServlet {
             case "get-nuevos-eventos-comunicacion":
                 out.print(getNuevosEventosComuniacacion());
                 break;
+            case "get-todos-eventos-comunicacion":
+                out.print(getTodosEventosComuniacacion());
+                break;
             case "marcar-evento-leido":
                 out.print(marcarLeido(entrada));
+                break;
+            case "marcar-todos-leidos":
+                out.print(marcarTodosLeidos(entrada));
                 break;
         }
     }
@@ -60,24 +68,24 @@ public class EventosController extends HttpServlet {
         System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
-        int cont = 0;
+        int cant = 0;
         String tabla = "";
         try {
             ResultSet rs = c.ejecutarQuery(query);
             while (rs.next()) {
                 tabla += "<tr>";
-                tabla += "<td>" + rs.getString("FECHAFORMAT") + "</td>";
+                tabla += "<td><input type='hidden' value='" + rs.getInt("IDEVENTO") + "' />" + rs.getString("FECHAFORMAT") + "</td>";
                 tabla += "<td>" + rs.getString("HORA") + "</td>";
                 tabla += "<td>" + rs.getInt("REMARCADOR_ID") + "</td>";
                 tabla += "<td>" + rs.getString("NOMPARQUE") + "</td>";
                 tabla += "<td>" + rs.getString("NOMINSTALACION") + "</td>";
                 tabla += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
-                tabla += "<td><button type='button' onclick='marcarLeido(this, " + rs.getInt("IDEVENTO") + ");' class='btn btn-outline-success btn-block btn-sm'>Marcar Leído</button></td>";
+                tabla += "<td><button id='btn_marcar_" + rs.getInt("IDEVENTO") + "' type='button' onclick='marcarLeido(this, " + rs.getInt("IDEVENTO") + ");' class='btn btn-outline-success btn-block btn-sm'>Marcar Leído</button></td>";
                 tabla += "</tr>";
-                cont++;
+                cant++;
             }
             salida.put("estado", "ok");
-            salida.put("cant", cont);
+            salida.put("cant", cant);
             salida.put("cuerpo", tabla);
 
         } catch (JSONException | SQLException ex) {
@@ -86,7 +94,40 @@ public class EventosController extends HttpServlet {
             System.out.println(ex);
         }
         c.cerrar();
-        System.out.println(salida);
+        return salida;
+    }
+
+    private JSONObject getTodosEventosComuniacacion() {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_TODOS_EVENTOS_COMUNICACION()";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        int cant = 0;
+        String tabla = "";
+        try {
+            ResultSet rs = c.ejecutarQuery(query);
+            while (rs.next()) {
+                tabla += "<tr>";
+                tabla += "<td><input type='hidden' value='" + rs.getInt("IDEVENTO") + "' />" + rs.getString("FECHAFORMAT") + "</td>";
+                tabla += "<td>" + rs.getString("HORA") + "</td>";
+                tabla += "<td>" + rs.getInt("REMARCADOR_ID") + "</td>";
+                tabla += "<td>" + rs.getString("NOMPARQUE") + "</td>";
+                tabla += "<td>" + rs.getString("NOMINSTALACION") + "</td>";
+                tabla += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
+                tabla += "</tr>";
+                cant++;
+            }
+            salida.put("estado", "ok");
+            salida.put("cant", cant);
+            salida.put("cuerpo", tabla);
+
+        } catch (JSONException | SQLException ex) {
+            salida.put("error", ex);
+            System.out.println("Problemas al obtener todos los eventos de comunicación.");
+            System.out.println(ex);
+        }
+        c.cerrar();
         return salida;
     }
 
@@ -96,6 +137,20 @@ public class EventosController extends HttpServlet {
                 + entrada.getInt("idevento")
                 + ")";
         System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        salida.put("estado", "ok");
+        return salida;
+    }
+
+    private JSONObject marcarTodosLeidos(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        JSONArray ides = entrada.getJSONArray("ides");
+        String query = "UPDATE BITACORACONTROL SET CODESTADO = 'L', NOMESTADO = 'Evento reisado y marcado como leído' WHERE IDEVENTO IN (" + ides.toString().replace("[", "").replace("]", "") + ")";
+        System.out.println(query);
+
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

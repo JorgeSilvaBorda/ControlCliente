@@ -14,7 +14,7 @@
         <link href="js/datatables/jquery-ui.css?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" rel="stylesheet" type="text/css"/>
         <link href="js/pivot.min.css" rel="stylesheet" type="text/css"/>
         <link href="iconic/font/css/open-iconic-bootstrap.css?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" rel="stylesheet" type="text/css"/>
-        <script src="main.js" type="text/javascript"></script>
+        <script src="main.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 
         <script src="js/jquery-3.4.1.min.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
         <script src="js/datatables/jquery-ui.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
@@ -41,6 +41,14 @@
         <script src="js/html2pdf.bundle.js" type="text/javascript"></script>
     </head>
     <body>
+        <script type="text/javascript">
+            var IDTIPOUSUARIO = <% out.print(session.getAttribute("idtipousuario").toString());%>;
+            $(document).ready(function(){
+                if(IDTIPOUSUARIO === 1){
+                    actualizaNuevosEventos();
+                }
+            });
+        </script>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
@@ -86,6 +94,15 @@
                                                     + "<a class='dropdown-item' onclick='cargarModulo(\"registros-mes-remarcador\");' href='#'>Descarga Registros Remarcador</a> \n"
                                                     + "</div>"
                                                     + "</li>"
+                                                    // Módulo control proceso -----------------------
+                                                    + "<li class='nav-item dropdown'>"
+                                                    + "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Control Proceso <span id='cant-alertas-general' class='badge badge-danger'></span></a>\n"
+                                                    + "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
+                                                    + "<a class='dropdown-item' onclick='cargarModulo(\"control-comunicacion\");' href='#'>Comunicación <span id='cant-alertas-comunicacion' class='badge badge-danger'></span></a> \n"
+                                                    + "<a class='dropdown-item' onclick='cargarModulo(\"control-continuidad\");' href='#'>Continuidad <span id='cant-alertas-continuidad' class='badge badge-danger'></span></a> \n"
+                                                    + "</div>"
+                                                    + "</li>"
+                                                    // ----------------------------------------------
                                                     + "<li class='nav-item dropdown'>"
                                                     + "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown' >Mantenedores</a>\n"
                                                     + "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"

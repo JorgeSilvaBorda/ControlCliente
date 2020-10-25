@@ -726,7 +726,7 @@ public class RemarcadorController extends HttpServlet {
         c.cerrar();
         return salida;
     }
-    
+
     private JSONObject getLastLecturaMes(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         int idremarcador = entrada.getInt("idremarcador");
@@ -741,17 +741,17 @@ public class RemarcadorController extends HttpServlet {
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
-        String tabla = "<label for='tab-last-lectura-mes'>Última lectura del mes</label><table style='font-size: 12px;' class='table table-bordered table-sm small'id='tab-last-lectura-mes'>\n" +
-"                        <thead>\n" +
-"                            <tr>\n" +
-"                                <th>ID</th>\n" +
-"                                <th>Energía (KWh)</th>\n" +
-"                                <th>Potencia Activa (KW)</th>\n" +
-"                                <th>Fecha</th>\n" +
-"                                <th>Hora</th>\n" +
-"                            </tr>\n" +
-"                        </thead>\n" +
-"                        <tbody>\n";
+        String tabla = "<label for='tab-last-lectura-mes'>Última lectura del mes</label><table style='font-size: 12px;' class='table table-bordered table-sm small'id='tab-last-lectura-mes'>\n"
+                + "                        <thead>\n"
+                + "                            <tr>\n"
+                + "                                <th>ID</th>\n"
+                + "                                <th>Energía (KWh)</th>\n"
+                + "                                <th>Potencia Activa (KW)</th>\n"
+                + "                                <th>Fecha</th>\n"
+                + "                                <th>Hora</th>\n"
+                + "                            </tr>\n"
+                + "                        </thead>\n"
+                + "                        <tbody>\n";
         String filas = "";
         try {
             while (rs.next()) {
@@ -762,7 +762,7 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td>" + rs.getString("FECHAFORMAT") + "</td>";
                 filas += "<td>" + rs.getString("HORA") + "</td>";
                 filas += "</tr>";
-                
+
                 salida.put("numremarcador", rs.getInt("REMARCADOR_ID"));
                 salida.put("energia", rs.getInt("EnergiaActivaConsumida_KWH"));
                 salida.put("potencia", rs.getBigDecimal("PotenciaActivaTotal_KW"));
@@ -772,10 +772,32 @@ public class RemarcadorController extends HttpServlet {
             }
             tabla += (filas + "</tbody></table>");
             salida.put("tabla", tabla);
-            String botonInsert = "<label for='num-lectura-manual'>Valor Lectura (KW)</label>\n" +
-"                    <input type='number' class='form-control form-control-sm small' id='num-lectura-manual' />\n" +
-"                    <button type='button' onclick='insertar();' class='btn btn-success btn-sm' id='btn-insert'>Insertar</button>";
+            String botonInsert = "<table style='border: none; border-collapse: collapse'>\n"
+                    + "<tr>\n"
+                    + "<td>\n"
+                    + "<div class='input-group mb-4'>\n"
+                    + "<input id='num-lectura-manual' type='number' class='form-control form-control-sm' aria-label='Lectura manual'>\n"
+                    + "<div class='input-group-append'>\n"
+                    + "<button onclick='insertar();' class='btn btn-sm btn-success' type='button'>Insertar</button>\n"
+                    + "</div>\n"
+                    + "</div>\n"
+                    + "</td>\n"
+                    + "<td>\n"
+                    + "<div class='loader' style='display: none; margin-top: -1.7em;'><!-- Contenedor del Spinner -->\n"
+                    + "<div class='ldio-sa9px9nknjc'> <!-- El Spinner -->\n"
+                    + "<div>\n"
+                    + "</div>\n"
+                    + "<div>\n"
+                    + "<div></div>\n"
+                    + "</div>\n"
+                    + "</div>\n"
+                    + "</div>\n"
+                    + "</td>\n"
+                    + "</tr>\n"
+                    + "</table>";
+            String etiqueta = "<label for='num-lectura-manual'>Valor Lectura (KW)</label>";
             salida.put("boton", botonInsert);
+            salida.put("etiqueta", etiqueta);
             salida.put("estado", "ok");
         } catch (JSONException | SQLException ex) {
             System.out.println("Problemas en controlador.RemarcadorController.getLastLecturaMes().");
@@ -787,7 +809,7 @@ public class RemarcadorController extends HttpServlet {
         c.cerrar();
         return salida;
     }
-    
+
     private JSONObject insLecturaManual(JSONObject entrada) {
         System.out.println(entrada);
         JSONObject salida = new JSONObject();

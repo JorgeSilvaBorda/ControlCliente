@@ -40,7 +40,7 @@
                 <label for="fecha">Mes</label>
                 <input type="month" class="form-control form-control-sm small" id="fecha" max="" />
             </div>
-            <button type="button" onclick='getLastLecturaMes();' id="btn-buscar" class="btn btn-success btn-sm small">Buscar</button>
+            <button type="button" onclick='getLastLecturaMes();' id="btn-buscar" class="btn btn-primary btn-sm small">Buscar</button>
             <button type="button" onclick='limpiar();' id="btn-limpiar" class="float-right btn btn-default btn-sm small">Limpiar</button>
         </div>
         <div class="col-sm-9">
@@ -49,8 +49,13 @@
 
                 </div>
             </div>
+            <div class='row'>
+                <div class='col-sm-3' id='etiqueta'>
+
+                </div>
+            </div>
             <div class="row">
-                <div class="col-sm-2" id="cont-lectura-manual">
+                <div class="col-sm-3" id="cont-lectura-manual">
                     
                 </div>
             </div>

@@ -67,6 +67,12 @@ public class RemarcadorController extends HttpServlet {
             case "del-remarcador":
                 out.print(delRemarcador(entrada));
                 break;
+            case "get-last-lectura-mes":
+                out.print(getLastLecturaMes(entrada));
+                break;
+            case "ins-lectura-manual":
+                out.print(insLecturaManual(entrada));
+                break;
         }
     }
 
@@ -713,6 +719,89 @@ public class RemarcadorController extends HttpServlet {
     private JSONObject delRemarcador(JSONObject remarador) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_DEL_REMARCADOR(" + remarador.getInt("idremarcador") + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject getLastLecturaMes(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        int idremarcador = entrada.getInt("idremarcador");
+        int anio = entrada.getInt("anio");
+        int mes = entrada.getInt("mes");
+        String query = "CALL SP_GET_LAST_LECTURA_MES("
+                + idremarcador + ", "
+                + anio + ", "
+                + mes + ""
+                + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String tabla = "<label for='tab-last-lectura-mes'>Última lectura del mes</label><table style='font-size: 12px;' class='table table-bordered table-sm small'id='tab-last-lectura-mes'>\n" +
+"                        <thead>\n" +
+"                            <tr>\n" +
+"                                <th>ID</th>\n" +
+"                                <th>Energía (KWh)</th>\n" +
+"                                <th>Potencia Activa (KW)</th>\n" +
+"                                <th>Fecha</th>\n" +
+"                                <th>Hora</th>\n" +
+"                            </tr>\n" +
+"                        </thead>\n" +
+"                        <tbody>\n";
+        String filas = "";
+        try {
+            while (rs.next()) {
+                filas += "<tr>";
+                filas += "<td>" + rs.getInt("REMARCADOR_ID") + "</td>";
+                filas += "<td>" + rs.getInt("EnergiaActivaConsumida_KWH") + "</td>";
+                filas += "<td>" + rs.getBigDecimal("PotenciaActivaTotal_KW") + "</td>";
+                filas += "<td>" + rs.getString("FECHAFORMAT") + "</td>";
+                filas += "<td>" + rs.getString("HORA") + "</td>";
+                filas += "</tr>";
+                
+                salida.put("numremarcador", rs.getInt("REMARCADOR_ID"));
+                salida.put("energia", rs.getInt("EnergiaActivaConsumida_KWH"));
+                salida.put("potencia", rs.getBigDecimal("PotenciaActivaTotal_KW"));
+                salida.put("fechaformat", rs.getString("FECHAFORMAT"));
+                salida.put("fecha", rs.getString("FECHA"));
+                salida.put("hora", rs.getString("HORA"));
+            }
+            tabla += (filas + "</tbody></table>");
+            salida.put("tabla", tabla);
+            String botonInsert = "<label for='num-lectura-manual'>Valor Lectura (KW)</label>\n" +
+"                    <input type='number' class='form-control form-control-sm small' id='num-lectura-manual' />\n" +
+"                    <button type='button' onclick='insertar();' class='btn btn-success btn-sm' id='btn-insert'>Insertar</button>";
+            salida.put("boton", botonInsert);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.RemarcadorController.getLastLecturaMes().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject insLecturaManual(JSONObject entrada) {
+        System.out.println(entrada);
+        JSONObject salida = new JSONObject();
+        int idremarcador = entrada.getInt("idremarcador");
+        int anio = entrada.getInt("anio");
+        int mes = entrada.getInt("mes");
+        int lectura = entrada.getInt("lectura");
+        String query = "CALL SP_INS_LECTURA_MANUAL("
+                + idremarcador + ", "
+                + lectura + ", "
+                + anio + ", "
+                + mes + ""
+                + ")";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

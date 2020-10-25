@@ -91,6 +91,7 @@
                                                     + "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Operaciones</a>\n"
                                                     + "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
                                                     + "<a class='dropdown-item' onclick='cargarModulo(\"cliente-remarcador\");' href='#'>Asignar remarcador a cliente</a> \n"
+                                                    + "<a class='dropdown-item' onclick='cargarModulo(\"ingreso-lectura-manual\");' href='#'>Ingreso lectura final manual</a> \n"
                                                     + "<a class='dropdown-item' onclick='cargarModulo(\"registros-mes-remarcador\");' href='#'>Descarga Registros Remarcador</a> \n"
                                                     + "</div>"
                                                     + "</li>"

@@ -1,9 +1,11 @@
 package controlador;
 
+import clases.json.JSONException;
 import clases.json.JSONObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,9 @@ public class ParametrosController extends HttpServlet {
             case "get-select-comunas":
                 out.print(getSelectComunas());
                 break;
+            case "get-finmes-anterior":
+                out.print(getFinMesAnterior());
+                break;
         }
     }
 
@@ -34,6 +39,28 @@ public class ParametrosController extends HttpServlet {
         String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDCOMUNA", "NOMCOMUNA");
         salida.put("options", options);
         salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getFinMesAnterior() {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_FINMES_ANTERIOR()";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+
+        try{
+            while(rs.next()){
+                salida.put("finmesanterior", rs.getString("FINMESANTERIOR"));
+                salida.put("finmesanteriorformat", rs.getString("FINMESANTERIORFORMAT"));
+            }
+            salida.put("estado", "ok");
+        }catch (JSONException | SQLException ex) {
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        
         c.cerrar();
         return salida;
     }

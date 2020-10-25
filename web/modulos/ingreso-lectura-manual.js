@@ -190,9 +190,11 @@ function getLastLecturaMes() {
 
                     $('#cont-last-lectura').html("");
                     $('#cont-lectura-manual').html("");
+                    $('#etiqueta').html("");
 
                     $('#cont-last-lectura').html(obj.tabla);
                     $('#cont-lectura-manual').html(obj.boton);
+                    $('#etiqueta').html(obj.etiqueta);
                     $('#select-instalacion').attr("disabled", "disabled");
                     $('#select-parque').attr("disabled", "disabled");
                     $('#select-empalme').attr("disabled", "disabled");
@@ -233,7 +235,8 @@ function insertar() {
             return false;
         }
 
-        if (confirm("Se ingresará el valor " + parseInt(lectura) + " para el remarcador ID: " + NUMREMARCADOR + ", para el mes de " + mesNumeroAPalabraLarga(mes) + " del año " + anio + ". Está seguro de que desea continuar?")) {
+        if (confirm("Se ingresará el valor " + parseInt(lectura) + " para el remarcador ID: " + NUMREMARCADOR + ", para el mes de " + mesNumeroAPalabraLarga(mes) + " del año " + anio + ". ¿Está seguro de que desea continuar?")) {
+            $('.loader').css("display", "block");
             var datos = {
                 tipo: 'ins-lectura-manual',
                 idremarcador: idremarcador,
@@ -250,6 +253,7 @@ function insertar() {
                 success: function (resp) {
                     var obj = JSON.parse(resp);
                     if (obj.estado === 'ok') {
+                        $('.loader').css("display", "none");
                         alert("Registro insertado correctamente.");
                         limpiar();
                     }

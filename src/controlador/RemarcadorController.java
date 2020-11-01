@@ -369,8 +369,8 @@ public class RemarcadorController extends HttpServlet {
                 }
             }
 
-            String demmaxString = new DecimalFormat("#.##").format(demmax);
-            String demmaxhpString = new DecimalFormat("#.##").format(demmax);
+            String demmaxString = new DecimalFormat("#.##").format(demmax).replace(",", ".");
+            String demmaxhpString = new DecimalFormat("#.##").format(demmaxhp).replace(",", ".");
 
             tablasalida += "<tr>";
             tablasalida += "<td style='text-align: center;' ><input type='hidden' value='" + remarcador.idremarcador + "' /><span>" + remarcador.numremarcador + "</span></td>";
@@ -728,7 +728,8 @@ public class RemarcadorController extends HttpServlet {
         return salida;
     }
 
-    private JSONObject getRemarcadorClienteIdRemarcador(JSONObject entrada) {
+    @Deprecated
+    private JSONObject getRemarcadorClienteIdRemarcadorOld(JSONObject entrada) {
         int idremarcador = entrada.getInt("idremarcador");
         JSONObject salida = new JSONObject();
         JSONObject remarcador = new JSONObject();
@@ -779,6 +780,20 @@ public class RemarcadorController extends HttpServlet {
             salida.put("error", ex);
         }
         c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject getRemarcadorClienteIdRemarcador(JSONObject entrada) {
+        int idremarcador = entrada.getInt("idremarcador");
+        JSONObject salida = new JSONObject();
+        JSONObject remarcador = new JSONObject();
+        String mesanio = entrada.getString("mesanio");
+        String query = "CALL SP_GET_REMARCADOR_CLIENTE_IDREMARCADOR(" + idremarcador + ", '" + mesanio + "')";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        
         return salida;
     }
 

@@ -105,6 +105,7 @@ function getSelectRemarcadorIdEmpalme(idempalme) {
         }
     });
 }
+
 function getDatosRemarcador() {
     var idremarcador = $('#select-remarcador').val();
     var numremarcador = $('#select-remarcador option:selected').text();

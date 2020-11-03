@@ -22,7 +22,7 @@ public class ETL {
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
-
+        System.out.println(query);
         try {
             LinkedList<String[]> filas = new LinkedList();
             while (rs.next()) {
@@ -59,6 +59,7 @@ public class ETL {
         String[][] origenes = getOrigenesRemarcador();
         String tabla = "";
         for (String[] fila : origenes) {
+            System.out.println("Comparar: " + fila[1] + " con " + idRemarcador);
             if (Integer.parseInt(fila[1]) == idRemarcador) {
                 tabla = fila[0];
             }
@@ -131,11 +132,11 @@ public class ETL {
         int campos = 0;
         switch (tabla) {
             case "circutorcvmC10":
-                query = "SELECT CONVERT(TIMESTAMP, CHAR) TIMESTAMP, EQUIPO_ID, TRIM(ITEM49) ITEM49, TRIM(ITEM50) ITEM50, TRIM(ITEM95) ITEM95, TRIM(ITEM96) ITEM96 FROM " + tabla + " WHERE EQUIPO_ID = " + idRemarcador + " AND MES >= " + mes + " AND ANIO <= " + anio + " ORDER BY TIMESTAMP ASC";
+                query = "SELECT CONVERT(TIMESTAMP, CHAR) TIMESTAMP, EQUIPO_ID, TRIM(ITEM49) ITEM49, TRIM(ITEM50) ITEM50, TRIM(ITEM95) ITEM95, TRIM(ITEM96) ITEM96 FROM " + tabla + " WHERE EQUIPO_ID = " + idRemarcador + " AND MES = " + mes + " AND ANIO = " + anio + " ORDER BY TIMESTAMP ASC";
                 campos = 6;
                 break;
             case "schneiderPM710":
-                query = "SELECT CONVERT(TIMESTAMP, CHAR) TIMESTAMP, EQUIPO_ID, TRIM(ITEM7) ITEM7, TRIM(ITEM108) ITEM108, TRIM(ITEM1) ITEM1, TRIM(ITEM2) ITEM2, TRIM(ITEM109) ITEM109 FROM " + tabla + " WHERE EQUIPO_ID = " + idRemarcador + " AND MES >= " + mes + " AND ANIO <= " + anio + " ORDER BY TIMESTAMP ASC";
+                query = "SELECT CONVERT(TIMESTAMP, CHAR) TIMESTAMP, EQUIPO_ID, TRIM(ITEM7) ITEM7, TRIM(ITEM108) ITEM108, TRIM(ITEM1) ITEM1, TRIM(ITEM2) ITEM2, TRIM(ITEM109) ITEM109 FROM " + tabla + " WHERE EQUIPO_ID = " + idRemarcador + " AND MES = " + mes + " AND ANIO = " + anio + " ORDER BY TIMESTAMP ASC";
                 campos = 7;
                 break;
         }
@@ -396,6 +397,9 @@ public class ETL {
                         }
                     }
                 }
+                if(!encontrado){
+                    tabla[i][2] = "0";
+                }
 
             }
             if (tabla[i][3].equals("")) {
@@ -413,6 +417,9 @@ public class ETL {
                             encontrado = true;
                         }
                     }
+                }
+                if(!encontrado){
+                    tabla[i][3] = "0";
                 }
             }
 
@@ -432,6 +439,9 @@ public class ETL {
                         }
                     }
                 }
+                if(!encontrado){
+                    tabla[i][4] = "0";
+                }
             }
             if (tabla[i][5].equals("")) {
                 boolean encontrado = false;
@@ -448,6 +458,9 @@ public class ETL {
                             encontrado = true;
                         }
                     }
+                }
+                if(!encontrado){
+                    tabla[i][5] = "0";
                 }
             }
         }
@@ -511,6 +524,9 @@ public class ETL {
                         }
                     }
                 }
+                if(!encontrado){
+                    tabla[i][2] = "0";
+                }
 
             }
             if (tabla[i][3].equals("")) {
@@ -528,6 +544,9 @@ public class ETL {
                             encontrado = true;
                         }
                     }
+                }
+                if(!encontrado){
+                    tabla[i][3] = "0";
                 }
             }
 
@@ -547,6 +566,9 @@ public class ETL {
                         }
                     }
                 }
+                if(!encontrado){
+                    tabla[i][4] = "0";
+                }
             }
             if (tabla[i][5].equals("")) {
                 boolean encontrado = false;
@@ -564,6 +586,9 @@ public class ETL {
                         }
                     }
                 }
+                if(!encontrado){
+                    tabla[i][5] = "0";
+                }
             }
             if (tabla[i][6].equals("")) {
                 boolean encontrado = false;
@@ -580,6 +605,9 @@ public class ETL {
                             encontrado = true;
                         }
                     }
+                }
+                if(!encontrado){
+                    tabla[i][6] = "0";
                 }
             }
         }

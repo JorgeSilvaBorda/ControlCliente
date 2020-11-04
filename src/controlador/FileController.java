@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.Properties;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -98,10 +97,10 @@ public class FileController extends HttpServlet {
             FileWriter fr = new FileWriter(salida, true);
             DecimalFormat formato = new DecimalFormat("#.##");
 
-            String cabecera = "TIMESTAMP;FECHA;HORA;ID REMARCADOR;ENERGIA CONSUMIDA PROYECTADA;POTENCIA ACTIVA;LECTURA REAL" + System.getProperty("line.separator");
+            String cabecera = "TIMESTAMP;FECHA;HORA;ID REMARCADOR;ENERGIA CONSUMIDA PROYECTADA;POTENCIA ACTIVA;LECTURA REAL;LECTURA MANUAL" + System.getProperty("line.separator");
             fr.write(cabecera);
             for (FilaNormal fila : filas) {
-                String registro = fila.fechahora + ";" + Util.invertirFecha(fila.fecha) + ";" + fila.hora + ";" + fila.idremarcador + ";" + (int) fila.lecturaproyectada + ";" + formato.format(fila.potencia).replace(",", ".") + ";" + (int) fila.lecturareal + System.getProperty("line.separator");
+                String registro = fila.fechahora + ";" + Util.invertirFecha(fila.fecha) + ";" + fila.hora + ";" + fila.idremarcador + ";" + (int) fila.lecturaproyectada + ";" + formato.format(fila.potencia).replace(",", ".") + ";" + (int) fila.lecturareal + ";" + fila.lecturamanual + System.getProperty("line.separator");
                 fr.write(registro);
             }
             fr.close();

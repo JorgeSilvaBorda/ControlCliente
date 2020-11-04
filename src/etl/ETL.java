@@ -68,12 +68,12 @@ public class ETL {
         int campos = 0;
         switch (tabla) {
             case "circutorcvmC10":
-                query = "SELECT CONVERT(TIMESTAMP, CHAR) TIMESTAMP, EQUIPO_ID, TRIM(ITEM49) ITEM49, TRIM(ITEM50) ITEM50, TRIM(ITEM95) ITEM95, TRIM(ITEM96) ITEM96 FROM " + tabla + " WHERE EQUIPO_ID = " + idRemarcador + " AND FECHA >= '" + fechaDesde + "' AND FECHA <= '" + fechaHasta + "' ORDER BY TIMESTAMP ASC";
-                campos = 6;
+                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM49) ITEM49, TRIM(A.ITEM50) ITEM50, TRIM(A.ITEM95) ITEM95, TRIM(A.ITEM96) ITEM96, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + idRemarcador + " AND A.FECHA >= '" + fechaDesde + "' AND A.FECHA <= '" + fechaHasta + "' ORDER BY A.TIMESTAMP ASC";
+                campos = 8;
                 break;
             case "schneiderPM710":
-                query = "SELECT CONVERT(TIMESTAMP, CHAR) TIMESTAMP, EQUIPO_ID, TRIM(ITEM7) ITEM7, TRIM(ITEM108) ITEM108, TRIM(ITEM1) ITEM1, TRIM(ITEM2) ITEM2, TRIM(ITEM109) ITEM109 FROM " + tabla + " WHERE EQUIPO_ID = " + idRemarcador + " AND FECHA >= '" + fechaDesde + "' AND FECHA <= '" + fechaHasta + "' ORDER BY TIMESTAMP ASC";
-                campos = 7;
+                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM7) ITEM7, TRIM(A.ITEM108) ITEM108, TRIM(A.ITEM1) ITEM1, TRIM(A.ITEM2) ITEM2, TRIM(A.ITEM109) ITEM109, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + idRemarcador + " AND A.FECHA >= '" + fechaDesde + "' AND A.FECHA <= '" + fechaHasta + "' ORDER BY A.TIMESTAMP ASC";
+                campos = 9;
                 break;
         }
         LinkedList<String[]> filas = new LinkedList();
@@ -132,12 +132,12 @@ public class ETL {
         int campos = 0;
         switch (tabla) {
             case "circutorcvmC10":
-                query = "SELECT CONVERT(TIMESTAMP, CHAR) TIMESTAMP, EQUIPO_ID, TRIM(ITEM49) ITEM49, TRIM(ITEM50) ITEM50, TRIM(ITEM95) ITEM95, TRIM(ITEM96) ITEM96 FROM " + tabla + " WHERE EQUIPO_ID = " + idRemarcador + " AND MES = " + mes + " AND ANIO = " + anio + " ORDER BY TIMESTAMP ASC";
-                campos = 6;
+                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM49) ITEM49, TRIM(A.ITEM50) ITEM50, TRIM(A.ITEM95) ITEM95, TRIM(A.ITEM96) ITEM96, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + idRemarcador + " AND A.MES = " + mes + " AND A.ANIO = " + anio + " ORDER BY A.TIMESTAMP ASC";
+                campos = 8;
                 break;
             case "schneiderPM710":
-                query = "SELECT CONVERT(TIMESTAMP, CHAR) TIMESTAMP, EQUIPO_ID, TRIM(ITEM7) ITEM7, TRIM(ITEM108) ITEM108, TRIM(ITEM1) ITEM1, TRIM(ITEM2) ITEM2, TRIM(ITEM109) ITEM109 FROM " + tabla + " WHERE EQUIPO_ID = " + idRemarcador + " AND MES = " + mes + " AND ANIO = " + anio + " ORDER BY TIMESTAMP ASC";
-                campos = 7;
+                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM7) ITEM7, TRIM(A.ITEM108) ITEM108, TRIM(A.ITEM1) ITEM1, TRIM(A.ITEM2) ITEM2, TRIM(A.ITEM109) ITEM109, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + idRemarcador + " AND A.MES = " + mes + " AND A.ANIO = " + anio + " ORDER BY A.TIMESTAMP ASC";
+                campos = 9;
                 break;
         }
         LinkedList<String[]> filas = new LinkedList();
@@ -489,8 +489,10 @@ public class ETL {
             String fecha = tabla[i][0].replace(".0", "").split(" ")[0];
             String hora = tabla[i][0].replace(".0", "").split(" ")[1];
             int idremarcador = Integer.parseInt(tabla[i][1]);
+            String esmanual = tabla[i][6];
+            int lecturamanual = Integer.parseInt(tabla[i][7]);
 
-            tablaNormal[i] = new FilaNormal(fechahora, fecha, hora, idremarcador, lectura, potencia, contador, consumo, ultimomax);
+            tablaNormal[i] = new FilaNormal(fechahora, fecha, hora, idremarcador, lectura, potencia, contador, consumo, ultimomax, esmanual, lecturamanual);
         }
         System.out.println("Tabla circutorcvmC10 lista");
         return tablaNormal;
@@ -636,8 +638,10 @@ public class ETL {
             String fecha = tabla[i][0].replace(".0", "").split(" ")[0];
             String hora = tabla[i][0].replace(".0", "").split(" ")[1];
             int idremarcador = Integer.parseInt(tabla[i][1]);
+            String esmanual = tabla[i][7];
+            int lecturamanual = Integer.parseInt(tabla[i][8]);
 
-            tablaNormal[i] = new FilaNormal(fechahora, fecha, hora, idremarcador, lectura, potencia, contador, consumo, ultimomax);
+            tablaNormal[i] = new FilaNormal(fechahora, fecha, hora, idremarcador, lectura, potencia, contador, consumo, ultimomax, esmanual, lecturamanual);
         }
         System.out.println("Tabla SchneiderPM710 lista");
         return tablaNormal;

@@ -301,6 +301,7 @@ public class RemarcadorController extends HttpServlet {
         int anio = Integer.parseInt(entrada.getString("mes").split("-")[0]);
         int mes = Integer.parseInt(entrada.getString("mes").split("-")[1]);
         int kwtotal = 0;
+        boolean haymanual = false;
         String query = "CALL SP_GET_REMARCADORES_NUMEMPALME_BOLETA("
                 + "'" + entrada.getString("numempalme") + "',"
                 + "'" + entrada.getString("mes") + "'"
@@ -351,9 +352,13 @@ public class RemarcadorController extends HttpServlet {
             String fechafinlectura = filas[filas.length - 1].fecha;
             //int lecturaanterior = (int) filas[0].lecturaproyectada;
             //int lecturafinal = (int) filas[filas.length - 1].lecturaproyectada;
-            
+
             int lecturaanterior = (int) filas[0].lecturareal;
             int lecturafinal = (int) filas[filas.length - 1].lecturareal;
+            if(filas[filas.length - 1].esmanual.equals("SI")){
+                lecturafinal = filas[filas.length - 1].lecturamanual;
+                haymanual = true;
+            }
 
             for (FilaNormal fila : filas) {
                 if (fila.lecturaproyectada != fila.delta) {
@@ -380,16 +385,16 @@ public class RemarcadorController extends HttpServlet {
             tablasalida += "<td style='text-align: center;' ><span>" + remarcador.modulos + "</span></td>";
             tablasalida += "<td><span>" + remarcador.nominstalacion + "</span></td>";
             tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturaanterior) + "</span></td>";
-            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturafinal) + "</span></td>";
+            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturafinal) + (filas[filas.length - 1].esmanual.equals("SI") ? " *" : "") +  "</span></td>";
             tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles((int) consumo) + "</span></td>";
 
             if (remarcador.hayboleta == 0) {
                 boletasnoemitidas++; //Para ver si se anota al menos un candidato a generación masiva
-                tablasalida += "<td><button type='button' onclick='calcular(" + remarcador.idremarcador + ", " + remarcador.numremarcador + ", \"" + remarcador.numserie + "\", " + (int)consumo + ", \"" + entrada.getString("mes") + "\", " + lecturaanterior + ", " + lecturafinal + ", \"" + demmaxString + "\", \"" + demmaxhpString + "\", \"" + fechainilectura + "\", \"" + fechafinlectura + "\");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
+                tablasalida += "<td><button type='button' onclick='calcular(" + remarcador.idremarcador + ", " + remarcador.numremarcador + ", \"" + remarcador.numserie + "\", " + (int) consumo + ", \"" + entrada.getString("mes") + "\", " + lecturaanterior + ", " + lecturafinal + ", \"" + demmaxString + "\", \"" + demmaxhpString + "\", \"" + fechainilectura + "\", \"" + fechafinlectura + "\");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
             } else {
                 tablasalida += "<td>"
                         + "<div id='botones_" + remarcador.idremarcador + "' style='display:none;' class='btn-group' role='group' aria-label='Sobreescritura'>"
-                        + "<button type='button' onclick='calcular(" + remarcador.idremarcador + ", " + remarcador.numremarcador + ", \"" + remarcador.numserie + "\", " + (int)consumo + ", \"" + entrada.getString("mes") + "\", " + lecturaanterior + ", " + lecturafinal + ", \"" + demmaxString + "\", \"" + demmaxhpString + "\", \"" + fechainilectura + "\", \"" + fechafinlectura + "\");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Sobreescribir</button>"
+                        + "<button type='button' onclick='calcular(" + remarcador.idremarcador + ", " + remarcador.numremarcador + ", \"" + remarcador.numserie + "\", " + (int) consumo + ", \"" + entrada.getString("mes") + "\", " + lecturaanterior + ", " + lecturafinal + ", \"" + demmaxString + "\", \"" + demmaxhpString + "\", \"" + fechainilectura + "\", \"" + fechafinlectura + "\");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Sobreescribir</button>"
                         + "<button type='button' onclick='deshabilitarSobreescritura(" + remarcador.idremarcador + ");' class='btn btn-sm btn-warning' style='padding: 0px 5px 0px 5px; vertical-align:middle;'>x</button>"
                         + "</div>"
                         + "<button id='btn_" + remarcador.idremarcador + "' type='button' onclick='habilitarSobreescritura(" + remarcador.idremarcador + ");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Habilitar</button>"
@@ -403,7 +408,7 @@ public class RemarcadorController extends HttpServlet {
             }
 
             tablasalida += "</tr>";
-            kwtotal += (int)consumo;
+            kwtotal += (int) consumo;
             idcomuna = remarcador.idcomuna;
             remarcadorJson = new JSONObject();
             remarcadorJson.put("idremarcador", remarcador.idremarcador);
@@ -412,7 +417,7 @@ public class RemarcadorController extends HttpServlet {
             remarcadorJson.put("idparque", remarcador.idparque);
             remarcadorJson.put("modulos", remarcador.modulos);
             remarcadorJson.put("idinstalacion", remarcador.idinstalacion);
-            remarcadorJson.put("consumo", (int)consumo);
+            remarcadorJson.put("consumo", (int) consumo);
             remarcadorJson.put("lecturaanterior", lecturaanterior);
             remarcadorJson.put("lecturaactual", lecturafinal);
             remarcadorJson.put("fechainicial", fechainilectura);
@@ -445,6 +450,9 @@ public class RemarcadorController extends HttpServlet {
 
         //tablasalida += filas;
         tablasalida += "</tbody></table>";
+        if(haymanual){
+            tablasalida += "<span style='font-size: 12px; font-weight: bold;'>* La lectura actual fue ingresada manualmente</span>";
+        }
         salida.put("tabla", tablasalida);
         salida.put("remarcadores", remarcadores);
         salida.put("kwtotal", kwtotal);
@@ -728,8 +736,8 @@ public class RemarcadorController extends HttpServlet {
         return salida;
     }
 
-    @Deprecated
-    private JSONObject getRemarcadorClienteIdRemarcadorOld(JSONObject entrada) {
+    
+    private JSONObject getRemarcadorClienteIdRemarcador(JSONObject entrada) {
         int idremarcador = entrada.getInt("idremarcador");
         JSONObject salida = new JSONObject();
         JSONObject remarcador = new JSONObject();
@@ -782,18 +790,22 @@ public class RemarcadorController extends HttpServlet {
         c.cerrar();
         return salida;
     }
-    
-    private JSONObject getRemarcadorClienteIdRemarcador(JSONObject entrada) {
+
+    private JSONObject getRemarcadorClienteIdRemarcadorNew(JSONObject entrada) {
         int idremarcador = entrada.getInt("idremarcador");
         JSONObject salida = new JSONObject();
         JSONObject remarcador = new JSONObject();
         String mesanio = entrada.getString("mesanio");
         String query = "CALL SP_GET_REMARCADOR_CLIENTE_IDREMARCADOR(" + idremarcador + ", '" + mesanio + "')";
+        int anio = Integer.parseInt(mesanio.split("-")[0]);
+        int mes = Integer.parseInt(mesanio.split("-")[2]);
+        int numremarcador = entrada.getInt("numremarcador");
+        FilaNormal[] registros = etl.ETL.getDatasetRemarcador(numremarcador, mes, anio);
         System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
-        
+
         return salida;
     }
 
@@ -908,87 +920,76 @@ public class RemarcadorController extends HttpServlet {
     private JSONObject getLastLecturaMes(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         int idremarcador = entrada.getInt("idremarcador");
+        int numremarcador = entrada.getInt("numremarcador");
         int anio = entrada.getInt("anio");
         int mes = entrada.getInt("mes");
-        String query = "CALL SP_GET_LAST_LECTURA_MES("
-                + idremarcador + ", "
-                + anio + ", "
-                + mes + ""
-                + ")";
-        System.out.println(query);
-        Conexion c = new Conexion();
-        c.abrir();
-        ResultSet rs = c.ejecutarQuery(query);
-        String tabla = "<label for='tab-last-lectura-mes'>Última lectura del mes</label><table style='font-size: 12px;' class='table table-bordered table-sm small'id='tab-last-lectura-mes'>\n"
-                + "                        <thead>\n"
-                + "                            <tr>\n"
-                + "                                <th>ID</th>\n"
-                + "                                <th>Energía (KWh)</th>\n"
-                + "                                <th>Potencia Activa (KW)</th>\n"
-                + "                                <th>Fecha</th>\n"
-                + "                                <th>Hora</th>\n"
-                + "                            </tr>\n"
-                + "                        </thead>\n"
-                + "                        <tbody>\n";
-        String filas = "";
-        try {
-            while (rs.next()) {
-                filas += "<tr>";
-                filas += "<td>" + rs.getInt("REMARCADOR_ID") + "</td>";
-                filas += "<td>" + rs.getInt("EnergiaActivaConsumida_KWH") + "</td>";
-                filas += "<td>" + rs.getBigDecimal("PotenciaActivaTotal_KW") + "</td>";
-                filas += "<td>" + rs.getString("FECHAFORMAT") + "</td>";
-                filas += "<td>" + rs.getString("HORA") + "</td>";
-                filas += "</tr>";
 
-                salida.put("numremarcador", rs.getInt("REMARCADOR_ID"));
-                salida.put("energia", rs.getInt("EnergiaActivaConsumida_KWH"));
-                salida.put("potencia", rs.getBigDecimal("PotenciaActivaTotal_KW"));
-                salida.put("fechaformat", rs.getString("FECHAFORMAT"));
-                salida.put("fecha", rs.getString("FECHA"));
-                salida.put("hora", rs.getString("HORA"));
-            }
-            tabla += (filas + "</tbody></table>");
-            salida.put("tabla", tabla);
-            String botonInsert = "<table style='border: none; border-collapse: collapse'>\n"
-                    + "<tr>\n"
-                    + "<td>\n"
-                    + "<div class='input-group mb-4'>\n"
-                    + "<input id='num-lectura-manual' type='number' class='form-control form-control-sm' aria-label='Lectura manual'>\n"
-                    + "<div class='input-group-append'>\n"
-                    + "<button onclick='insertar();' class='btn btn-sm btn-success' type='button'>Insertar</button>\n"
-                    + "</div>\n"
-                    + "</div>\n"
-                    + "</td>\n"
-                    + "<td>\n"
-                    + "<div class='loader' style='display: none; margin-top: -1.7em;'><!-- Contenedor del Spinner -->\n"
-                    + "<div class='ldio-sa9px9nknjc'> <!-- El Spinner -->\n"
-                    + "<div>\n"
-                    + "</div>\n"
-                    + "<div>\n"
-                    + "<div></div>\n"
-                    + "</div>\n"
-                    + "</div>\n"
-                    + "</div>\n"
-                    + "</td>\n"
-                    + "</tr>\n"
-                    + "</table>";
-            String etiqueta = "<label for='num-lectura-manual'>Valor Lectura (KW)</label>";
-            salida.put("boton", botonInsert);
-            salida.put("etiqueta", etiqueta);
-            salida.put("estado", "ok");
-        } catch (JSONException | SQLException ex) {
-            System.out.println("Problemas en controlador.RemarcadorController.getLastLecturaMes().");
-            System.out.println(ex);
-            ex.printStackTrace();
-            salida.put("estado", "error");
-            salida.put("error", ex);
-        }
-        c.cerrar();
+        FilaNormal[] registros = etl.ETL.getDatasetRemarcador(numremarcador, mes, anio);
+        FilaNormal ultregistro = registros[registros.length - 1];
+
+        String tabla = "<label for='tab-last-lectura-mes'>Última lectura del mes</label><table style='font-size: 12px;' class='table table-bordered table-sm small'id='tab-last-lectura-mes'>\n"
+                + "<thead>\n"
+                + "<tr>\n"
+                + "<th>ID</th>\n"
+                + "<th>Energía (KWh)</th>\n"
+                + "<th>Potencia Activa (KW)</th>\n"
+                + "<th>Fecha</th>\n"
+                + "<th>Hora</th>\n"
+                + "</tr>\n"
+                + "</thead>\n"
+                + "<tbody>\n";
+        String filas = "";
+        DecimalFormat df = new DecimalFormat("#.##");
+        filas += "<tr>";
+        filas += "<td>" + ultregistro.idremarcador + "</td>";
+        filas += "<td>" + (int) ultregistro.lecturareal + "</td>";
+        filas += "<td>" + df.format(ultregistro.potencia).replace(",", ".") + "</td>";
+        filas += "<td>" + Util.invertirFecha(ultregistro.fecha) + "</td>";
+        filas += "<td>" + ultregistro.hora + "</td>";
+        filas += "</tr>";
+
+        salida.put("numremarcador", ultregistro.idremarcador);
+        salida.put("energia", (int) ultregistro.lecturareal);
+        salida.put("potencia", df.format(ultregistro.potencia).replace(",", "."));
+        salida.put("fechaformat", Util.invertirFecha(ultregistro.fecha));
+        salida.put("fecha", ultregistro.fecha);
+        salida.put("hora", ultregistro.hora);
+
+        tabla += (filas + "</tbody></table>");
+        salida.put("tabla", tabla);
+        String botonInsert = "<table style='border: none; border-collapse: collapse'>\n"
+                + "<tr>\n"
+                + "<td>\n"
+                + "<div class='input-group mb-4'>\n"
+                + "<input id='num-lectura-manual' type='number' class='form-control form-control-sm' aria-label='Lectura manual'>\n"
+                + "<div class='input-group-append'>\n"
+                + "<button onclick='insertar();' class='btn btn-sm btn-success' type='button'>Insertar</button>\n"
+                + "</div>\n"
+                + "</div>\n"
+                + "</td>\n"
+                + "<td>\n"
+                + "<div class='loader' style='display: none; margin-top: -1.7em;'><!-- Contenedor del Spinner -->\n"
+                + "<div class='ldio-sa9px9nknjc'> <!-- El Spinner -->\n"
+                + "<div>\n"
+                + "</div>\n"
+                + "<div>\n"
+                + "<div></div>\n"
+                + "</div>\n"
+                + "</div>\n"
+                + "</div>\n"
+                + "</td>\n"
+                + "</tr>\n"
+                + "</table>";
+        String etiqueta = "<label for='num-lectura-manual'>Valor Lectura (KW)</label>";
+        salida.put("boton", botonInsert);
+        salida.put("etiqueta", etiqueta);
+        salida.put("estado", "ok");
+
         return salida;
     }
 
-    private JSONObject insLecturaManual(JSONObject entrada) {
+    @Deprecated
+    private JSONObject insLecturaManualOld(JSONObject entrada) {
         System.out.println(entrada);
         JSONObject salida = new JSONObject();
         int idremarcador = entrada.getInt("idremarcador");
@@ -1008,6 +1009,29 @@ public class RemarcadorController extends HttpServlet {
         salida.put("estado", "ok");
         c.cerrar();
         return salida;
+    }
+
+    private JSONObject insLecturaManual(JSONObject entrada) {
+        System.out.println(entrada);
+        JSONObject salida = new JSONObject();
+        int numremarcador = entrada.getInt("numremarcador");
+        String fecha = entrada.getString("fecha");
+        String hora = entrada.getString("hora");
+        int lectura = entrada.getInt("lectura");
+        String query = "CALL SP_INS_LECTURA_MANUAL("
+                + numremarcador + ", "
+                + lectura + ", "
+                + "'" + fecha + "', "
+                + "'" + hora + "'"
+                + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+
     }
 
 }

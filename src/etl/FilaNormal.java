@@ -17,6 +17,8 @@ public class FilaNormal {
     public double lecturareal;
     public double delta;
     public double ultimomax;
+    public String esmanual;
+    public int lecturamanual;
 
     /**
      * Constructor de clase que recibe los parámetros de una fila de datos de un remarcador para mostrarlos de forma ordenada.
@@ -29,8 +31,10 @@ public class FilaNormal {
      * @param lecturareal {@code double} con la lectura de energía real del remarcador. Puede tener saltos hacia atrás. Corresponde al valor real registrado en el remarcador.
      * @param delta {@code double} con la diferencia de energía en {@code lecturaproyectada}.
      * @param ultimomax {@code double} con el último valor máximo de energía real (no proyectado) del remarcador.
+     * @param esmanual {@code String}. 'SI' Cuando hay lectura manual. 'NO' Cuando no hay lectura manual.
+     * @param lecturamanual {@code int}. 0 cuando no hay lectura manual. [VALOR LECTURA] cuando hay lectura manual.
      */
-    public FilaNormal(String fechahora, String fecha, String hora, int idremarcador, double lecturaproyectada, double potencia, double lecturareal, double delta, double ultimomax) {
+    public FilaNormal(String fechahora, String fecha, String hora, int idremarcador, double lecturaproyectada, double potencia, double lecturareal, double delta, double ultimomax, String esmanual, int lecturamanual) {
         this.fechahora = fechahora;
         this.fecha = fecha;
         this.hora = hora;
@@ -40,6 +44,8 @@ public class FilaNormal {
         this.lecturareal = lecturareal;
         this.delta = delta;
         this.ultimomax = ultimomax;
+        this.esmanual = esmanual;
+        this.lecturamanual = lecturamanual;
     }
     
     /**
@@ -48,7 +54,7 @@ public class FilaNormal {
      */
     public String printCsv(){
         DecimalFormat df = new DecimalFormat("#.##");
-        return this.fechahora + ";" + this.fecha + ";" + this.hora + ";" + this.idremarcador + ";" + df.format(this.lecturaproyectada).replace(",", ".") + ";" + df.format(this.potencia).replace(",", ".") + ";" + df.format(this.lecturareal).replace(",", ".") + ";" + df.format(this.delta).replace(",", ".") + ";" + df.format(this.ultimomax).replace(",", ".");
+        return this.fechahora + ";" + this.fecha + ";" + this.hora + ";" + this.idremarcador + ";" + df.format(this.lecturaproyectada).replace(",", ".") + ";" + df.format(this.potencia).replace(",", ".") + ";" + df.format(this.lecturareal).replace(",", ".") + ";" + df.format(this.delta).replace(",", ".") + ";" + df.format(this.ultimomax).replace(",", ".") + ";" + this.esmanual + ";" + this.lecturamanual;
     }
 
 }

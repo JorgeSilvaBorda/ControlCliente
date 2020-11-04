@@ -14,6 +14,7 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
     var datos = {
         tipo: 'get-remarcador-cliente-idremarcador',
         idremarcador: idremarcador,
+        numremarcador: NUMREMARCADOR,
         mesanio: MES
     };
 

@@ -59,7 +59,7 @@ public class ETL {
         String[][] origenes = getOrigenesRemarcador();
         String tabla = "";
         for (String[] fila : origenes) {
-            System.out.println("Comparar: " + fila[1] + " con " + idRemarcador);
+            //System.out.println("Comparar: " + fila[1] + " con " + idRemarcador);
             if (Integer.parseInt(fila[1]) == idRemarcador) {
                 tabla = fila[0];
             }
@@ -74,6 +74,10 @@ public class ETL {
             case "schneiderPM710":
                 query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM7) ITEM7, TRIM(A.ITEM108) ITEM108, TRIM(A.ITEM1) ITEM1, TRIM(A.ITEM2) ITEM2, TRIM(A.ITEM109) ITEM109, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + idRemarcador + " AND A.FECHA >= '" + fechaDesde + "' AND A.FECHA <= '" + fechaHasta + "' ORDER BY A.TIMESTAMP ASC";
                 campos = 9;
+                break;
+            case "schneiderPM5300":
+                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM1) ITEM1, TRIM(A.ITEM43) ITEM43, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + idRemarcador + " AND A.FECHA >= '" + fechaDesde + "' AND A.FECHA <= '" + fechaHasta + "' ORDER BY A.TIMESTAMP ASC";
+                campos = 6;
                 break;
         }
         LinkedList<String[]> filas = new LinkedList();
@@ -107,6 +111,8 @@ public class ETL {
                 return getTablaCircutor(salida);
             case "schneiderPM710":
                 return getTablaSchneiderPM710(salida);
+            case "schneiderPM5300":
+                return getTablaSchneiderPM5300(salida);
         }
         return null;
     }
@@ -118,7 +124,7 @@ public class ETL {
      * @param idRemarcador {@code int}. Corresponde al ID REMARCADOR.
      * @param mes {@code int}. Corresponde al mes de la consulta.
      * @param anio {@code int}. Corresponde al año de la consulta.
-     * @return 
+     * @return {@code Array} {@link etl.FilaNormal} con los campos deseados y transformados.
      */
     public static FilaNormal[] getDatasetRemarcador(int idRemarcador, int mes, int anio) {
         String[][] origenes = getOrigenesRemarcador();
@@ -139,6 +145,10 @@ public class ETL {
                 query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM7) ITEM7, TRIM(A.ITEM108) ITEM108, TRIM(A.ITEM1) ITEM1, TRIM(A.ITEM2) ITEM2, TRIM(A.ITEM109) ITEM109, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + idRemarcador + " AND A.MES = " + mes + " AND A.ANIO = " + anio + " ORDER BY A.TIMESTAMP ASC";
                 campos = 9;
                 break;
+            case "schneiderPM5300":
+                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM1) ITEM1, TRIM(A.ITEM43) ITEM43, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + idRemarcador + " AND A.MES =" + mes + " AND A.ANIO = " + anio + " ORDER BY A.TIMESTAMP ASC";
+                campos = 6;
+                break;
         }
         LinkedList<String[]> filas = new LinkedList();
         int cont = 0;
@@ -171,6 +181,8 @@ public class ETL {
                 return getTablaCircutor(salida);
             case "schneiderPM710":
                 return getTablaSchneiderPM710(salida);
+            case "schneiderPM5300":
+                return getTablaSchneiderPM5300(salida);
         }
         return null;
     }
@@ -231,142 +243,23 @@ public class ETL {
     private static double getValorPotenciaSchneiderPM710(int contador, int potencia) {
         return (double) ((double) contador * Math.pow(10, (double) potencia));
     }
-
-    //Solo referencial. Funciona con Circutor
-    private static FilaNormal[] emparejarTabla(String[][] tabla) {
-        /*
-        try {
-            final Path path = Paths.get("/home/jorge/dev/pisar-43.sql");
-            Files.write(path, Arrays.asList("SET AUTOCOMMIT = FALSE;"), StandardCharsets.UTF_8,Files.exists(path) ? StandardOpenOption.APPEND : StandardOpenOption.CREATE);
-            Files.write(path, Arrays.asList("LOCK TABLES `CONSUMO` WRITE;"), StandardCharsets.UTF_8,Files.exists(path) ? StandardOpenOption.APPEND : StandardOpenOption.CREATE);
-        } catch (final IOException ioe) {
-            System.out.println(ioe);
-        }
-         */
-        FilaNormal[] tablaNormal = new FilaNormal[tabla.length];
-        for (int i = 0; i < tabla.length; i++) {
-
-            if (tabla[i][2].equals("")) {
-                boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][2].equals("")) {
-                        tabla[i][2] = tabla[x][2];
-                        encontrado = true;
-                    }
-                }
-
-                if (!encontrado) {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][2].equals("")) {
-                            tabla[i][2] = tabla[z][2];
-                            encontrado = true;
-                        }
-                    }
-                }
-
-            }
-            if (tabla[i][3].equals("")) {
-                boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][3].equals("")) {
-                        tabla[i][3] = tabla[x][3];
-                        encontrado = true;
-                    }
-                }
-                if (!encontrado) {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][3].equals("")) {
-                            tabla[i][3] = tabla[z][3];
-                            encontrado = true;
-                        }
-                    }
-                }
-            }
-
-            if (tabla[i][4].equals("")) {
-                boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][4].equals("")) {
-                        tabla[i][4] = tabla[x][4];
-                        encontrado = true;
-                    }
-                }
-                if (!encontrado) {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][4].equals("")) {
-                            tabla[i][4] = tabla[z][4];
-                            encontrado = true;
-                        }
-                    }
-                }
-            }
-            if (tabla[i][5].equals("")) {
-                boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][5].equals("")) {
-                        tabla[i][5] = tabla[x][5];
-                        encontrado = true;
-                    }
-                }
-                if (!encontrado) {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][5].equals("")) {
-                            tabla[i][5] = tabla[z][5];
-                            encontrado = true;
-                        }
-                    }
-                }
-            }
-        }
-        int acum = 0;
-        int lectura = 0;
-        for (int i = 0; i < tabla.length; i++) {
-            int contador = 0;
-            int ultimomax = 0;
-            int consumo;
-            contador = getValorEnergiaCircutor(Integer.parseInt(tabla[i][5]), Integer.parseInt(tabla[i][4]));
-            if (i == 0) {
-                ultimomax = 0;
-            } else {
-                ultimomax = getValorEnergiaCircutor(Integer.parseInt(tabla[i - 1][5]), Integer.parseInt(tabla[i - 1][4]));
-            }
-
-            if (ultimomax <= contador) {
-                consumo = contador - ultimomax;
-            } else {
-                consumo = (ultimomax - contador) - ultimomax;
-            }
-            double potencia = getValorPotenciaCircutor(Integer.parseInt(tabla[i][3]), Integer.parseInt(tabla[i][2]));
-            acum = acum + consumo;
-            lectura = lectura + consumo;
-            //[timestamp][id][factor-potencia][contador-potencia][potencia][factor-energia][contador-energia][energia][ultimomax][consumo(delta)][lectura continua]
-            System.out.println(tabla[i][0].replace(".0", "") + ";" + tabla[i][1] + ";" + tabla[i][2] + ";" + tabla[i][3] + ";" + potencia + ";" + tabla[i][4] + ";" + tabla[i][5] + ";" + contador + ";" + ultimomax + ";" + consumo + ";" + lectura);
-            //System.out.println(tabla[i][0] + ";" + tabla[i][1] + ";" + tabla[i][2] + ";" + tabla[i][3] + ";" + tabla[i][4] + ";" + tabla[i][5] + ";" + contador + ";" + ultimomax + ";" + consumo + ";" + lectura);
-            //System.out.println("INSERT INTO CONSUMO(TIMESTAMP, REMARCADOR_ID, EnergiaActivaConsumida_KWH, PotenciaActivaTotal_KW, FECHA, ANIO, MES, DIA, HORA, HH, MM, SS, DATONULO, CONSUMO, ULTIMOMAX) VALUES('" + tabla[i][0].replace(".0", "") + "', " + tabla[i][1] + ", " + lectura + ", " + potencia + ", date('" + tabla[i][0].replace(".0", "") + "'), year('" + tabla[i][0].replace(".0", "") + "'), month('" + tabla[i][0].replace(".0", "") + "'), day('" + tabla[i][0].replace(".0", "") + "'), TIME('" + tabla[i][0].replace(".0", "") + "'), HOUR('" + tabla[i][0].replace(".0", "") + "'), MINUTE('" + tabla[i][0].replace(".0", "") + "'), SECOND('" + tabla[i][0].replace(".0", "") + "'), 0, " + contador + ", " + ultimomax + ")");
-            //String fila = "INSERT INTO CONSUMO(TIMESTAMP, REMARCADOR_ID, EnergiaActivaConsumida_KWH, PotenciaActivaTotal_KW, FECHA, ANIO, MES, DIA, HORA, HH, MM, SS, DATONULO, CONSUMO, ULTIMOMAX) VALUES('" + tabla[i][0].replace(".0", "") + "', " + tabla[i][1] + ", " + lectura + ", " + potencia + ", date('" + tabla[i][0].replace(".0", "") + "'), year('" + tabla[i][0].replace(".0", "") + "'), month('" + tabla[i][0].replace(".0", "") + "'), day('" + tabla[i][0].replace(".0", "") + "'), TIME('" + tabla[i][0].replace(".0", "") + "'), HOUR('" + tabla[i][0].replace(".0", "") + "'), MINUTE('" + tabla[i][0].replace(".0", "") + "'), SECOND('" + tabla[i][0].replace(".0", "") + "'), 0, " + contador + ", " + ultimomax + ");";
-            //System.out.println(tabla[i].fecha + ";" + tabla[i].idremarcador + ";" + (tabla[i].factorPotencia.equals("") ? '0' : tabla[i].factorPotencia) + ";" + tabla[i].contadorPotencia + ";" + tabla[i].factorEnergia + ";" + tabla[i].contadorEnergia);
-            /*
-            try {
-                final Path path = Paths.get("/home/jorge/dev/pisar-43.sql");
-                Files.write(path, Arrays.asList(fila), StandardCharsets.UTF_8,
-                        Files.exists(path) ? StandardOpenOption.APPEND : StandardOpenOption.CREATE);
-            } catch (final IOException ioe) {
-                System.out.println(ioe);
-            }
-             */
-        }
-        /*
-        try {
-            final Path path = Paths.get("/home/jorge/dev/pisar-43.sql");
-            Files.write(path, Arrays.asList("COMMIT;"), StandardCharsets.UTF_8,Files.exists(path) ? StandardOpenOption.APPEND : StandardOpenOption.CREATE);
-            Files.write(path, Arrays.asList("SET AUTOCOMMIT = TRUE;"), StandardCharsets.UTF_8,Files.exists(path) ? StandardOpenOption.APPEND : StandardOpenOption.CREATE);
-            Files.write(path, Arrays.asList("UNLOCK TABLES;"), StandardCharsets.UTF_8,Files.exists(path) ? StandardOpenOption.APPEND : StandardOpenOption.CREATE);
-        } catch (final IOException ioe) {
-            System.out.println(ioe);
-        }
-         */
-        System.out.println("Acum: " + acum);
-        return tablaNormal;
+    
+    /**
+     * Obtiene la energía del remarcador
+     * @param energia {@code double} la energía del remarcador.
+     * @return {@code double} la energía del remarcador.
+     */
+    private static double getValorEnergiaSchneiderPM5300(double energia) {
+        return energia;
+    }
+    
+    /**
+     * Obtiene la potencia del remarcador
+     * @param potencia {@code double} la potencia del remarcador.
+     * @return {@code double} la potencia del remarcador.
+     */
+    private static double getValorPotenciaSchneiderPM5300(double potencia) {
+        return potencia;
     }
 
     /**
@@ -644,6 +537,87 @@ public class ETL {
             tablaNormal[i] = new FilaNormal(fechahora, fecha, hora, idremarcador, lectura, potencia, contador, consumo, ultimomax, esmanual, lecturamanual);
         }
         System.out.println("Tabla SchneiderPM710 lista");
+        return tablaNormal;
+    }
+    
+    private static FilaNormal[] getTablaSchneiderPM5300(String[][] tabla) {
+        FilaNormal[] tablaNormal = new FilaNormal[tabla.length];
+        for (int i = 0; i < tabla.length; i++) {
+
+            if (tabla[i][2].equals("5.8774717541114E-39")) {
+                boolean encontrado = false;
+                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
+                    if (!tabla[x][2].equals("5.8774717541114E-39")) {
+                        tabla[i][2] = tabla[x][2];
+                        encontrado = true;
+                    }
+                }
+
+                if (!encontrado) {
+                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
+                        if (!tabla[z][2].equals("5.8774717541114E-39")) {
+                            tabla[i][2] = tabla[z][2];
+                            encontrado = true;
+                        }
+                    }
+                }
+                if(!encontrado){
+                    tabla[i][2] = "0";
+                }
+
+            }
+            if (tabla[i][3].equals("5.8774717541114E-39")) {
+                boolean encontrado = false;
+                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
+                    if (!tabla[x][3].equals("5.8774717541114E-39")) {
+                        tabla[i][3] = tabla[x][3];
+                        encontrado = true;
+                    }
+                }
+                if (!encontrado) {
+                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
+                        if (!tabla[z][3].equals("5.8774717541114E-39")) {
+                            tabla[i][3] = tabla[z][3];
+                            encontrado = true;
+                        }
+                    }
+                }
+                if(!encontrado){
+                    tabla[i][3] = "0";
+                }
+            }
+        }
+        double acum = 0.0d;
+        double lectura = 0.0d;
+        for (int i = 0; i < tabla.length; i++) {
+            double contador = 0.0d;
+            double ultimomax = 0.0d;
+            double consumo;
+            contador = getValorEnergiaSchneiderPM5300(Double.parseDouble(tabla[i][2]));
+            if (i == 0) {
+                ultimomax = 0;
+            } else {
+                ultimomax = getValorEnergiaSchneiderPM5300(Double.parseDouble(tabla[i - 1][2]));
+            }
+
+            if (ultimomax <= contador) {
+                consumo = contador - ultimomax;
+            } else {
+                consumo = (ultimomax - contador) - ultimomax;
+            }
+            double potencia = getValorPotenciaSchneiderPM5300(Double.parseDouble(tabla[i][3]));
+            acum = acum + consumo;
+            lectura = lectura + consumo;
+            String fechahora = tabla[i][0].replace(".0", "");
+            String fecha = tabla[i][0].replace(".0", "").split(" ")[0];
+            String hora = tabla[i][0].replace(".0", "").split(" ")[1];
+            int idremarcador = Integer.parseInt(tabla[i][1]);
+            String esmanual = tabla[i][4];
+            int lecturamanual = Integer.parseInt(tabla[i][5]);
+
+            tablaNormal[i] = new FilaNormal(fechahora, fecha, hora, idremarcador, lectura, potencia, contador, consumo, ultimomax, esmanual, lecturamanual);
+        }
+        System.out.println("Tabla SchneiderPM5300 lista");
         return tablaNormal;
     }
 

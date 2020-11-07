@@ -73,7 +73,7 @@ public class EventosController extends HttpServlet {
             ResultSet rs = c.ejecutarQuery(query);
             while (rs.next()) {
                 tabla += "<tr>";
-                tabla += "<td>" + rs.getString("FECHAFORMAT") + "</td>";
+                tabla += "<td><input type='hidden' value='" + rs.getInt("IDNOTIFICACION") + "' />" + rs.getString("FECHAFORMAT") + "</td>";
                 tabla += "<td>" + rs.getString("HORAACTUAL") + "</td>";
                 tabla += "<td>" + rs.getInt("NUMREMARCADOR") + "</td>";
                 tabla += "<td>" + rs.getString("NOMPARQUE") + "</td>";
@@ -108,9 +108,9 @@ public class EventosController extends HttpServlet {
             ResultSet rs = c.ejecutarQuery(query);
             while (rs.next()) {
                 tabla += "<tr>";
-                tabla += "<td><input type='hidden' value='" + rs.getInt("IDEVENTO") + "' />" + rs.getString("FECHAFORMAT") + "</td>";
-                tabla += "<td>" + rs.getString("HORA") + "</td>";
-                tabla += "<td>" + rs.getInt("REMARCADOR_ID") + "</td>";
+                tabla += "<td><input type='hidden' value='" + rs.getInt("IDNOTIFICACION") + "' />" + rs.getString("FECHAFORMAT") + "</td>";
+                tabla += "<td>" + rs.getString("HORAACTUAL") + "</td>";
+                tabla += "<td>" + rs.getInt("NUMREMARCADOR") + "</td>";
                 tabla += "<td>" + rs.getString("NOMPARQUE") + "</td>";
                 tabla += "<td>" + rs.getString("NOMINSTALACION") + "</td>";
                 tabla += "<td>" + rs.getString("NOMCLIENTE") + "</td>";

@@ -44,7 +44,21 @@ function getRemarcadoresLibres() {
             if (obj.estado === 'ok') {
                 $('.dataTable#tabla-remarcadores-libres').DataTable().destroy();
                 $('#tabla-remarcadores-libres tbody').html(obj.tabla);
-                $('#tabla-remarcadores-libres').DataTable(OPCIONES_DATATABLES);
+                var OPCIONES = OPCIONES_DATATABLES;
+                OPCIONES.dom = 'Bfrtip';
+                OPCIONES.buttons = [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Remarcadores-libres',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6]
+                        }
+                    }
+
+                ];
+                $('#tabla-remarcadores-libres').DataTable(OPCIONES);
+                $('.buttons-html5').addClass("btn-sm");
+                $('.buttons-html5').addClass("btn-success");
             }
         },
         error: function (a, b, c) {
@@ -60,7 +74,7 @@ function getRemarcadoresAsignadosIdCliente(idcliente) {
         tipo: 'get-remarcadores-asignados-idcliente',
         idcliente: $('#select-cliente').val()
     };
-
+    var nomcliente = $('#select-cliente option:selected').text();
     $.ajax({
         url: 'ClienteRemarcadorController',
         type: 'post',
@@ -72,7 +86,21 @@ function getRemarcadoresAsignadosIdCliente(idcliente) {
             if (obj.estado === 'ok') {
                 $('.dataTable#tabla-cliente-remarcador').DataTable().destroy();
                 $('#tabla-cliente-remarcador tbody').html(obj.tabla);
-                $('#tabla-cliente-remarcador').DataTable(OPCIONES_DATATABLES);
+                var OPCIONES = OPCIONES_DATATABLES;
+                OPCIONES.dom = 'Bfrtip';
+                OPCIONES.buttons = [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Remarcadores-' + nomcliente,
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        }
+                    }
+
+                ];
+                $('#tabla-cliente-remarcador').DataTable(OPCIONES);
+                $('.buttons-html5').addClass("btn-sm");
+                $('.buttons-html5').addClass("btn-success");
                 getSelectContactosIdCliente();
             }
         },

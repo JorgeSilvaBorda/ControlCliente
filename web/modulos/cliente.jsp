@@ -43,7 +43,7 @@
             <div class="col-sm-2">
                 <div class="form-group">
                     <label for="btn-insert">&nbsp;</label>
-                    <button onclick="insCliente(getClientes);" type="button" class="btn btn-primary btn-sm" id="btn-insert" >Insertar</button>
+                    <button onclick="insCliente(getClientes);" type="button" class="btn btn-primary btn-sm float-left" id="btn-insert" >Insertar</button>
                     <button onclick="saveCliente(getClientes);" hidden="hidden" type="button" class="btn btn-secondary btn-sm" id="btn-guardar">Guardar</button>
                     <button onclick="limpiar();" type="button" class="btn btn-default btn-sm" id="btn-limpiar">Limpiar</button>
                 </div>

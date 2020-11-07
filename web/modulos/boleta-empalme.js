@@ -56,7 +56,7 @@ function getRemarcadoresNumEmpalmeBoleta() {
     REMARCADORES = null;
     //Función trabaja sólo con el número de empalme.
     //En BD, el mismo numero de empalme puede tener ID distintos para efectos de asigrnación a las bodegas
-
+    $('#detalle-remarcadores').html("");
     var numempalme = $('#select-empalme option:selected').text();
     var mes = $('#mes').val();
     var datos = {

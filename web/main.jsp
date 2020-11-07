@@ -100,7 +100,7 @@
                                                     + "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdownMenuLink' data-toggle='dropdown'>Control Proceso <span id='cant-alertas-general' class='badge badge-danger'></span></a>\n"
                                                     + "<div class='dropdown-menu' aria-labelledby='navbarDropdownMenuLink'>\n"
                                                     + "<a class='dropdown-item' onclick='cargarModulo(\"control-comunicacion\");' href='#'>Comunicación <span id='cant-alertas-comunicacion' class='badge badge-danger'></span></a> \n"
-                                                    + "<a class='dropdown-item' onclick='cargarModulo(\"control-continuidad\");' href='#'>Continuidad <span id='cant-alertas-continuidad' class='badge badge-danger'></span></a> \n"
+                                                    //+ "<a class='dropdown-item' onclick='cargarModulo(\"control-continuidad\");' href='#'>Continuidad <span id='cant-alertas-continuidad' class='badge badge-danger'></span></a> \n"
                                                     + "</div>"
                                                     + "</li>"
                                                     // ----------------------------------------------

@@ -3,6 +3,7 @@ var FINMESANTERIORFORMAT = null;
 var ENERGIA = null;
 var POTENCIA = null;
 var FECHA = null;
+var HORA = null;
 var NUMREMARCADOR = null;
 
 function getSelectInstalacion() {
@@ -165,11 +166,13 @@ function validarCampos() {
 function getLastLecturaMes() {
     if (validarCampos()) {
         var idremarcador = $('#select-remarcador').val();
+        var numremarcador = $('#select-remarcador option:selected').text();
         var mes = $('#fecha').val().split("-")[1];
         var anio = $('#fecha').val().split("-")[0];
         var datos = {
             tipo: 'get-last-lectura-mes',
             idremarcador: idremarcador,
+            numremarcador: numremarcador,
             mes: mes,
             anio: anio
         };
@@ -187,7 +190,7 @@ function getLastLecturaMes() {
                     POTENCIA = obj.potencia;
                     FECHA = obj.fecha;
                     NUMREMARCADOR = obj.numremarcador;
-
+                    HORA = obj.hora;
                     $('#cont-last-lectura').html("");
                     $('#cont-lectura-manual').html("");
                     $('#etiqueta').html("");
@@ -240,9 +243,12 @@ function insertar() {
             var datos = {
                 tipo: 'ins-lectura-manual',
                 idremarcador: idremarcador,
+                numremarcador: NUMREMARCADOR,
                 mes: mes,
                 anio: anio,
-                lectura: parseInt(lectura)
+                lectura: parseInt(lectura),
+                fecha: FECHA,
+                hora: HORA
             };
             $.ajax({
                 url: 'RemarcadorController',

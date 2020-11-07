@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Iterator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -74,13 +73,13 @@ public class EventosController extends HttpServlet {
             ResultSet rs = c.ejecutarQuery(query);
             while (rs.next()) {
                 tabla += "<tr>";
-                tabla += "<td><input type='hidden' value='" + rs.getInt("IDEVENTO") + "' />" + rs.getString("FECHAFORMAT") + "</td>";
-                tabla += "<td>" + rs.getString("HORA") + "</td>";
-                tabla += "<td>" + rs.getInt("REMARCADOR_ID") + "</td>";
+                tabla += "<td>" + rs.getString("FECHAFORMAT") + "</td>";
+                tabla += "<td>" + rs.getString("HORAACTUAL") + "</td>";
+                tabla += "<td>" + rs.getInt("NUMREMARCADOR") + "</td>";
                 tabla += "<td>" + rs.getString("NOMPARQUE") + "</td>";
                 tabla += "<td>" + rs.getString("NOMINSTALACION") + "</td>";
                 tabla += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
-                tabla += "<td><button id='btn_marcar_" + rs.getInt("IDEVENTO") + "' type='button' onclick='marcarLeido(this, " + rs.getInt("IDEVENTO") + ");' class='btn btn-outline-success btn-block btn-sm'>Marcar Leído</button></td>";
+                tabla += "<td><button id='btn_marcar_" + rs.getInt("IDNOTIFICACION") + "' type='button' onclick='marcarLeido(this, " + rs.getInt("IDNOTIFICACION") + ");' class='btn btn-outline-success btn-block btn-sm'>Marcar Leído</button></td>";
                 tabla += "</tr>";
                 cant++;
             }
@@ -134,7 +133,7 @@ public class EventosController extends HttpServlet {
     private JSONObject marcarLeido(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_MARCAR_EVENTO_LEIDO("
-                + entrada.getInt("idevento")
+                + entrada.getInt("idnotificacion")
                 + ")";
         System.out.println(query);
         Conexion c = new Conexion();
@@ -148,7 +147,7 @@ public class EventosController extends HttpServlet {
     private JSONObject marcarTodosLeidos(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         JSONArray ides = entrada.getJSONArray("ides");
-        String query = "UPDATE BITACORACONTROL SET CODESTADO = 'L', NOMESTADO = 'Evento reisado y marcado como leído' WHERE IDEVENTO IN (" + ides.toString().replace("[", "").replace("]", "") + ")";
+        String query = "UPDATE NOTIFICACIONES SET CODESTADO = 'LEIDO' WHERE IDNOTIFICACION IN (" + ides.toString().replace("[", "").replace("]", "") + ")";
         System.out.println(query);
 
         Conexion c = new Conexion();

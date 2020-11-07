@@ -119,10 +119,10 @@ function getEventosTodosComunicacion() {
     });
 }
 
-function marcarLeido(boton, idevento) {
+function marcarLeido(boton, idnotificacion) {
     var datos = {
         tipo: 'marcar-evento-leido',
-        idevento: idevento
+        idnotificacion: idnotificacion
     };
     $.ajax({
         url: 'EventosController',

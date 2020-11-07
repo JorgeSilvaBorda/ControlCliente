@@ -437,17 +437,24 @@ public class ReportesController extends HttpServlet {
                 + "<th style='text-align:center;'>Lectura Inicial</th>"
                 + "<th style='text-align:center;'>Lectura Final</th>"
                 + "<th style='text-align:center;'>Consumo (kWh)</th>"
-                + "<th style='text-align:center;'>Demanda Máx.<br />Leída</th>"
-                + "<th style='text-align:center;'>Demanda Máx.<br />H. Punta</th>"
+                + "<th style='text-align:center;'>Demanda Máx.<br />Leída (KW)</th>"
+                + "<th style='text-align:center;'>Demanda Máx.<br />H. Punta (KW)</th>"
+                + "<th style='text-align:center;'>Demanda Máx.<br />6 meses (KW)</th>"
+                + "<th style='text-align:center;'>Demanda Máx.<br />12 meses (KW)</th>"
                 + "</tr>"
                 + "</thead>"
                 + "<tbody>";
-
-        for (int i = 0; i < ides.size(); i++) {
+        boolean haymanual = false;
+        for (int i = 0; i < ides.size(); i++) {            
             FilaNormal[] tabla = etl.ETL.getDatasetRemarcador(ides.get(i), mes, anio);
             int idrem = ides.get(i);
+            
             int lecturaini = (int) tabla[0].lecturareal;
             int lecturafin = (int) tabla[tabla.length - 1].lecturareal;
+            if(tabla[tabla.length - 1].esmanual.equals("SI")){
+                lecturafin = tabla[tabla.length - 1].lecturamanual;
+                haymanual = true;
+            }
             int lecturaproyectadaini = (int) tabla[0].lecturaproyectada;
             int lecturaproyectadafin = (int) tabla[tabla.length - 1].lecturaproyectada;
             int consumo = lecturaproyectadafin - lecturaproyectadaini;
@@ -463,18 +470,43 @@ public class ReportesController extends HttpServlet {
                     }
                 }
             }
+            
+            Conexion conn = new Conexion();
+            String querydem = "CALL SP_GET_MAXDEM_6_12_MESES(" + idrem + ", " + mes + ", " + anio + ")";
+            System.out.println("Query demandas 6 y 12 meses: " + querydem);
+            conn.abrir();
+            double maxdem6 = 0.0d;
+            double maxdem12 = 0.0d;
+            ResultSet resset = conn.ejecutarQuery(querydem);
+            try{
+                while(resset.next()){
+                    maxdem6 = resset.getDouble("MAXDEM6");
+                    maxdem12 = resset.getDouble("MAXDEM12");
+                }
+            }catch (SQLException ex) {
+                System.out.println("No se pueden obtener las demandas máximas de los últimos 6 y 12 meses.");
+                System.out.println(ex);
+                ex.printStackTrace();
+            }
+            conn.cerrar();
+             
             DecimalFormat formato = new DecimalFormat("#.##");
             tablasalida += "<tr>";
             tablasalida += "<td style='text-align:center;'>" + idrem + "</td>";
             tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(lecturaini) + "</td>";
-            tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(lecturafin) + "</td>";
+            tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(lecturafin) + " " + (haymanual?"*":"") + "</td>";
             tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(consumo) + "</td>";
             tablasalida += "<td style='text-align:right;'>" + formato.format(demmax).replace(".", ",") + "</td>";
             tablasalida += "<td style='text-align:right;'>" + formato.format(demmaxhp).replace(".", ",") + "</td>";
+            tablasalida += "<td style='text-align:right;'>" + formato.format(maxdem6).replace(".", ",") + "</td>";
+            tablasalida += "<td style='text-align:right;'>" + formato.format(maxdem12).replace(".", ",") + "</td>";
             tablasalida += "</tr>";
         }
         tablasalida += "</tbody>";
         tablasalida += "</table>";
+        if(haymanual){
+            tablasalida += "* La lectura fue ingresada de forma manual.";
+        }
 
         return tablasalida;
     }

@@ -373,6 +373,10 @@ public class RemarcadorController extends HttpServlet {
                     }
                 }
             }
+            //Si existe lectura manual, el consumo se calcula en base a lecturamanual - lecturaanterior.
+            if(haymanual){
+                consumo = lecturafinal - lecturaanterior;
+            }
 
             String demmaxString = new DecimalFormat("#.##").format(demmax).replace(",", ".");
             String demmaxhpString = new DecimalFormat("#.##").format(demmaxhp).replace(",", ".");

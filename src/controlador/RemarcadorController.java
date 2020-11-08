@@ -355,7 +355,7 @@ public class RemarcadorController extends HttpServlet {
 
             int lecturaanterior = (int) filas[0].lecturareal;
             int lecturafinal = (int) filas[filas.length - 1].lecturareal;
-            if(filas[filas.length - 1].esmanual.equals("SI")){
+            if (filas[filas.length - 1].esmanual.equals("SI")) {
                 lecturafinal = filas[filas.length - 1].lecturamanual;
                 haymanual = true;
             }
@@ -374,7 +374,7 @@ public class RemarcadorController extends HttpServlet {
                 }
             }
             //Si existe lectura manual, el consumo se calcula en base a lecturamanual - lecturaanterior.
-            if(haymanual){
+            if (haymanual) {
                 consumo = lecturafinal - lecturaanterior;
             }
 
@@ -389,7 +389,7 @@ public class RemarcadorController extends HttpServlet {
             tablasalida += "<td style='text-align: center;' ><span>" + remarcador.modulos + "</span></td>";
             tablasalida += "<td><span>" + remarcador.nominstalacion + "</span></td>";
             tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturaanterior) + "</span></td>";
-            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturafinal) + (filas[filas.length - 1].esmanual.equals("SI") ? " *" : "") +  "</span></td>";
+            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturafinal) + (filas[filas.length - 1].esmanual.equals("SI") ? " *" : "") + "</span></td>";
             tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles((int) consumo) + "</span></td>";
 
             if (remarcador.hayboleta == 0) {
@@ -454,7 +454,7 @@ public class RemarcadorController extends HttpServlet {
 
         //tablasalida += filas;
         tablasalida += "</tbody></table>";
-        if(haymanual){
+        if (haymanual) {
             tablasalida += "<span style='font-size: 12px; font-weight: bold;'>* La lectura actual fue ingresada manualmente</span>";
         }
         salida.put("tabla", tablasalida);
@@ -468,17 +468,42 @@ public class RemarcadorController extends HttpServlet {
     }
 
     private JSONObject getRemarcadorUnClienteBoleta(JSONObject entrada) {
+        JSONObject datosrem = new JSONObject();
+        String mesanio = entrada.getString("hasta").substring(0, 7);
+        int anio = Integer.parseInt(mesanio.split("-")[0]);
+        int mes = Integer.parseInt(mesanio.split("-")[1]);
+        datosrem.put("idremarcador", entrada.getInt("idremarcador"));
+        datosrem.put("mesanio", mesanio);
+        JSONObject remcli = this.getRemarcadorClienteIdRemarcador(datosrem).getJSONObject("remarcador");
+        System.out.println("remcli: " + remcli);
+        FilaNormal[] registrosRemarcador = etl.ETL.getDatasetRemarcador(entrada.getInt("numremarcador"), entrada.getString("desde"), entrada.getString("hasta"));
+        //Calcular consumo desde tabla de remarcador
+        int consumo = 0;
+        int lecturaini = 0;
+        int lecturafin = 0;
+        String fechalecturaini = "";
+        String fechalecturafin = "";
+        boolean haymanual = false;
+        for(FilaNormal registro : registrosRemarcador){
+            if(registro.fecha.equals(entrada.getString("desde"))){
+                fechalecturaini = registro.fecha;
+                lecturaini = (int)registro.lecturaproyectada;
+            }
+            if(registro.fecha.equals(entrada.getString("hasta"))){
+                fechalecturafin = registro.fecha;
+                lecturafin = (int)registro.lecturaproyectada;
+            }
+        }
+        if(entrada.getString("hasta").equals(registrosRemarcador[registrosRemarcador.length - 1].fecha) && registrosRemarcador[registrosRemarcador.length - 1].esmanual.equals("SI")){
+            haymanual = true;
+            lecturafin = registrosRemarcador[registrosRemarcador.length - 1].lecturamanual;
+        }
+        consumo = lecturafin - lecturaini;
+        
+        
+        System.out.println(entrada);
         JSONObject salida = new JSONObject();
         int kwtotal = 0;
-        String query = "CALL SP_GET_REMARCADOR_UN_CLIENTE_BOLETA("
-                + "'" + entrada.getString("idremarcador") + "',"
-                + "'" + entrada.getString("desde") + "', "
-                + "'" + entrada.getString("hasta") + "'"
-                + ")";
-        System.out.println(query);
-        Conexion c = new Conexion();
-        c.abrir();
-        ResultSet rs = c.ejecutarQuery(query);
         String filas = "";
 
         String tabla = "<table style='font-size: 10px;' id='tabla-remarcadores-empalme' class='table table-bordered table-condensed table-sm'>";
@@ -500,86 +525,104 @@ public class RemarcadorController extends HttpServlet {
         int idcomuna = 0;
         int boletasnoemitidas = 0;
         JSONArray remarcadores = new JSONArray();
-        try {
-            while (rs.next()) {
-                filas += "<tr>";
-                filas += "<td style='text-align: center;' ><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
-                filas += "<td><input type='hidden' value='" + rs.getString("NUMSERIE") + "' /><span>" + rs.getString("NUMSERIE") + "</span></td>";
-                filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
-                filas += "<td><span>" + rs.getString("NOMCLIENTE") + "</span></td>";
-                filas += "<td style='text-align: center;' ><span>" + rs.getString("MODULOS") + "</span></td>";
-                filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
-                filas += "<td style='text-align: right;'><span>" + Util.formatMiles(rs.getString("LECTURAANTERIOR")) + "</span></td>";
-                filas += "<td style='text-align: right;'><span>" + Util.formatMiles(rs.getString("LECTURAACTUAL")) + "</span></td>";
-                filas += "<td style='text-align: right;'><span>" + Util.formatMiles(rs.getInt("CONSUMO")) + "</span></td>";
 
-                if (rs.getInt("HAYBOLETA") == 0) {
-                    boletasnoemitidas++; //Para ver si se anota al menos un candidato a generación masiva
-                    filas += "<td><button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("desde") + "\", \"" + entrada.getString("hasta") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", \"" + rs.getString("MAX_DEMANDA_LEIDA_STRING") + "\", \"" + rs.getString("MAX_DEMANDA_HORA_PUNTA_STRING") + "\", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
-                } else {
-                    filas += "<td>"
-                            + "<div id='botones_" + rs.getInt("IDREMARCADOR") + "' style='display:none;' class='btn-group' role='group' aria-label='Sobreescritura'>"
-                            + "<button type='button' onclick='calcular(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("NUMREMARCADOR") + ", \"" + rs.getString("NUMSERIE") + "\", " + rs.getInt("CONSUMO") + ", \"" + entrada.getString("desde") + "\", \"" + entrada.getString("hasta") + "\", " + rs.getInt("LECTURAANTERIOR") + ", " + rs.getInt("LECTURAACTUAL") + ", \"" + rs.getString("MAX_DEMANDA_LEIDA_STRING") + "\", \"" + rs.getString("MAX_DEMANDA_HORA_PUNTA_STRING") + "\", \"" + rs.getDate("FECHA_LECTURA_INICIAL") + "\", \"" + rs.getDate("FECHA_LECTURA_FINAL") + "\");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Sobreescribir</button>"
-                            + "<button type='button' onclick='deshabilitarSobreescritura(" + rs.getInt("IDREMARCADOR") + ");' class='btn btn-sm btn-warning' style='padding: 0px 5px 0px 5px; vertical-align:middle;'>x</button>"
-                            + "</div>"
-                            + "<button id='btn_" + rs.getInt("IDREMARCADOR") + "' type='button' onclick='habilitarSobreescritura(" + rs.getInt("IDREMARCADOR") + ");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Habilitar</button>"
-                            + "</td>";
-                }
-
-                if (rs.getInt("IDBOLETA") == 0) {
-                    filas += "<td style='text-align: right;'>-</td>";
-                } else {
-                    filas += "<td style='text-align: right;'><a href='#' onclick=getLastBoleta(" + rs.getInt("IDBOLETA") + "); >" + rs.getString("NUMBOLETA") + "</a></td>";
-                }
-
-                filas += "</tr>";
-                kwtotal += rs.getInt("CONSUMO");
-                idcomuna = rs.getInt("IDCOMUNA");
-                remarcador = new JSONObject();
-                remarcador.put("idremarcador", rs.getInt("IDREMARCADOR"));
-                remarcador.put("numremarcador", rs.getString("NUMREMARCADOR"));
-                remarcador.put("numserie", rs.getString("NUMSERIE"));
-                remarcador.put("idparque", rs.getInt("IDPARQUE"));
-                remarcador.put("modulos", rs.getString("MODULOS"));
-                remarcador.put("idinstalacion", rs.getInt("IDINSTALACION"));
-                remarcador.put("consumo", rs.getInt("CONSUMO"));
-                remarcadores.put(remarcador);
+        Conexion con = new Conexion();
+        String querybol = "CALL SP_GET_LAST_BOLETA_IDREM_MESANIO("
+                + remcli.getInt("idremarcador") + ", "
+                + mes + ", "
+                + anio
+                + ")";
+        System.out.println("Obtener boleta si es que hay");
+        System.out.println(querybol);
+        con.abrir();
+        ResultSet rs = con.ejecutarQuery(querybol);
+        int idboleta = 0;
+        String numboleta = "";
+        try{
+            while(rs.next()){
+                idboleta = rs.getInt("IDBOLETA");
+                numboleta = rs.getString("NUMBOLETA");
             }
-            filas += "<tr class='table-info'>";
-            filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>Consumo Total Remarcadores(KW): </td>";
-            filas += "<td style='font-weight: bold; text-align:right;' >" + Util.formatMiles(kwtotal) + "</td>";
-
-            filas += "<tr>";
-            filas += "<td colspan='8' style='vertical-align: middle; text-align: right; padding-right:5px; font-weight: bold;'>Consumo Facturado del Empalme: " + entrada.getString("numempalme") + "</td>";
-            filas += "<td><input type='text' onkeyup='calcularDiferencia();' class='form-control form-control-sm small' style='font-size: 0.9em; padding-top: 0px; padding-bottom: 0px; width: 12em; text-align: right;' id='consumo-facturado-empalme'/></td>";
-            filas += "</tr>";
-
-            filas += "<tr>";
-            filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>KW Diferencia: </td>";
-            filas += "<td style='text-align: right;' ><span id='kw-diferencia'></span></td>";
-            filas += "</tr>";
-
-            filas += "<tr>";
-            filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>% Diferencia: </td>";
-            filas += "<td style='text-align: right;'><span id='porc-diferencia' ></span></td>";
-            filas += "</tr>";
-
-            tabla += filas;
-            tabla += "</tbody></table>";
-            salida.put("tabla", tabla);
-            salida.put("remarcadores", remarcadores);
-            salida.put("kwtotal", kwtotal);
-            salida.put("idcomuna", idcomuna);
-            salida.put("estado", "ok");
-            System.out.println("Boletas no emitidas: " + boletasnoemitidas);
-        } catch (JSONException | SQLException ex) {
-            System.out.println("Problemas en controlador.RemarcadorController.getRemarcadoresNumEmpalmeBoleta().");
+        }catch (SQLException ex) {
+            System.out.println("No se puede obtener la última boleta del mes seleccionado para el remarcador.");
             System.out.println(ex);
             ex.printStackTrace();
-            salida.put("estado", "error");
-            salida.put("error", ex);
         }
-        c.cerrar();
+        
+        filas += "<tr>";
+        filas += "<td style='text-align: center;' ><input type='hidden' value='" + remcli.getInt("idremarcador") + "' /><span>" + remcli.getInt("numremarcador") + "</span></td>";
+        filas += "<td><input type='hidden' value='" + remcli.getString("numserie") + "' /><span>" + remcli.getString("numserie") + "</span></td>";
+        filas += "<td><input type='hidden' value='" + remcli.getInt("idparque") + "' /><span>" + remcli.getString("nomparque") + "</span></td>";
+        filas += "<td><span>" + remcli.getString("nomcliente") + "</span></td>";
+        filas += "<td style='text-align: center;' ><span>" + remcli.getString("modulos") + "</span></td>";
+        filas += "<td><input type='hidden' value='" + remcli.getInt("idinstalacion") + "' /><span>" + remcli.getString("nominstalacion") + "</span></td>";
+        filas += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturaini) + "</span></td>";
+        filas += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturafin) + "" + (haymanual ? " *" : "") + "</span></td>";
+        filas += "<td style='text-align: right;'><span>" + Util.formatMiles(consumo) + "</span></td>";
+
+        if (idboleta == 0) {
+            boletasnoemitidas++; //Para ver si se anota al menos un candidato a generación masiva
+            filas += "<td><button type='button' onclick='calcular(" + remcli.getInt("idremarcador") + ", " + remcli.getInt("numremarcador") + ", \"" + remcli.getString("numserie") + "\", " + consumo + ", \"" + entrada.getString("desde") + "\", \"" + entrada.getString("hasta") + "\", " + lecturaini + ", " + lecturafin + ", \"" + remcli.getString("dmps_string") + "\", \"" + remcli.getString("dmplhp_string") + "\", \"" + fechalecturaini + "\", \"" + fechalecturafin + "\");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
+        } else {
+            filas += "<td>"
+                    + "<div id='botones_" + remcli.getInt("idremarcador") + "' style='display:none;' class='btn-group' role='group' aria-label='Sobreescritura'>"
+                    + "<button type='button' onclick='calcular(" + remcli.getInt("idremarcador") + ", " + remcli.getInt("numremarcador") + ", \"" + remcli.getString("numserie") + "\", " + consumo + ", \"" + entrada.getString("desde") + "\", \"" + entrada.getString("hasta") + "\", " + lecturaini + ", " + lecturafin+ ", \"" + remcli.getString("dmps_string") + "\", \"" + remcli.getString("dmplhp_string") + "\", \"" + fechalecturaini + "\", \"" + fechalecturafin + "\");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Sobreescribir</button>"
+                    + "<button type='button' onclick='deshabilitarSobreescritura(" + remcli.getInt("idremarcador") + ");' class='btn btn-sm btn-warning' style='padding: 0px 5px 0px 5px; vertical-align:middle;'>x</button>"
+                    + "</div>"
+                    + "<button id='btn_" + remcli.getInt("idremarcador") + "' type='button' onclick='habilitarSobreescritura(" + remcli.getInt("idremarcador") + ");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Habilitar</button>"
+                    + "</td>";
+        }
+
+        if (idboleta == 0) {
+            filas += "<td style='text-align: right;'>-</td>";
+        } else {
+            filas += "<td style='text-align: right;'><a href='#' onclick=getLastBoleta(" + idboleta + "); >" + numboleta + "</a></td>";
+        }
+
+        filas += "</tr>";
+        kwtotal += consumo;
+        idcomuna = remcli.getInt("idcomuna");
+        remarcador = new JSONObject();
+        remarcador.put("idremarcador", remcli.getInt("idremarcador"));
+        remarcador.put("numremarcador", remcli.getInt("numremarcador"));
+        remarcador.put("numserie", remcli.getString("numserie"));
+        remarcador.put("idparque", remcli.getInt("idparque"));
+        remarcador.put("modulos", remcli.getString("modulos"));
+        remarcador.put("idinstalacion", remcli.getInt("idinstalacion"));
+        remarcador.put("consumo", consumo);
+        remarcadores.put(remarcador);
+
+        filas += "<tr class='table-info'>";
+        filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>Consumo Total Remarcadores(KW): </td>";
+        filas += "<td style='font-weight: bold; text-align:right;' >" + Util.formatMiles(kwtotal) + "</td>";
+
+        filas += "<tr>";
+        filas += "<td colspan='8' style='vertical-align: middle; text-align: right; padding-right:5px; font-weight: bold;'>Consumo Facturado del Empalme: " + entrada.getString("numempalme") + "</td>";
+        filas += "<td><input type='text' onkeyup='calcularDiferencia();' class='form-control form-control-sm small' style='font-size: 0.9em; padding-top: 0px; padding-bottom: 0px; width: 12em; text-align: right;' id='consumo-facturado-empalme'/></td>";
+        filas += "</tr>";
+
+        filas += "<tr>";
+        filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>KW Diferencia: </td>";
+        filas += "<td style='text-align: right;' ><span id='kw-diferencia'></span></td>";
+        filas += "</tr>";
+
+        filas += "<tr>";
+        filas += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>% Diferencia: </td>";
+        filas += "<td style='text-align: right;'><span id='porc-diferencia' ></span></td>";
+        filas += "</tr>";
+
+        tabla += filas;
+        tabla += "</tbody></table>";
+        if(haymanual){
+            tabla += "* El registro fue ingresado de forma manual.";
+        }
+        salida.put("tabla", tabla);
+        salida.put("remarcadores", remarcadores);
+        salida.put("kwtotal", kwtotal);
+        salida.put("idcomuna", idcomuna);
+        salida.put("estado", "ok");
+        System.out.println("Boletas no emitidas: " + boletasnoemitidas);
+
         return salida;
     }
 
@@ -740,7 +783,6 @@ public class RemarcadorController extends HttpServlet {
         return salida;
     }
 
-    
     private JSONObject getRemarcadorClienteIdRemarcador(JSONObject entrada) {
         int idremarcador = entrada.getInt("idremarcador");
         JSONObject salida = new JSONObject();

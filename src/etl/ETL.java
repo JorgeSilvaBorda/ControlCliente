@@ -50,17 +50,17 @@ public class ETL {
      * Construye la consulta a la base de datos para obtener los campos de la tabla que corresponda al tipo de remarcador.
      * Esta función incorpora el relleno de las lecturas vacías en la tabla origen del remarcador seleccionado.
      * Devuelve un arreglo con todas las filas del rango de fechas ya procesado y con continuidad ajustada.
-     * @param idRemarcador {@code int}. Corresponde al ID REMARCADOR.
+     * @param numremarcador {@code int}. Corresponde al ID REMARCADOR.
      * @param fechaDesde {@code String}. Corresponde a la fecha de inicio de la búsqueda.
      * @param fechaHasta {@code String}. Corresponde a la fecha de térmimo de la búsqueda.
      * @return {@code Array} {@link etl.FilaNormal} con los campos deseados y transformados.
      */
-    public static FilaNormal[] getDatasetRemarcador(int idRemarcador, String fechaDesde, String fechaHasta) {
+    public static FilaNormal[] getDatasetRemarcador(int numremarcador, String fechaDesde, String fechaHasta) {
         String[][] origenes = getOrigenesRemarcador();
         String tabla = "";
         for (String[] fila : origenes) {
             //System.out.println("Comparar: " + fila[1] + " con " + idRemarcador);
-            if (Integer.parseInt(fila[1]) == idRemarcador) {
+            if (Integer.parseInt(fila[1]) == numremarcador) {
                 tabla = fila[0];
             }
         }
@@ -68,15 +68,15 @@ public class ETL {
         int campos = 0;
         switch (tabla) {
             case "circutorcvmC10":
-                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM49) ITEM49, TRIM(A.ITEM50) ITEM50, TRIM(A.ITEM95) ITEM95, TRIM(A.ITEM96) ITEM96, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + idRemarcador + " AND A.FECHA >= '" + fechaDesde + "' AND A.FECHA <= '" + fechaHasta + "' ORDER BY A.TIMESTAMP ASC";
+                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM49) ITEM49, TRIM(A.ITEM50) ITEM50, TRIM(A.ITEM95) ITEM95, TRIM(A.ITEM96) ITEM96, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + numremarcador + " AND A.FECHA >= '" + fechaDesde + "' AND A.FECHA <= '" + fechaHasta + "' ORDER BY A.TIMESTAMP ASC";
                 campos = 8;
                 break;
             case "schneiderPM710":
-                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM7) ITEM7, TRIM(A.ITEM108) ITEM108, TRIM(A.ITEM1) ITEM1, TRIM(A.ITEM2) ITEM2, TRIM(A.ITEM109) ITEM109, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + idRemarcador + " AND A.FECHA >= '" + fechaDesde + "' AND A.FECHA <= '" + fechaHasta + "' ORDER BY A.TIMESTAMP ASC";
+                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM7) ITEM7, TRIM(A.ITEM108) ITEM108, TRIM(A.ITEM1) ITEM1, TRIM(A.ITEM2) ITEM2, TRIM(A.ITEM109) ITEM109, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + numremarcador + " AND A.FECHA >= '" + fechaDesde + "' AND A.FECHA <= '" + fechaHasta + "' ORDER BY A.TIMESTAMP ASC";
                 campos = 9;
                 break;
             case "schneiderPM5300":
-                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM1) ITEM1, TRIM(A.ITEM43) ITEM43, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + idRemarcador + " AND A.FECHA >= '" + fechaDesde + "' AND A.FECHA <= '" + fechaHasta + "' ORDER BY A.TIMESTAMP ASC";
+                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM1) ITEM1, TRIM(A.ITEM43) ITEM43, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + numremarcador + " AND A.FECHA >= '" + fechaDesde + "' AND A.FECHA <= '" + fechaHasta + "' ORDER BY A.TIMESTAMP ASC";
                 campos = 6;
                 break;
         }
@@ -121,16 +121,16 @@ public class ETL {
      * Construye la consulta a la base de datos para obtener los campos de la tabla que corresponda al tipo de remarcador.
      * Esta función incorpora el relleno de las lecturas vacías en la tabla origen del remarcador seleccionado.
      * Devuelve un arreglo con todas las filas del mes-anio ya procesado y con continuidad ajustada.
-     * @param idRemarcador {@code int}. Corresponde al ID REMARCADOR.
+     * @param numremarcador {@code int}. Corresponde al ID REMARCADOR.
      * @param mes {@code int}. Corresponde al mes de la consulta.
      * @param anio {@code int}. Corresponde al año de la consulta.
      * @return {@code Array} {@link etl.FilaNormal} con los campos deseados y transformados.
      */
-    public static FilaNormal[] getDatasetRemarcador(int idRemarcador, int mes, int anio) {
+    public static FilaNormal[] getDatasetRemarcador(int numremarcador, int mes, int anio) {
         String[][] origenes = getOrigenesRemarcador();
         String tabla = "";
         for (String[] fila : origenes) {
-            if (Integer.parseInt(fila[1]) == idRemarcador) {
+            if (Integer.parseInt(fila[1]) == numremarcador) {
                 tabla = fila[0];
             }
         }
@@ -138,15 +138,15 @@ public class ETL {
         int campos = 0;
         switch (tabla) {
             case "circutorcvmC10":
-                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM49) ITEM49, TRIM(A.ITEM50) ITEM50, TRIM(A.ITEM95) ITEM95, TRIM(A.ITEM96) ITEM96, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + idRemarcador + " AND A.MES = " + mes + " AND A.ANIO = " + anio + " ORDER BY A.TIMESTAMP ASC";
+                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM49) ITEM49, TRIM(A.ITEM50) ITEM50, TRIM(A.ITEM95) ITEM95, TRIM(A.ITEM96) ITEM96, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + numremarcador + " AND A.MES = " + mes + " AND A.ANIO = " + anio + " ORDER BY A.TIMESTAMP ASC";
                 campos = 8;
                 break;
             case "schneiderPM710":
-                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM7) ITEM7, TRIM(A.ITEM108) ITEM108, TRIM(A.ITEM1) ITEM1, TRIM(A.ITEM2) ITEM2, TRIM(A.ITEM109) ITEM109, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + idRemarcador + " AND A.MES = " + mes + " AND A.ANIO = " + anio + " ORDER BY A.TIMESTAMP ASC";
+                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM7) ITEM7, TRIM(A.ITEM108) ITEM108, TRIM(A.ITEM1) ITEM1, TRIM(A.ITEM2) ITEM2, TRIM(A.ITEM109) ITEM109, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + numremarcador + " AND A.MES = " + mes + " AND A.ANIO = " + anio + " ORDER BY A.TIMESTAMP ASC";
                 campos = 9;
                 break;
             case "schneiderPM5300":
-                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM1) ITEM1, TRIM(A.ITEM43) ITEM43, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + idRemarcador + " AND A.MES =" + mes + " AND A.ANIO = " + anio + " ORDER BY A.TIMESTAMP ASC";
+                query = "SELECT CONVERT(A.TIMESTAMP, CHAR) TIMESTAMP, A.EQUIPO_ID, TRIM(A.ITEM1) ITEM1, TRIM(A.ITEM43) ITEM43, CASE WHEN B.NUMREMARCADOR IS NULL THEN 'NO' ELSE 'SI' END AS ESMANUAL, CASE WHEN B.NUMREMARCADOR IS NULL THEN 0 ELSE B.LECTURA END AS LECTURAMANUAL  FROM " + tabla + " A LEFT JOIN LECTURAMANUAL B ON A.EQUIPO_ID = B.NUMREMARCADOR AND A.FECHA = B.FECHA AND A.HORA = B.HORA WHERE A.EQUIPO_ID = " + numremarcador + " AND A.MES =" + mes + " AND A.ANIO = " + anio + " ORDER BY A.TIMESTAMP ASC";
                 campos = 6;
                 break;
         }

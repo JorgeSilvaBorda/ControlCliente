@@ -445,6 +445,7 @@ public class ReportesController extends HttpServlet {
                 + "</thead>"
                 + "<tbody>";
         boolean haymanual = false;
+        boolean almenosUnManual = false;
         for (int i = 0; i < ides.size(); i++) {            
             FilaNormal[] tabla = etl.ETL.getDatasetRemarcador(ides.get(i), mes, anio);
             int idrem = ides.get(i);
@@ -454,6 +455,7 @@ public class ReportesController extends HttpServlet {
             if(tabla[tabla.length - 1].esmanual.equals("SI")){
                 lecturafin = tabla[tabla.length - 1].lecturamanual;
                 haymanual = true;
+                almenosUnManual = true;
             }
             int lecturaproyectadaini = (int) tabla[0].lecturaproyectada;
             int lecturaproyectadafin = (int) tabla[tabla.length - 1].lecturaproyectada;
@@ -501,10 +503,11 @@ public class ReportesController extends HttpServlet {
             tablasalida += "<td style='text-align:right;'>" + formato.format(maxdem6).replace(".", ",") + "</td>";
             tablasalida += "<td style='text-align:right;'>" + formato.format(maxdem12).replace(".", ",") + "</td>";
             tablasalida += "</tr>";
+            haymanual = false;
         }
         tablasalida += "</tbody>";
         tablasalida += "</table>";
-        if(haymanual){
+        if(almenosUnManual){
             tablasalida += "* La lectura fue ingresada de forma manual.";
         }
 

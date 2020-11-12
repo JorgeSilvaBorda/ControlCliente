@@ -50,6 +50,7 @@ function getEventosNuevosComunicacion() {
                 $('.dataTable').DataTable().destroy();
                 $('#tabla-eventos-comunicacion tbody').html(obj.cuerpo);
                 var OPCIONES = OPCIONES_DATATABLES;
+                OPCIONES.order = [[0, "desc"], [1, "desc"]];
                 OPCIONES.dom = 'Bfrtip';
                 OPCIONES.buttons = [
                     {
@@ -95,6 +96,7 @@ function getEventosTodosComunicacion() {
                 $('.dataTable').DataTable().destroy();
                 $('#tabla-eventos-comunicacion tbody').html(obj.cuerpo);
                 var OPCIONES = OPCIONES_DATATABLES;
+                OPCIONES.order = [[0, "desc"], [1, "desc"]];
                 OPCIONES.dom = 'Bfrtip';
                 OPCIONES.buttons = [
                     {

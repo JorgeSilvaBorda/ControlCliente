@@ -115,15 +115,15 @@ public class ReportesController extends HttpServlet {
         mesfin = fechas.get(fechas.size() - 1)[2].toString();
         FilaNormal[] filas = etl.ETL.getDatasetRemarcador(entrada.getInt("numremarcador"), mesini, mesfin);
         double consumo = 0;
-        for(Object[] fecha : fechas){
-            for(FilaNormal fila : filas){
-                if(fila.fecha.substring(0, 7).equals(fecha[0].toString())){
-                    if(fila.lecturaproyectada == fila.delta){ //Prevenir que el delta sea el inicial que se toma de la lectura
+        for (Object[] fecha : fechas) {
+            for (FilaNormal fila : filas) {
+                if (fila.fecha.substring(0, 7).equals(fecha[0].toString())) {
+                    if (fila.lecturaproyectada == fila.delta) { //Prevenir que el delta sea el inicial que se toma de la lectura
                         fecha[3] = Double.parseDouble(fecha[3].toString()) + 0;
-                    }else{
+                    } else {
                         fecha[3] = Double.parseDouble(fecha[3].toString()) + fila.delta;
                     }
-                    
+
                 }
             }
         }
@@ -349,8 +349,14 @@ public class ReportesController extends HttpServlet {
             boolean encontrado = false;
             for (FilaNormal[] fin : diferencias) {
                 if (fin[1].fecha.equals(fecha)) {
-                    data.put((int) (fin[1].lecturaproyectada - fin[0].lecturaproyectada));
-                    encontrado = true;
+                    if (fin[1].esmanual.equals("SI")) {
+                        data.put((int) (fin[1].lecturamanual - fin[0].lecturaproyectada));
+                        encontrado = true;
+                    } else {
+                        data.put((int) (fin[1].lecturaproyectada - fin[0].lecturaproyectada));
+                        encontrado = true;
+                    }
+
                 }
             }
             if (!encontrado) {
@@ -446,13 +452,13 @@ public class ReportesController extends HttpServlet {
                 + "<tbody>";
         boolean haymanual = false;
         boolean almenosUnManual = false;
-        for (int i = 0; i < ides.size(); i++) {            
+        for (int i = 0; i < ides.size(); i++) {
             FilaNormal[] tabla = etl.ETL.getDatasetRemarcador(ides.get(i), mes, anio);
             int idrem = ides.get(i);
-            
+
             int lecturaini = (int) tabla[0].lecturareal;
             int lecturafin = (int) tabla[tabla.length - 1].lecturareal;
-            if(tabla[tabla.length - 1].esmanual.equals("SI")){
+            if (tabla[tabla.length - 1].esmanual.equals("SI")) {
                 lecturafin = tabla[tabla.length - 1].lecturamanual;
                 haymanual = true;
                 almenosUnManual = true;
@@ -472,7 +478,7 @@ public class ReportesController extends HttpServlet {
                     }
                 }
             }
-            
+
             Conexion conn = new Conexion();
             String querydem = "CALL SP_GET_MAXDEM_6_12_MESES(" + idrem + ", " + mes + ", " + anio + ")";
             System.out.println("Query demandas 6 y 12 meses: " + querydem);
@@ -480,23 +486,23 @@ public class ReportesController extends HttpServlet {
             double maxdem6 = 0.0d;
             double maxdem12 = 0.0d;
             ResultSet resset = conn.ejecutarQuery(querydem);
-            try{
-                while(resset.next()){
+            try {
+                while (resset.next()) {
                     maxdem6 = resset.getDouble("MAXDEM6");
                     maxdem12 = resset.getDouble("MAXDEM12");
                 }
-            }catch (SQLException ex) {
+            } catch (SQLException ex) {
                 System.out.println("No se pueden obtener las demandas máximas de los últimos 6 y 12 meses.");
                 System.out.println(ex);
                 ex.printStackTrace();
             }
             conn.cerrar();
-             
+
             DecimalFormat formato = new DecimalFormat("#.##");
             tablasalida += "<tr>";
             tablasalida += "<td style='text-align:center;'>" + idrem + "</td>";
             tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(lecturaini) + "</td>";
-            tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(lecturafin) + " " + (haymanual?"*":"") + "</td>";
+            tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(lecturafin) + " " + (haymanual ? "*" : "") + "</td>";
             tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(consumo) + "</td>";
             tablasalida += "<td style='text-align:right;'>" + formato.format(demmax).replace(".", ",") + "</td>";
             tablasalida += "<td style='text-align:right;'>" + formato.format(demmaxhp).replace(".", ",") + "</td>";
@@ -507,7 +513,7 @@ public class ReportesController extends HttpServlet {
         }
         tablasalida += "</tbody>";
         tablasalida += "</table>";
-        if(almenosUnManual){
+        if (almenosUnManual) {
             tablasalida += "* La lectura fue ingresada de forma manual.";
         }
 

@@ -330,7 +330,7 @@ public class RemarcadorController extends HttpServlet {
         tablasalida += "<th>Módulos</th>";
         tablasalida += "<th>Instalación</th>";
         tablasalida += "<th>Lectura<br />Anterior</th>";
-        tablasalida += "<th>Lectura<br />Actual</th>";
+        tablasalida += "<th>Lectura<br />Final</th>";
         tablasalida += "<th>Consumo (kWh)</th>";
         tablasalida += "<th>Emitir</th>";
         tablasalida += "<th>Última<br />Boleta</th>";
@@ -455,7 +455,7 @@ public class RemarcadorController extends HttpServlet {
         //tablasalida += filas;
         tablasalida += "</tbody></table>";
         if (haymanual) {
-            tablasalida += "<span style='font-size: 12px; font-weight: bold;'>* La lectura actual fue ingresada manualmente</span>";
+            tablasalida += "<span style='font-size: 12px; font-weight: bold;'>* La lectura fue ingresada de forma manual</span>";
         }
         salida.put("tabla", tablasalida);
         salida.put("remarcadores", remarcadores);

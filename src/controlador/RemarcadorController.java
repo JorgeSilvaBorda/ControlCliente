@@ -838,24 +838,6 @@ public class RemarcadorController extends HttpServlet {
         return salida;
     }
 
-    private JSONObject getRemarcadorClienteIdRemarcadorNew(JSONObject entrada) {
-        int idremarcador = entrada.getInt("idremarcador");
-        JSONObject salida = new JSONObject();
-        JSONObject remarcador = new JSONObject();
-        String mesanio = entrada.getString("mesanio");
-        String query = "CALL SP_GET_REMARCADOR_CLIENTE_IDREMARCADOR(" + idremarcador + ", '" + mesanio + "')";
-        int anio = Integer.parseInt(mesanio.split("-")[0]);
-        int mes = Integer.parseInt(mesanio.split("-")[2]);
-        int numremarcador = entrada.getInt("numremarcador");
-        FilaNormal[] registros = etl.ETL.getDatasetRemarcador(numremarcador, mes, anio);
-        System.out.println(query);
-        Conexion c = new Conexion();
-        c.abrir();
-        ResultSet rs = c.ejecutarQuery(query);
-
-        return salida;
-    }
-
     private JSONObject getRegistrosMesRemarcador(JSONObject entrada) {
 
         JSONObject salida = new JSONObject();

@@ -119,6 +119,7 @@ public class RemarcadorController extends HttpServlet {
         JSONObject salida = new JSONObject();
         JSONArray ides = new JSONArray();
         String query = "CALL SP_GET_REMARCADORES_IDEMPALME(" + entrada.getInt("idempalme") + ")";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);

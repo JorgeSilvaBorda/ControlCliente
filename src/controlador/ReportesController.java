@@ -300,7 +300,7 @@ public class ReportesController extends HttpServlet {
     }
 
     private JSONObject getDatasetRemarcadorMes(int numremarcador, int mes, int anio) {
-        System.out.println("Entra a buscar Dataset");
+        System.out.println("Entra a buscar Dataset del remarcador Nº: " + numremarcador);
         JSONObject dataset = new JSONObject();
         JSONObject salida = new JSONObject();
         JSONArray data = new JSONArray();
@@ -345,7 +345,7 @@ public class ReportesController extends HttpServlet {
         c.cerrar();
 
         for (String fecha : fechas) {
-            System.out.println("Fecha: " + fecha);
+            //System.out.println("Fecha: " + fecha);
             boolean encontrado = false;
             for (FilaNormal[] fin : diferencias) {
                 if (fin[1].fecha.equals(fecha)) {

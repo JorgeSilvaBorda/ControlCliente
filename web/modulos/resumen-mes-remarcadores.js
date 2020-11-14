@@ -1,4 +1,6 @@
 var GRAFICO = new Chart(document.getElementById("grafico"));
+$(OPCIONES_DATATABLES).remove('dom');
+OPCIONES_DATATABLES.buttons = [];
 
 function getSelectInstalacion() {
     var datos = {

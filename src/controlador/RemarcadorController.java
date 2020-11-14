@@ -119,6 +119,7 @@ public class RemarcadorController extends HttpServlet {
         JSONObject salida = new JSONObject();
         JSONArray ides = new JSONArray();
         String query = "CALL SP_GET_REMARCADORES_IDEMPALME(" + entrada.getInt("idempalme") + ")";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -330,7 +331,7 @@ public class RemarcadorController extends HttpServlet {
         tablasalida += "<th>Módulos</th>";
         tablasalida += "<th>Instalación</th>";
         tablasalida += "<th>Lectura<br />Anterior</th>";
-        tablasalida += "<th>Lectura<br />Actual</th>";
+        tablasalida += "<th>Lectura<br />Final</th>";
         tablasalida += "<th>Consumo (kWh)</th>";
         tablasalida += "<th>Emitir</th>";
         tablasalida += "<th>Última<br />Boleta</th>";
@@ -455,7 +456,7 @@ public class RemarcadorController extends HttpServlet {
         //tablasalida += filas;
         tablasalida += "</tbody></table>";
         if (haymanual) {
-            tablasalida += "<span style='font-size: 12px; font-weight: bold;'>* La lectura actual fue ingresada manualmente</span>";
+            tablasalida += "<span style='font-size: 12px; font-weight: bold;'>* La lectura fue ingresada de forma manual</span>";
         }
         salida.put("tabla", tablasalida);
         salida.put("remarcadores", remarcadores);
@@ -834,24 +835,6 @@ public class RemarcadorController extends HttpServlet {
             salida.put("error", ex);
         }
         c.cerrar();
-        return salida;
-    }
-
-    private JSONObject getRemarcadorClienteIdRemarcadorNew(JSONObject entrada) {
-        int idremarcador = entrada.getInt("idremarcador");
-        JSONObject salida = new JSONObject();
-        JSONObject remarcador = new JSONObject();
-        String mesanio = entrada.getString("mesanio");
-        String query = "CALL SP_GET_REMARCADOR_CLIENTE_IDREMARCADOR(" + idremarcador + ", '" + mesanio + "')";
-        int anio = Integer.parseInt(mesanio.split("-")[0]);
-        int mes = Integer.parseInt(mesanio.split("-")[2]);
-        int numremarcador = entrada.getInt("numremarcador");
-        FilaNormal[] registros = etl.ETL.getDatasetRemarcador(numremarcador, mes, anio);
-        System.out.println(query);
-        Conexion c = new Conexion();
-        c.abrir();
-        ResultSet rs = c.ejecutarQuery(query);
-
         return salida;
     }
 

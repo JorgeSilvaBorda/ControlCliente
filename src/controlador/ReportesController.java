@@ -111,19 +111,61 @@ public class ReportesController extends HttpServlet {
             salida.put("error", ex);
         }
         c.cerrar();
+
         mesini = fechas.get(0)[1].toString();
         mesfin = fechas.get(fechas.size() - 1)[2].toString();
         FilaNormal[] filas = etl.ETL.getDatasetRemarcador(entrada.getInt("numremarcador"), mesini, mesfin);
-        double consumo = 0;
-        for (Object[] fecha : fechas) {
-            for (FilaNormal fila : filas) {
-                if (fila.fecha.substring(0, 7).equals(fecha[0].toString())) {
-                    if (fila.lecturaproyectada == fila.delta) { //Prevenir que el delta sea el inicial que se toma de la lectura
-                        fecha[3] = Double.parseDouble(fecha[3].toString()) + 0;
-                    } else {
-                        fecha[3] = Double.parseDouble(fecha[3].toString()) + fila.delta;
-                    }
 
+        String mesanioActual = "";
+        String iniMes = "";
+        String finMes = "";
+        double lecturaIniMes = 0.0d;
+        double lecturaFinMes = 0.0d;
+        LinkedList<Object[]> fechasLecturas = new LinkedList();
+
+        for (int i = 0; i < filas.length; i++) {
+            if (!filas[i].fecha.substring(0, 7).equals(mesanioActual) && i == 0) {
+                lecturaIniMes = filas[i].lecturaproyectada;
+                iniMes = filas[i].fecha;
+                mesanioActual = filas[i].fecha.substring(0, 7);
+            }
+            if ((!filas[i].fecha.substring(0, 7).equals(mesanioActual)) && i > 0 && i < filas.length - 1) {
+                finMes = filas[i - 1].fecha;
+                if (filas[i - 1].esmanual.equals("SI")) {
+                    lecturaFinMes = filas[i - 1].lecturamanual;
+                } else {
+                    lecturaFinMes = filas[i - 1].lecturaproyectada;
+                }
+                Object[] fecha = new Object[4];
+                fecha[0] = mesanioActual;
+                fecha[1] = iniMes;
+                fecha[2] = finMes;
+                fecha[3] = (lecturaFinMes - lecturaIniMes);
+                fechasLecturas.add(fecha);
+                mesanioActual = filas[i].fecha.substring(0, 7);
+
+                iniMes = filas[i].fecha;
+                lecturaIniMes = filas[i].lecturaproyectada;
+            }
+            if (i == filas.length - 1) {
+                finMes = filas[i].fecha;
+                if (filas[i].esmanual.equals("SI")) {
+                    lecturaFinMes = filas[i].lecturamanual;
+                } else {
+                    lecturaFinMes = filas[i].lecturaproyectada;
+                }
+                Object[] fecha = new Object[4];
+                fecha[0] = mesanioActual;
+                fecha[1] = iniMes;
+                fecha[2] = finMes;
+                fecha[3] = (lecturaFinMes - lecturaIniMes);
+                fechasLecturas.add(fecha);
+            }
+        }
+        for (int i = 0; i < fechas.size(); i++) {
+            for (int x = 0; x < fechasLecturas.size(); x++) {
+                if (fechas.get(i)[0].equals(fechasLecturas.get(x)[0])) {
+                    fechas.get(i)[3] = fechasLecturas.get(x)[3];
                 }
             }
         }
@@ -146,7 +188,8 @@ public class ReportesController extends HttpServlet {
         return salida;
     }
 
-    private JSONObject consumoClienteRemarcadorAnioMes(JSONObject entrada) {
+    @Deprecated
+    private JSONObject consumoClienteRemarcadorAnioMesOld(JSONObject entrada) {
         JSONObject salida = new JSONObject();
 
         String query = "CALL SP_GET_CONSUMO_13_MESES_REMARCADOR_DESDE("
@@ -185,6 +228,120 @@ public class ReportesController extends HttpServlet {
             salida.put("error", ex);
         }
         c.cerrar();
+        return salida;
+    }
+
+    private JSONObject consumoClienteRemarcadorAnioMes(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        int anio = Integer.parseInt(entrada.getString("aniomes").split("-")[0]);
+        int mes = Integer.parseInt(entrada.getString("aniomes").split("-")[1]);
+
+        String mesini = "", mesfin = "";
+        String query = "CALL SP_GET_FECHAS_ATRAS_DESDE_ANIO_MES("
+                + anio + ","
+                + mes + ", "
+                + "13"
+                + ");";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        JSONArray labels = new JSONArray();
+        JSONArray datasets = new JSONArray();
+        JSONArray datasetData = new JSONArray();
+        LinkedList<Object[]> fechas = new LinkedList();
+        try {
+            while (rs.next()) {
+                Object[] datos = new Object[4];
+                datos[0] = (String) rs.getString("MESANIO");
+                datos[1] = (String) rs.getString("FECHAINI");
+                datos[2] = (String) rs.getString("FECHAFIN");
+                datos[3] = (int) 0;
+                fechas.add(datos);
+            }
+
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.ReportesController.consumoClienteRemarcador().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+
+        mesini = fechas.get(0)[1].toString();
+        mesfin = fechas.get(fechas.size() - 1)[2].toString();
+        FilaNormal[] filas = etl.ETL.getDatasetRemarcador(entrada.getInt("numremarcador"), mesini, mesfin);
+        String mesanioActual = "";
+        String iniMes = "";
+        String finMes = "";
+        double lecturaIniMes = 0.0d;
+        double lecturaFinMes = 0.0d;
+        LinkedList<Object[]> fechasLecturas = new LinkedList();
+
+        for (int i = 0; i < filas.length; i++) {
+            if (!filas[i].fecha.substring(0, 7).equals(mesanioActual) && i == 0) {
+                lecturaIniMes = filas[i].lecturaproyectada;
+                iniMes = filas[i].fecha;
+                mesanioActual = filas[i].fecha.substring(0, 7);
+            }
+            if ((!filas[i].fecha.substring(0, 7).equals(mesanioActual)) && i > 0 && i < filas.length - 1) {
+                finMes = filas[i - 1].fecha;
+                if (filas[i - 1].esmanual.equals("SI")) {
+                    lecturaFinMes = filas[i - 1].lecturamanual;
+                } else {
+                    lecturaFinMes = filas[i - 1].lecturaproyectada;
+                }
+                Object[] fecha = new Object[4];
+                fecha[0] = mesanioActual;
+                fecha[1] = iniMes;
+                fecha[2] = finMes;
+                fecha[3] = (lecturaFinMes - lecturaIniMes);
+                fechasLecturas.add(fecha);
+                mesanioActual = filas[i].fecha.substring(0, 7);
+
+                iniMes = filas[i].fecha;
+                lecturaIniMes = filas[i].lecturaproyectada;
+            }
+            if (i == filas.length - 1) {
+                finMes = filas[i].fecha;
+                if (filas[i].esmanual.equals("SI")) {
+                    lecturaFinMes = filas[i].lecturamanual;
+                } else {
+                    lecturaFinMes = filas[i].lecturaproyectada;
+                }
+                Object[] fecha = new Object[4];
+                fecha[0] = mesanioActual;
+                fecha[1] = iniMes;
+                fecha[2] = finMes;
+                fecha[3] = (lecturaFinMes - lecturaIniMes);
+                fechasLecturas.add(fecha);
+            }
+        }
+        for (int i = 0; i < fechas.size(); i++) {
+            for (int x = 0; x < fechasLecturas.size(); x++) {
+                if (fechas.get(i)[0].equals(fechasLecturas.get(x)[0])) {
+                    fechas.get(i)[3] = fechasLecturas.get(x)[3];
+                }
+            }
+        }
+
+        for (Object[] fecs : fechas) {
+            System.out.println(fecs[1] + " - " + fecs[2] + ": " + fecs[3]);
+            labels.put(Util.invertirFecha(fecs[2].toString()));
+            datasetData.put(Double.parseDouble(fecs[3].toString()));
+        }
+        
+        JSONObject dataset = new JSONObject();
+        dataset.put("data", datasetData);
+        dataset.put("label", "Remarcador ID: " + entrada.getInt("numremarcador"));
+        dataset.put("borderWidth", "2");
+        datasets.put(dataset);
+        JSONObject data = new JSONObject();
+        data.put("labels", labels);
+        data.put("datasets", datasets);
+        salida.put("data", data);
+        salida.put("estado", "ok");
         return salida;
     }
 

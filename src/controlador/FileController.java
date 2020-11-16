@@ -23,6 +23,7 @@ public class FileController extends HttpServlet {
 
     private static final String RUTA_PROPERTIES = System.getenv("RUTA_PROPERTIES");
     private static final String SHELL_GENERA_ARCHIVO = "lecturas-remarcador-mes.sh";
+    private static String SEP;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,6 +38,7 @@ public class FileController extends HttpServlet {
             Properties prop = new Properties();
             prop.load(inStream);
             String rutabatch = prop.getProperty("proc.dir");
+            SEP = prop.getProperty("csv.separator");
             //String nomarchivo = getRegistrosMesRemarcadorBatch(idremarcador, aniosolo, messolo, rutabatch);
             String nomarchivo = getRegistrosMesRemarcadorBatch(numremarcador, aniosolo, messolo, rutabatch);
             File archivo = new File(nomarchivo);
@@ -64,14 +66,15 @@ public class FileController extends HttpServlet {
 
     private String getRegistrosMesRemarcadorBatch(int id, int anio, int mes, String dirbatch) {
         //ProcessBuilder pb = new ProcessBuilder("bash", "-c", dirbatch + "/" + SHELL_GENERA_ARCHIVO + " " + id + " " + anio + " " + mes);
+        String sep = SEP;
         LocalDateTime now = LocalDateTime.now();
         int day = now.getDayOfMonth();
         int hour = now.getHour();
         int minute = now.getMinute();
         int second = now.getSecond();
-        
+
         String nomarchivo = dirbatch + "/" + id + "_" + anio + "_" + mes + "_" + day + "_" + hour + "_" + minute + "_" + second + ".csv";
-        
+
         String fechaini = "";
         String fechafin = "";
         Conexion c = new Conexion();
@@ -97,10 +100,10 @@ public class FileController extends HttpServlet {
             FileWriter fr = new FileWriter(salida, true);
             DecimalFormat formato = new DecimalFormat("#.##");
 
-            String cabecera = "TIMESTAMP;FECHA;HORA;ID REMARCADOR;ENERGIA CONSUMIDA PROYECTADA;POTENCIA ACTIVA;LECTURA REAL;LECTURA MANUAL" + System.getProperty("line.separator");
+            String cabecera = "TIMESTAMP" + sep + "FECHA" + sep + "HORA" + sep + "ID REMARCADOR" + sep + "ENERGIA CONSUMIDA PROYECTADA" + sep + "POTENCIA ACTIVA" + sep + "LECTURA REAL" + sep + "LECTURA MANUAL" + System.getProperty("line.separator");
             fr.write(cabecera);
             for (FilaNormal fila : filas) {
-                String registro = fila.fechahora + ";" + Util.invertirFecha(fila.fecha) + ";" + fila.hora + ";" + fila.idremarcador + ";" + (int) fila.lecturaproyectada + ";" + formato.format(fila.potencia).replace(",", ".") + ";" + (int) fila.lecturareal + ";" + fila.lecturamanual + System.getProperty("line.separator");
+                String registro = fila.fechahora + sep + Util.invertirFecha(fila.fecha) + sep + fila.hora + sep + fila.idremarcador + sep + (int) fila.lecturaproyectada + sep + formato.format(fila.potencia).replace(",", ".") + sep + (int) fila.lecturareal + sep + fila.lecturamanual + System.getProperty("line.separator");
                 fr.write(registro);
             }
             fr.close();

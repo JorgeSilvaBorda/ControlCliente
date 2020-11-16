@@ -34,13 +34,15 @@ function actualizaNuevosEventos() {
                 var comunicacion = parseInt(obj.comunicacion);
                 var continuidad = parseInt(obj.continuidad);
                 var total = parseInt(obj.total);
+                $('#cant-alertas-general').text("");
+                $('#cant-alertas-comunicacion').text("");
                 if(total > 0 ){
                     $('#cant-alertas-general').text(total);
                     if(comunicacion > 0){
                         $('#cant-alertas-comunicacion').text(comunicacion);
                     }
                     if(continuidad > 0){
-                        $('#cant-alertas-continuidad').text(continuidad);
+                        //$('#cant-alertas-continuidad').text(continuidad);
                     }
                 }
             }

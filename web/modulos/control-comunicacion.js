@@ -22,7 +22,6 @@ var tableToExcel = (function () {
         var filename = 'Resumen-Pagos-' + $('#mes').val() + '.xls';
         downloadLink = document.createElement("a");
         downloadLink.download = filename;
-
         downloadLink.href = uri + base64(format(template, ctx));
         document.body.appendChild(downloadLink);
         downloadLink.click();
@@ -30,7 +29,6 @@ var tableToExcel = (function () {
         delete downloadLink;
     };
 })();
-
 function getEventosNuevosComunicacion() {
     TABLA = null;
     $('#btn-marcar-todos').attr("hidden", "hidden");
@@ -49,6 +47,14 @@ function getEventosNuevosComunicacion() {
             if (obj.estado === 'ok') {
                 $('.dataTable').DataTable().destroy();
                 $('#tabla-eventos-comunicacion tbody').html(obj.cuerpo);
+                /*
+                 $('#tabla-eventos-comunicacion thead th').each(function () {
+                 var title = $(this).text();
+                 $(this).html(title + '<input type="text" onclick="return false;" placeholder="Buscar ' + title + '" />');
+                 });
+                 */
+
+
                 var OPCIONES = OPCIONES_DATATABLES;
                 OPCIONES.order = [[0, "desc"], [1, "desc"]];
                 OPCIONES.dom = 'Bfrtip';
@@ -63,6 +69,9 @@ function getEventosNuevosComunicacion() {
 
                 ];
                 TABLA = $('#tabla-eventos-comunicacion').DataTable(OPCIONES);
+                $('#tabla-eventos-comunicacion_filter label input').on('keyup change', function(){
+                    TABLA.column(2).search($(this).val()).draw();
+                });
                 $('.buttons-html5').addClass("btn-sm");
                 $('.buttons-html5').addClass("btn-success");
             }

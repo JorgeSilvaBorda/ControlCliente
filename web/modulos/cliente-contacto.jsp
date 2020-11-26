@@ -32,7 +32,7 @@
                 </div>
                 <div class="form-group">
                     <label for="fono" >Fono</label>
-                    <input type="number" class="form-control form-control-sm small" maxlength="9" id="fono" />
+                    <input type="phone" class="form-control form-control-sm small" maxlength="9" id="fono" />
                 </div>
                 <div class="form-group">
                     <label for="email" >Email</label>

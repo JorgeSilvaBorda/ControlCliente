@@ -47,6 +47,8 @@
                 if(IDTIPOUSUARIO === 1){
                     actualizaNuevosEventos();
                 }
+                //Llamar a actualizar eventos cada 5 minutos
+                setTimeout(actualizaNuevosEventos, 300000);
             });
         </script>
         <div class="container-fluid">

@@ -36,6 +36,18 @@ public class EventosController extends HttpServlet {
             case "marcar-todos-leidos":
                 out.print(marcarTodosLeidos(entrada));
                 break;
+            case "get-excepciones":
+                out.print(getExcepciones());
+                break;
+            case "ins-excepcion":
+                out.print(insExcepcion(entrada));
+                break;
+            case "del-excepcion":
+                out.print(delExcepcion(entrada));
+                break;
+            case "get-excepciones-remarcador":
+                out.print(getExcepcionesRemarcador(entrada));
+                break;
         }
     }
 
@@ -154,6 +166,98 @@ public class EventosController extends HttpServlet {
         c.abrir();
         c.ejecutar(query);
         c.cerrar();
+        salida.put("estado", "ok");
+        return salida;
+    }
+
+    private JSONObject insExcepcion(JSONObject entrada) {
+        int numremarcador = entrada.getInt("numremarcador");
+        String motivo = entrada.getString("motivo");
+        String duracion = entrada.getString("descduracion");
+        String query = "CALL SP_INS_EXCEPCION_ALERTA("
+                + numremarcador + ", "
+                + "'" + motivo + "', "
+                + "'" + duracion + "'"
+                + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        JSONObject salida = new JSONObject();
+        salida.put("estado", "ok");
+        return salida;
+    }
+
+    private JSONObject getExcepcionesRemarcador(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        int numremarcador = entrada.getInt("numremarcador");
+        String query = "SELECT COUNT(NUMREMARCADOR) CANTIDAD FROM EXCEPCIONNOTIFICACION WHERE NUMREMARCADOR = " + numremarcador;
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        int cantidad = 0;
+        try {
+            while (rs.next()) {
+                cantidad = rs.getInt("CANTIDAD");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Problemas al obtener las excepciones de un remarcador.");
+            System.out.println(ex);
+            ex.printStackTrace();
+            c.cerrar();
+            salida.put("estado", "error");
+            return salida;
+        }
+        c.cerrar();
+        salida.put("estado", "ok");
+        salida.put("cantidad", cantidad);
+        return salida;
+    }
+
+    private JSONObject getExcepciones() {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_EXCEPCIONES_NOTIFICACION()";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        String tabla = "";
+        try {
+            ResultSet rs = c.ejecutarQuery(query);
+            while (rs.next()) {
+                tabla += "<tr>";
+                tabla += "<td><input type='hidden' value='" + rs.getInt("IDEXCEPCION") + "' />" + rs.getString("FECHACREACIONFORMAT") + "</td>";
+                tabla += "<td>" + rs.getInt("NUMREMARCADOR") + "</td>";
+                tabla += "<td>" + rs.getString("MOTIVO") + "</td>";
+                tabla += "<td>" + rs.getString("DURACION") + "</td>";
+                tabla += "<td>" + rs.getString("FECHAFINFORMAT") + "</td>";
+                tabla += "<td><button type='button' class='btn btn-sm btn-danger' onclick='delExcepcion(" + rs.getInt("IDEXCEPCION") + ")'>Eliminar</button></td>";
+                tabla += "</tr>";
+            }
+            salida.put("estado", "ok");
+            salida.put("cuerpo", tabla);
+
+        } catch (JSONException | SQLException ex) {
+            salida.put("error", ex);
+            System.out.println("Problemas al obtener las excepciones registradas.");
+            System.out.println(ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject delExcepcion(JSONObject entrada) {
+        int idexcepcion = entrada.getInt("idexcepcion");
+        String query = "CALL SP_DEL_EXCEPCION_ALERTA("
+                + idexcepcion
+                + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        c.cerrar();
+        JSONObject salida = new JSONObject();
         salida.put("estado", "ok");
         return salida;
     }

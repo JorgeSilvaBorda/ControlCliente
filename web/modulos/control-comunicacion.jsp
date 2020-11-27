@@ -22,6 +22,9 @@
                 <li class="nav-item">
                     <a class="nav-link" onclick='cargarPestana(this, "control-comunicacion-todos");' href="#">Todos</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick='cargarPestana(this, "control-comunicacion-excepciones");' href="#">Excepciones</a>
+                </li>
             </ul>
         </div>
     </div>

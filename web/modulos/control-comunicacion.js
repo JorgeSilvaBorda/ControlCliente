@@ -69,7 +69,7 @@ function getEventosNuevosComunicacion() {
 
                 ];
                 TABLA = $('#tabla-eventos-comunicacion').DataTable(OPCIONES);
-                $('#tabla-eventos-comunicacion_filter label input').on('keyup change', function(){
+                $('#tabla-eventos-comunicacion_filter label input').on('keyup change', function () {
                     TABLA.column(2).search($(this).val()).draw();
                 });
                 $('.buttons-html5').addClass("btn-sm");
@@ -189,4 +189,209 @@ function marcarTodos() {
             }
         });
     }
+}
+
+function getExcepciones() {
+    TABLA = null;
+    $('#btn-excel').attr("hidden", "hidden");
+    var datos = {
+        tipo: 'get-excepciones'
+    };
+    $.ajax({
+        url: 'EventosController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('.dataTable').DataTable().destroy();
+                $('#tabla-excepciones tbody').html(obj.cuerpo);
+                var OPCIONES = OPCIONES_DATATABLES;
+                OPCIONES.order = [[0, "desc"], [1, "asc"]];
+                OPCIONES.dom = 'Bfrtip';
+                OPCIONES.buttons = [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Excepciones',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4]
+                        }
+                    }
+
+                ];
+                TABLA = $('#tabla-excepciones').DataTable(OPCIONES);
+                $('.buttons-html5').addClass("btn-sm");
+                $('.buttons-html5').addClass("btn-success");
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function validarExcepcion() {
+
+    var valmotivo = $('input:radio[name=opciones]:checked').val();
+    var motivo = '';
+    if (valmotivo === '1') {
+        motivo = 'Bodega vacía';
+    } else if (valmotivo === '2') {
+        motivo = 'Bodega pulmón';
+    } else if (valmotivo === '3') {
+        motivo = 'En falla';
+    } else {
+        alert('Debe seleccionar un motivo para la excepción.');
+        return false;
+    }
+
+    var numremarcador = $('#numremarcador').val();
+    if (numremarcador === '' || numremarcador === 0 || numremarcador === '0') {
+        alert('Debe indicar el ID del remarcador para ingresar la excepción.');
+        return false;
+    }
+
+    var duracion = $('#select-duracion').val();
+    if (duracion === 0 || duracion === '0') {
+        alert("Debe seleccionar una duración para ingresar la excepción.");
+        return false;
+    }
+    return true;
+}
+
+function insExcepcion() {
+    if (validarExcepcion()) {
+        var valmotivo = $('input:radio[name=opciones]:checked').val();
+        var motivo = '';
+        if (valmotivo === '1') {
+            motivo = 'Bodega vacía';
+        } else if (valmotivo === '2') {
+            motivo = 'Bodega pulmón';
+        } else if (valmotivo === '3') {
+            motivo = 'En falla';
+        }
+        var numremarcador = $('#numremarcador').val();
+        var duracion = parseInt($('#select-duracion').val());
+        var descduracion = '';
+        switch (duracion) {
+            case 1:
+                descduracion = "DIA";
+                break;
+            case 2:
+                descduracion = "SEMANA";
+                break;
+            case 3:
+                descduracion = "MES";
+                break;
+        }
+
+        var datos = {
+            tipo: 'ins-excepcion',
+            numremarcador: numremarcador,
+            motivo: motivo,
+            duracion: duracion,
+            descduracion: descduracion
+        };
+
+        $.ajax({
+            url: 'EventosController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (resp) {
+                var obj = JSON.parse(resp);
+                if (obj.estado === 'ok') {
+                    getExcepciones();
+                    limpiarExcepciones();
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            }
+        });
+    }
+
+    function limpiarExcepciones() {
+        $('input:radio').prop("checked", false);
+        $('#numremarcador').val('');
+        $('#select-duracion').val('0');
+    }
+
+}
+
+function getExcepcionesRemarcador() {
+    var numremarcador = $('#numremarcador').val();
+
+    var datos = {
+        tipo: 'get-excepciones-remarcador',
+        numremarcador: numremarcador
+    };
+
+    $.ajax({
+        url: 'EventosController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                if(parseInt(obj.cantidad) > 0){
+                    if(confirm("El remarcador seleccionado ya posee una excepción creada. La anterior se eliminará para crear ésta. ¿Está seguro?")){
+                        insExcepcion();
+                    }
+                }else{
+                    insExcepcion();
+                }
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function delExcepcion(idexcepcion) {
+    if (confirm("¿Está seguro de que desea eliminar la excepción seleccionada?\nSe comenzará a emitir notificaciones para este remarcador.")) {
+
+        var datos = {
+            tipo: 'del-excepcion',
+            idexcepcion: idexcepcion
+        };
+
+        $.ajax({
+            url: 'EventosController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (resp) {
+                var obj = JSON.parse(resp);
+                if (obj.estado === 'ok') {
+                    getExcepciones();
+                    limpiarExcepciones();
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            }
+        });
+    }
+}
+
+function limpiarExcepciones() {
+    $('input:radio').prop("checked", false);
+    $('#numremarcador').val('');
+    $('#select-duracion').val('0');
 }

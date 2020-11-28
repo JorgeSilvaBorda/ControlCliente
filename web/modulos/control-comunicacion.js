@@ -118,6 +118,9 @@ function getEventosTodosComunicacion() {
 
                 ];
                 TABLA = $('#tabla-eventos-comunicacion').DataTable(OPCIONES);
+                $('#tabla-eventos-comunicacion_filter label input').on('keyup change', function () {
+                    TABLA.column(2).search($(this).val()).draw();
+                });
                 $('.buttons-html5').addClass("btn-sm");
                 $('.buttons-html5').addClass("btn-success");
             }
@@ -159,10 +162,18 @@ function marcarLeido(boton, idnotificacion) {
 function marcarTodos() {
     if (confirm("Está seguro de que desea marcar todos los eventos como leídos? Esta acción los quitará de esta vista y podrá consultarlos en la pestaña \"Todos\"")) {
         var ides = [];
+        
+        for(var i = 0; i < TABLA.rows( {search:'applied'} ).nodes().length; i++){
+            var fila = $(TABLA.rows( {search:'applied'} ).nodes()[i]);
+            var idnotificacion = fila[0].cells[0].childNodes[0].value;
+            ides.push(idnotificacion);
+        }
         for (var i = 0; i < TABLA.rows().data().length; i++) {
-            var arr = TABLA.rows().data()[i];
-            TABLA.rows().data()[i][6].replace("button ", "button hidden='hidden' ");
-            ides.push($(arr[0]).val());
+            for(var x = 0; x < ides.length; x++){
+                if($(TABLA.rows().data()[i][0]).val() === ides[x]){
+                    TABLA.rows().data()[i][6].replace("button ", "button hidden='hidden' ")
+                }
+            }
         }
 
         var datos = {

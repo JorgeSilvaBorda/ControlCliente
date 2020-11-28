@@ -126,6 +126,7 @@ public class EventosController extends HttpServlet {
                 tabla += "<td>" + rs.getString("NOMPARQUE") + "</td>";
                 tabla += "<td>" + rs.getString("NOMINSTALACION") + "</td>";
                 tabla += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
+                tabla += "<td>" + rs.getString("CODESTADO") + "</td>";
                 tabla += "</tr>";
                 cant++;
             }

@@ -26,6 +26,7 @@
                         <th>Bodega</th>
                         <th>Instalación</th>
                         <th>Cliente</th>
+                        <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>

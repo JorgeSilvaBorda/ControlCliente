@@ -118,6 +118,7 @@
                                                     + "<a class='dropdown-item' onclick='cargarModulo(\"cliente\");' href='#'>Cliente</a>\n"
                                                     + "<a class='dropdown-item' onclick='cargarModulo(\"cliente-contacto\");' href='#'>Contactos Cliente</a>\n"
                                                     + "<a class='dropdown-item' onclick='cargarModulo(\"tarifa\");' href='#'>Tarifa</a>\n"
+                                                    + "<a class='dropdown-item' onclick='cargarModulo(\"destinatario-notificacion\");' href='#'>Destinatarios Notificaciones</a>\n"
                                                     + "</div>"
                                                     + "</li>");
                                         }

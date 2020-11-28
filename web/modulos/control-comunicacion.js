@@ -74,6 +74,10 @@ function getEventosNuevosComunicacion() {
                 });
                 $('.buttons-html5').addClass("btn-sm");
                 $('.buttons-html5').addClass("btn-success");
+                
+                $('input[type=search]').on('search', function () {
+                    $('input[type=search]').change();
+                });
             }
             if (obj.cant > 0) {
                 $('#btn-marcar-todos').removeAttr("hidden");
@@ -118,11 +122,15 @@ function getEventosTodosComunicacion() {
 
                 ];
                 TABLA = $('#tabla-eventos-comunicacion').DataTable(OPCIONES);
+
                 $('#tabla-eventos-comunicacion_filter label input').on('keyup change', function () {
                     TABLA.column(2).search($(this).val()).draw();
                 });
                 $('.buttons-html5').addClass("btn-sm");
                 $('.buttons-html5').addClass("btn-success");
+                $('input[type=search]').on('search', function () {
+                    $('input[type=search]').change();
+                });
             }
         },
         error: function (a, b, c) {
@@ -162,15 +170,15 @@ function marcarLeido(boton, idnotificacion) {
 function marcarTodos() {
     if (confirm("Está seguro de que desea marcar todos los eventos como leídos? Esta acción los quitará de esta vista y podrá consultarlos en la pestaña \"Todos\"")) {
         var ides = [];
-        
-        for(var i = 0; i < TABLA.rows( {search:'applied'} ).nodes().length; i++){
-            var fila = $(TABLA.rows( {search:'applied'} ).nodes()[i]);
+
+        for (var i = 0; i < TABLA.rows({search: 'applied'}).nodes().length; i++) {
+            var fila = $(TABLA.rows({search: 'applied'}).nodes()[i]);
             var idnotificacion = fila[0].cells[0].childNodes[0].value;
             ides.push(idnotificacion);
         }
         for (var i = 0; i < TABLA.rows().data().length; i++) {
-            for(var x = 0; x < ides.length; x++){
-                if($(TABLA.rows().data()[i][0]).val() === ides[x]){
+            for (var x = 0; x < ides.length; x++) {
+                if ($(TABLA.rows().data()[i][0]).val() === ides[x]) {
                     TABLA.rows().data()[i][6].replace("button ", "button hidden='hidden' ")
                 }
             }
@@ -354,11 +362,11 @@ function getExcepcionesRemarcador() {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
-                if(parseInt(obj.cantidad) > 0){
-                    if(confirm("El remarcador seleccionado ya posee una excepción creada. La anterior se eliminará para crear ésta. ¿Está seguro?")){
+                if (parseInt(obj.cantidad) > 0) {
+                    if (confirm("El remarcador seleccionado ya posee una excepción creada. La anterior se eliminará para crear ésta. ¿Está seguro?")) {
                         insExcepcion();
                     }
-                }else{
+                } else {
                     insExcepcion();
                 }
             }

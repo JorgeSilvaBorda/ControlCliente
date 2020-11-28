@@ -64,6 +64,10 @@
         <servlet-name>EventosController</servlet-name>
         <servlet-class>controlador.EventosController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DestinatarioController</servlet-name>
+        <servlet-class>controlador.DestinatarioController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UsuarioController</servlet-name>
         <url-pattern>/UsuarioController</url-pattern>
@@ -127,6 +131,10 @@
     <servlet-mapping>
         <servlet-name>EventosController</servlet-name>
         <url-pattern>/EventosController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DestinatarioController</servlet-name>
+        <url-pattern>/DestinatarioController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

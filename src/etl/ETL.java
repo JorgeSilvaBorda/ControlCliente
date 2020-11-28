@@ -6,16 +6,17 @@ import java.util.LinkedList;
 import modelo.Conexion;
 
 /**
- * Clase creada para obtener dataset completo de los remarcadores y procesarlos fuera de SQL
+ * Clase creada para obtener dataset completo de los remarcadores y procesarlos
+ * fuera de SQL
+ *
  * @author Jorge Silva Borda
  */
 public class ETL {
-    
+
     /**
      * Obtiene el listado de ID de remarcadores y su tabla de origen
-     * @return {@code String[][]}. En donde:
-     * [0] = ORIGEN.
-     * [1] = ID REMARCADOR.
+     *
+     * @return {@code String[][]}. En donde: [0] = ORIGEN. [1] = ID REMARCADOR.
      */
     private static String[][] getOrigenesRemarcador() {
         String query = "CALL SP_GET_ORIGEN_REMARCADORES()";
@@ -47,13 +48,19 @@ public class ETL {
     }
 
     /**
-     * Construye la consulta a la base de datos para obtener los campos de la tabla que corresponda al tipo de remarcador.
-     * Esta función incorpora el relleno de las lecturas vacías en la tabla origen del remarcador seleccionado.
-     * Devuelve un arreglo con todas las filas del rango de fechas ya procesado y con continuidad ajustada.
+     * Construye la consulta a la base de datos para obtener los campos de la
+     * tabla que corresponda al tipo de remarcador. Esta función incorpora el
+     * relleno de las lecturas vacías en la tabla origen del remarcador
+     * seleccionado. Devuelve un arreglo con todas las filas del rango de fechas
+     * ya procesado y con continuidad ajustada.
+     *
      * @param numremarcador {@code int}. Corresponde al ID REMARCADOR.
-     * @param fechaDesde {@code String}. Corresponde a la fecha de inicio de la búsqueda.
-     * @param fechaHasta {@code String}. Corresponde a la fecha de térmimo de la búsqueda.
-     * @return {@code Array} {@link etl.FilaNormal} con los campos deseados y transformados.
+     * @param fechaDesde {@code String}. Corresponde a la fecha de inicio de la
+     * búsqueda.
+     * @param fechaHasta {@code String}. Corresponde a la fecha de térmimo de la
+     * búsqueda.
+     * @return {@code Array} {@link etl.FilaNormal} con los campos deseados y
+     * transformados.
      */
     public static FilaNormal[] getDatasetRemarcador(int numremarcador, String fechaDesde, String fechaHasta) {
         String[][] origenes = getOrigenesRemarcador();
@@ -106,7 +113,7 @@ public class ETL {
         }
         System.out.println("Tabla cruda procesada");
         c.cerrar();
-        switch(tabla){
+        switch (tabla) {
             case "circutorcvmC10":
                 return getTablaCircutor(salida);
             case "schneiderPM710":
@@ -116,15 +123,19 @@ public class ETL {
         }
         return null;
     }
-    
+
     /**
-     * Construye la consulta a la base de datos para obtener los campos de la tabla que corresponda al tipo de remarcador.
-     * Esta función incorpora el relleno de las lecturas vacías en la tabla origen del remarcador seleccionado.
-     * Devuelve un arreglo con todas las filas del mes-anio ya procesado y con continuidad ajustada.
+     * Construye la consulta a la base de datos para obtener los campos de la
+     * tabla que corresponda al tipo de remarcador. Esta función incorpora el
+     * relleno de las lecturas vacías en la tabla origen del remarcador
+     * seleccionado. Devuelve un arreglo con todas las filas del mes-anio ya
+     * procesado y con continuidad ajustada.
+     *
      * @param numremarcador {@code int}. Corresponde al ID REMARCADOR.
      * @param mes {@code int}. Corresponde al mes de la consulta.
      * @param anio {@code int}. Corresponde al año de la consulta.
-     * @return {@code Array} {@link etl.FilaNormal} con los campos deseados y transformados.
+     * @return {@code Array} {@link etl.FilaNormal} con los campos deseados y
+     * transformados.
      */
     public static FilaNormal[] getDatasetRemarcador(int numremarcador, int mes, int anio) {
         String[][] origenes = getOrigenesRemarcador();
@@ -176,7 +187,7 @@ public class ETL {
         }
         System.out.println("Tabla cruda procesada");
         c.cerrar();
-        switch(tabla){
+        switch (tabla) {
             case "circutorcvmC10":
                 return getTablaCircutor(salida);
             case "schneiderPM710":
@@ -188,10 +199,13 @@ public class ETL {
     }
 
     /**
-     * Obtiene el valor de la energía del remarcador Circutor.
-     * Aplica las reglas de cálculo que se encuentran en la documentación.
-     * @param contador {@code int}. Contador de energía del remarcador. ITEM96 en tabla.
-     * @param factor {@code int}. El multiplicador de vueltas del contador. ITEM95 en tabla.
+     * Obtiene el valor de la energía del remarcador Circutor. Aplica las reglas
+     * de cálculo que se encuentran en la documentación.
+     *
+     * @param contador {@code int}. Contador de energía del remarcador. ITEM96
+     * en tabla.
+     * @param factor {@code int}. El multiplicador de vueltas del contador.
+     * ITEM95 en tabla.
      * @return {@code int}. Resultado del contador real.
      */
     private static int getValorEnergiaCircutor(int contador, int factor) {
@@ -204,8 +218,11 @@ public class ETL {
 
     /**
      * Obtiene el valor de la potencia activa
-     * @param contador {@code int}. Corresponde al contador de potencia. ITEM50 en tabla.
-     * @param factor {@code int}. Corresponde al multiplicador de la potencia. ITEM49 en tabla.
+     *
+     * @param contador {@code int}. Corresponde al contador de potencia. ITEM50
+     * en tabla.
+     * @param factor {@code int}. Corresponde al multiplicador de la potencia.
+     * ITEM49 en tabla.
      * @return {@code double}. La potencia activa instantánea.
      */
     private static double getValorPotenciaCircutor(int contador, int factor) {
@@ -218,9 +235,13 @@ public class ETL {
 
     /**
      * Obtiene el valor de la energía del remarcador.
-     * @param contador {@code int}. Corresponde al contador del remarcador. ITEM2 en tabla.
-     * @param factor {@code int}. Corresponde al factor de vueltas del contador. ITEM1 en tabla.
-     * @param potencia {@code int}. Corresponde a la potencia aplicada a la fórmula en base 10. ITEM109 en tabla.
+     *
+     * @param contador {@code int}. Corresponde al contador del remarcador.
+     * ITEM2 en tabla.
+     * @param factor {@code int}. Corresponde al factor de vueltas del contador.
+     * ITEM1 en tabla.
+     * @param potencia {@code int}. Corresponde a la potencia aplicada a la
+     * fórmula en base 10. ITEM109 en tabla.
      * @return {@code double}. Con el contador de la energía.
      */
     private static double getValorEnergiaSchneiderPM710(int contador, int factor, int potencia) {
@@ -236,25 +257,31 @@ public class ETL {
 
     /**
      * Obtiene el resultado de la potencia del remarcador.
-     * @param contador {@code int}. Corresponde al contador de potencia. ITEM7 en tabla.
-     * @param potencia {@code int}. Corresponde a la potencia de la base 10 para el cálculo. ITEM108 en tabla.
-     * @return {@code double} Con la potencia instantánea conectada al remarcador.
+     *
+     * @param contador {@code int}. Corresponde al contador de potencia. ITEM7
+     * en tabla.
+     * @param potencia {@code int}. Corresponde a la potencia de la base 10 para
+     * el cálculo. ITEM108 en tabla.
+     * @return {@code double} Con la potencia instantánea conectada al
+     * remarcador.
      */
     private static double getValorPotenciaSchneiderPM710(int contador, int potencia) {
         return (double) ((double) contador * Math.pow(10, (double) potencia));
     }
-    
+
     /**
      * Obtiene la energía del remarcador
+     *
      * @param energia {@code double} la energía del remarcador.
      * @return {@code double} la energía del remarcador.
      */
     private static double getValorEnergiaSchneiderPM5300(double energia) {
         return energia;
     }
-    
+
     /**
      * Obtiene la potencia del remarcador
+     *
      * @param potencia {@code double} la potencia del remarcador.
      * @return {@code double} la potencia del remarcador.
      */
@@ -263,11 +290,16 @@ public class ETL {
     }
 
     /**
-     * Crea la tabla de salida de remarcador circutorcvmC10 con la recibida desde los datos crudos.
-     * Genera continuidad en la remarcación detectando las bajas en los valores que puede ser generada por reseteos del remarcador.
-     * Mantiene una cuenta pareja ascendente, además de entregar también la lectura real del remarcador.
-     * @param tabla {@code String[][]} con los datos de remarcación crudos sin vacíos, pero puede contener regresos en la continuidad.
-     * @return {@link etl.FilaNormal[]} con los dato ordenados y con continuidad.
+     * Crea la tabla de salida de remarcador circutorcvmC10 con la recibida
+     * desde los datos crudos. Genera continuidad en la remarcación detectando
+     * las bajas en los valores que puede ser generada por reseteos del
+     * remarcador. Mantiene una cuenta pareja ascendente, además de entregar
+     * también la lectura real del remarcador.
+     *
+     * @param tabla {@code String[][]} con los datos de remarcación crudos sin
+     * vacíos, pero puede contener regresos en la continuidad.
+     * @return {@link etl.FilaNormal[]} con los dato ordenados y con
+     * continuidad.
      */
     private static FilaNormal[] getTablaCircutor(String[][] tabla) {
         FilaNormal[] tablaNormal = new FilaNormal[tabla.length];
@@ -275,14 +307,14 @@ public class ETL {
 
             if (tabla[i][2].equals("")) {
                 boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][2].equals("")) {
-                        tabla[i][2] = tabla[x][2];
-                        encontrado = true;
+                if (i == 0) {
+                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
+                        if (!tabla[x][2].equals("")) {
+                            tabla[i][2] = tabla[x][2];
+                            encontrado = true;
+                        }
                     }
-                }
-
-                if (!encontrado) {
+                } else {
                     for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
                         if (!tabla[z][2].equals("")) {
                             tabla[i][2] = tabla[z][2];
@@ -290,20 +322,22 @@ public class ETL {
                         }
                     }
                 }
-                if(!encontrado){
+
+                if (!encontrado) {
                     tabla[i][2] = "0";
                 }
 
             }
             if (tabla[i][3].equals("")) {
                 boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][3].equals("")) {
-                        tabla[i][3] = tabla[x][3];
-                        encontrado = true;
+                if (i == 0) {
+                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
+                        if (!tabla[x][3].equals("")) {
+                            tabla[i][3] = tabla[x][3];
+                            encontrado = true;
+                        }
                     }
-                }
-                if (!encontrado) {
+                } else {
                     for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
                         if (!tabla[z][3].equals("")) {
                             tabla[i][3] = tabla[z][3];
@@ -311,20 +345,22 @@ public class ETL {
                         }
                     }
                 }
-                if(!encontrado){
+
+                if (!encontrado) {
                     tabla[i][3] = "0";
                 }
             }
 
             if (tabla[i][4].equals("")) {
                 boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][4].equals("")) {
-                        tabla[i][4] = tabla[x][4];
-                        encontrado = true;
+                if (i == 0) {
+                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
+                        if (!tabla[x][4].equals("")) {
+                            tabla[i][4] = tabla[x][4];
+                            encontrado = true;
+                        }
                     }
-                }
-                if (!encontrado) {
+                } else {
                     for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
                         if (!tabla[z][4].equals("")) {
                             tabla[i][4] = tabla[z][4];
@@ -332,19 +368,21 @@ public class ETL {
                         }
                     }
                 }
-                if(!encontrado){
+
+                if (!encontrado) {
                     tabla[i][4] = "0";
                 }
             }
             if (tabla[i][5].equals("")) {
                 boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][5].equals("")) {
-                        tabla[i][5] = tabla[x][5];
-                        encontrado = true;
+                if (i == 0) {
+                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
+                        if (!tabla[x][5].equals("")) {
+                            tabla[i][5] = tabla[x][5];
+                            encontrado = true;
+                        }
                     }
-                }
-                if (!encontrado) {
+                } else {
                     for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
                         if (!tabla[z][5].equals("")) {
                             tabla[i][5] = tabla[z][5];
@@ -352,7 +390,8 @@ public class ETL {
                         }
                     }
                 }
-                if(!encontrado){
+
+                if (!encontrado) {
                     tabla[i][5] = "0";
                 }
             }
@@ -390,13 +429,18 @@ public class ETL {
         System.out.println("Tabla circutorcvmC10 lista");
         return tablaNormal;
     }
-    
+
     /**
-     * Crea la tabla de salida de remarcador SchneiderPM710 con la recibida desde los datos crudos.
-     * Genera continuidad en la remarcación detectando las bajas en los valores que puede ser generada por reseteos del remarcador.
-     * Mantiene una cuenta pareja ascendente, además de entregar también la lectura real del remarcador.
-     * @param tabla {@code String[][]} con los datos de remarcación crudos sin vacíos, pero puede contener regresos en la continuidad.
-     * @return {@link etl.FilaNormal[]} con los dato ordenados y con continuidad.
+     * Crea la tabla de salida de remarcador SchneiderPM710 con la recibida
+     * desde los datos crudos. Genera continuidad en la remarcación detectando
+     * las bajas en los valores que puede ser generada por reseteos del
+     * remarcador. Mantiene una cuenta pareja ascendente, además de entregar
+     * también la lectura real del remarcador.
+     *
+     * @param tabla {@code String[][]} con los datos de remarcación crudos sin
+     * vacíos, pero puede contener regresos en la continuidad.
+     * @return {@link etl.FilaNormal[]} con los dato ordenados y con
+     * continuidad.
      */
     private static FilaNormal[] getTablaSchneiderPM710(String[][] tabla) {
         FilaNormal[] tablaNormal = new FilaNormal[tabla.length];
@@ -404,14 +448,14 @@ public class ETL {
 
             if (tabla[i][2].equals("")) {
                 boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][2].equals("")) {
-                        tabla[i][2] = tabla[x][2];
-                        encontrado = true;
+                if (i == 0) {
+                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
+                        if (!tabla[x][2].equals("")) {
+                            tabla[i][2] = tabla[x][2];
+                            encontrado = true;
+                        }
                     }
-                }
-
-                if (!encontrado) {
+                } else {
                     for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
                         if (!tabla[z][2].equals("")) {
                             tabla[i][2] = tabla[z][2];
@@ -419,20 +463,22 @@ public class ETL {
                         }
                     }
                 }
-                if(!encontrado){
+
+                if (!encontrado) {
                     tabla[i][2] = "0";
                 }
 
             }
             if (tabla[i][3].equals("")) {
                 boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][3].equals("")) {
-                        tabla[i][3] = tabla[x][3];
-                        encontrado = true;
+                if (i == 0) {
+                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
+                        if (!tabla[x][3].equals("")) {
+                            tabla[i][3] = tabla[x][3];
+                            encontrado = true;
+                        }
                     }
-                }
-                if (!encontrado) {
+                } else {
                     for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
                         if (!tabla[z][3].equals("")) {
                             tabla[i][3] = tabla[z][3];
@@ -440,20 +486,22 @@ public class ETL {
                         }
                     }
                 }
-                if(!encontrado){
+
+                if (!encontrado) {
                     tabla[i][3] = "0";
                 }
             }
 
             if (tabla[i][4].equals("")) {
                 boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][4].equals("")) {
-                        tabla[i][4] = tabla[x][4];
-                        encontrado = true;
+                if (i == 0) {
+                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
+                        if (!tabla[x][4].equals("")) {
+                            tabla[i][4] = tabla[x][4];
+                            encontrado = true;
+                        }
                     }
-                }
-                if (!encontrado) {
+                } else {
                     for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
                         if (!tabla[z][4].equals("")) {
                             tabla[i][4] = tabla[z][4];
@@ -461,19 +509,21 @@ public class ETL {
                         }
                     }
                 }
-                if(!encontrado){
+
+                if (!encontrado) {
                     tabla[i][4] = "0";
                 }
             }
             if (tabla[i][5].equals("")) {
                 boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][5].equals("")) {
-                        tabla[i][5] = tabla[x][5];
-                        encontrado = true;
+                if (i == 0) {
+                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
+                        if (!tabla[x][5].equals("")) {
+                            tabla[i][5] = tabla[x][5];
+                            encontrado = true;
+                        }
                     }
-                }
-                if (!encontrado) {
+                } else {
                     for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
                         if (!tabla[z][5].equals("")) {
                             tabla[i][5] = tabla[z][5];
@@ -481,19 +531,21 @@ public class ETL {
                         }
                     }
                 }
-                if(!encontrado){
+
+                if (!encontrado) {
                     tabla[i][5] = "0";
                 }
             }
             if (tabla[i][6].equals("")) {
                 boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][6].equals("")) {
-                        tabla[i][6] = tabla[x][6];
-                        encontrado = true;
+                if (i == 0) {
+                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
+                        if (!tabla[x][6].equals("")) {
+                            tabla[i][6] = tabla[x][6];
+                            encontrado = true;
+                        }
                     }
-                }
-                if (!encontrado) {
+                } else {
                     for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
                         if (!tabla[z][6].equals("")) {
                             tabla[i][6] = tabla[z][6];
@@ -501,7 +553,8 @@ public class ETL {
                         }
                     }
                 }
-                if(!encontrado){
+
+                if (!encontrado) {
                     tabla[i][6] = "0";
                 }
             }
@@ -539,21 +592,21 @@ public class ETL {
         System.out.println("Tabla SchneiderPM710 lista");
         return tablaNormal;
     }
-    
+
     private static FilaNormal[] getTablaSchneiderPM5300(String[][] tabla) {
         FilaNormal[] tablaNormal = new FilaNormal[tabla.length];
         for (int i = 0; i < tabla.length; i++) {
 
             if (tabla[i][2].equals("5.8774717541114E-39")) {
                 boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][2].equals("5.8774717541114E-39")) {
-                        tabla[i][2] = tabla[x][2];
-                        encontrado = true;
+                if (i == 0) {
+                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
+                        if (!tabla[x][2].equals("5.8774717541114E-39")) {
+                            tabla[i][2] = tabla[x][2];
+                            encontrado = true;
+                        }
                     }
-                }
-
-                if (!encontrado) {
+                } else {
                     for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
                         if (!tabla[z][2].equals("5.8774717541114E-39")) {
                             tabla[i][2] = tabla[z][2];
@@ -561,20 +614,22 @@ public class ETL {
                         }
                     }
                 }
-                if(!encontrado){
+
+                if (!encontrado) {
                     tabla[i][2] = "0";
                 }
 
             }
             if (tabla[i][3].equals("5.8774717541114E-39")) {
                 boolean encontrado = false;
-                for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                    if (!tabla[x][3].equals("5.8774717541114E-39")) {
-                        tabla[i][3] = tabla[x][3];
-                        encontrado = true;
+                if (i == 0) {
+                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
+                        if (!tabla[x][3].equals("5.8774717541114E-39")) {
+                            tabla[i][3] = tabla[x][3];
+                            encontrado = true;
+                        }
                     }
-                }
-                if (!encontrado) {
+                } else {
                     for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
                         if (!tabla[z][3].equals("5.8774717541114E-39")) {
                             tabla[i][3] = tabla[z][3];
@@ -582,7 +637,8 @@ public class ETL {
                         }
                     }
                 }
-                if(!encontrado){
+
+                if (!encontrado) {
                     tabla[i][3] = "0";
                 }
             }
@@ -623,6 +679,7 @@ public class ETL {
 
     /**
      * Imprime un array del tipo String[][].
+     *
      * @param filas {@code String[][]} con los datos a mostrar en pantalla.
      */
     private static void imprimirArreglo(String[][] filas) {

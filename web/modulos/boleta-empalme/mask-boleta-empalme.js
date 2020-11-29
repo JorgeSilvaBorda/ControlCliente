@@ -14,6 +14,7 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
     var datos = {
         tipo: 'get-remarcador-cliente-idremarcador',
         idremarcador: idremarcador,
+        numremarcador: NUMREMARCADOR,
         mesanio: MES
     };
 
@@ -179,6 +180,7 @@ function generar() {
 }
 
 function graficarDesde(idremarcador, aniomes) {
+    $('#btn-generar').attr("disabled", "disabled");
     var idcliente = REMCLI.idcliente;
     var numremarcador = REMCLI.numremarcador;
     var datos = {
@@ -196,7 +198,7 @@ function graficarDesde(idremarcador, aniomes) {
             datos: JSON.stringify(datos)
         },
         success: function (resp) {
-            //$('.loader').fadeOut(500);
+            $('#loader-grafico').remove();
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
                 var fondo = [];
@@ -259,6 +261,7 @@ function graficarDesde(idremarcador, aniomes) {
                     }
                 });
             }
+            $('#btn-generar').removeAttr("disabled");
         },
         error: function (a, b, c) {
             console.log(a);

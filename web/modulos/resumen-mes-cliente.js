@@ -54,6 +54,7 @@ function getSelectInstalacionesCliente(idcliente) {
 
 function buscar() {
     if (validarCampos()) {
+        $('#div-tabla-resumen').html("");
         GRAFICO.destroy();
         GRAFICO_DEMANDAS.destroy();
         $('.loader').fadeIn(500);
@@ -86,7 +87,6 @@ function buscar() {
                     $('#div-tabla-resumen').html(obj.data.tablaresumen);
                     $('.loader').fadeOut(500);
                     for (var i in obj.data.labels) {
-                        //obj.data.labels[i] = formatFechaDDMMYYYY(obj.data.labels[i]);
                         obj.data.labels[i] = obj.data.labels[i].split("-")[2];
                     }
                     for (var i in obj.data.datasets) {
@@ -100,7 +100,6 @@ function buscar() {
                         obj.data.datasets[i].fill = false;
                     }
                     for (var i in obj.datademandas.labels) {
-                        //obj.datademandas.labels[i] = formatFechaDDMMYYYY(obj.datademandas.labels[i]);
                         obj.datademandas.labels[i] = obj.datademandas.labels[i].split("-")[2];
                     }
                     var contColor = 0;

@@ -152,7 +152,9 @@ function validarCampos() {
 }
 
 function buscar() {
+    
     if (validarCampos()) {
+        $('#detalle-remarcadores').html("");
         var idcliente = $('#select-cliente').val();
         var idinstalacion = $('#select-instalacion').val();
         var idremarcador = $('#select-remarcador').val();

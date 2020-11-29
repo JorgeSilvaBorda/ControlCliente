@@ -54,7 +54,7 @@ public class ContactoController extends HttpServlet {
                 tabla += "<td><input type='hidden' value='" + rs.getInt("IDCONTACTO") + "' /><span>" + rs.getString("NOMCLIENTE") + "</span></td>";
                 tabla += "<td>" + rs.getString("PERSONA") + "</td>";
                 tabla += "<td>" + rs.getString("CARGO") + "</td>";
-                tabla += "<td>" + rs.getInt("FONO") + "</td>";
+                tabla += "<td>" + rs.getLong("FONO") + "</td>";
                 tabla += "<td>" + rs.getString("EMAIL") + "</td>";
                 tabla += "<td style='width: 12%;'>"
                         + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
@@ -80,13 +80,17 @@ public class ContactoController extends HttpServlet {
         int idcliente = entrada.getInt("idcliente");
         String persona = entrada.getString("persona");
         String cargo = entrada.getString("cargo");
-        int fono = entrada.getInt("fono");
+        String fono ="0";
+        if(!entrada.getString("fono").equals("")){
+            fono = entrada.getString("fono");
+        }
+        
         String email = entrada.getString("email");
         String query = "CALL SP_INS_CONTACTO("
                 + idcliente + ", "
                 + "'" + persona + "', "
                 + "'" + cargo + "', "
-                + fono + ", "
+                + (fono.equals("0") ? "NULL" : fono) + ", "
                 + "'" + email + "'"
                 + ")";
         System.out.println(query);
@@ -104,14 +108,17 @@ public class ContactoController extends HttpServlet {
         int idcliente = entrada.getInt("idcliente");
         String persona = entrada.getString("persona");
         String cargo = entrada.getString("cargo");
-        int fono = entrada.getInt("fono");
+        int fono = 0;
+        if(!entrada.getString("fono").equals("")){
+            fono = entrada.getInt("fono");
+        }
         String email = entrada.getString("email");
         String query = "CALL SP_UPD_CONTACTO("
                 + idcontacto + ", "
                 + idcliente + ", "
                 + "'" + persona + "', "
                 + "'" + cargo + "', "
-                + fono + ", "
+                + (fono == 0 ? "NULL" : fono) + ", "
                 + "'" + email + "'"
                 + ")";
         System.out.println(query);

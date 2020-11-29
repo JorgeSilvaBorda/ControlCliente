@@ -144,7 +144,21 @@ function getEmpalmes() {
             if (obj.estado === 'ok') {
                 $('.dataTable').DataTable().destroy();
                 $('#tabla-empalmes tbody').html(obj.tabla);
-                $('#tabla-empalmes').DataTable(OPCIONES_DATATABLES);
+                var OPCIONES = OPCIONES_DATATABLES;
+                OPCIONES.dom = 'Bfrtip';
+                OPCIONES.buttons = [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Empalmes',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3]
+                        }
+                    }
+
+                ];
+                $('#tabla-empalmes').DataTable(OPCIONES);
+                $('.buttons-html5').addClass("btn-sm");
+                $('.buttons-html5').addClass("btn-success");
             }
         },
         error: function (a, b, c) {

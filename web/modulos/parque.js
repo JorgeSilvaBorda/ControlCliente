@@ -15,7 +15,21 @@ function getParques() {
             if (obj.estado === 'ok') {
                 $('.dataTable').DataTable().destroy();
                 $('#tabla-parques tbody').html(obj.tabla);
-                $('#tabla-parques').DataTable(OPCIONES_DATATABLES);
+                var OPCIONES = OPCIONES_DATATABLES;
+                OPCIONES.dom = 'Bfrtip';
+                OPCIONES.buttons = [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Bodegas',
+                        exportOptions: {
+                            columns: [0, 1]
+                        }
+                    }
+
+                ];
+                $('#tabla-parques').DataTable(OPCIONES);
+                $('.buttons-html5').addClass("btn-sm");
+                $('.buttons-html5').addClass("btn-success");
             }
         },
         error: function (a, b, c) {

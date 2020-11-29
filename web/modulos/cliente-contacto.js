@@ -40,7 +40,21 @@ function getContactos() {
             if (obj.estado === 'ok') {
                 $('.dataTable').DataTable().destroy();
                 $('#tabla-contactos tbody').html(obj.tabla);
-                $('#tabla-contactos').DataTable(OPCIONES_DATATABLES);
+                var OPCIONES = OPCIONES_DATATABLES;
+                OPCIONES.dom = 'Bfrtip';
+                OPCIONES.buttons = [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Contactos-cliente',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4]
+                        }
+                    }
+
+                ];
+                $('#tabla-contactos').DataTable(OPCIONES);
+                $('.buttons-html5').addClass("btn-sm");
+                $('.buttons-html5').addClass("btn-success");
             }
         },
         error: function (a, b, c) {
@@ -52,40 +66,43 @@ function getContactos() {
 }
 
 function insContacto() {
-    var idcliente = $('#select-cliente').val();
-    var persona = $('#persona').val();
-    var cargo = $('#cargo').val();
-    var fono = $('#fono').val();
-    var email = $('#email').val();
+    if (validarCampos()) {
+        var idcliente = $('#select-cliente').val();
+        var persona = $('#persona').val();
+        var cargo = $('#cargo').val();
+        var fono = $('#fono').val();
+        var email = $('#email').val();
 
-    var datos = {
-        tipo: 'ins-contacto',
-        idcliente: idcliente,
-        persona: persona,
-        cargo: cargo,
-        fono: fono,
-        email: email
-    };
+        var datos = {
+            tipo: 'ins-contacto',
+            idcliente: idcliente,
+            persona: persona,
+            cargo: cargo,
+            fono: fono,
+            email: email
+        };
 
-    $.ajax({
-        url: 'ContactoController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (res) {
-            var obj = JSON.parse(res);
-            if (obj.estado === 'ok') {
-                getContactos();
-                limpiar();
+        $.ajax({
+            url: 'ContactoController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (res) {
+                var obj = JSON.parse(res);
+                if (obj.estado === 'ok') {
+                    getContactos();
+                    limpiar();
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
             }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
+        });
+    }
+
 }
 
 function activarEdicion(boton) {
@@ -117,42 +134,44 @@ function activarEdicion(boton) {
 }
 
 function saveContacto() {
+    if (validarCampos()) {
+        var idcliente = $('#select-cliente').val();
+        var persona = $('#persona').val();
+        var cargo = $('#cargo').val();
+        var fono = $('#fono').val();
+        var email = $('#email').val();
 
-    var idcliente = $('#select-cliente').val();
-    var persona = $('#persona').val();
-    var cargo = $('#cargo').val();
-    var fono = $('#fono').val();
-    var email = $('#email').val();
+        var datos = {
+            tipo: 'upd-contacto',
+            idcontacto: ID_CONTACTO_EDICION,
+            idcliente: idcliente,
+            persona: persona,
+            cargo: cargo,
+            fono: fono,
+            email: email
+        };
 
-    var datos = {
-        tipo: 'upd-contacto',
-        idcontacto: ID_CONTACTO_EDICION,
-        idcliente: idcliente,
-        persona: persona,
-        cargo: cargo,
-        fono: fono,
-        email: email
-    };
-
-    $.ajax({
-        url: 'ContactoController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (res) {
-            var obj = JSON.parse(res);
-            if (obj.estado === 'ok') {
-                getContactos();
-                limpiar();
+        $.ajax({
+            url: 'ContactoController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (res) {
+                var obj = JSON.parse(res);
+                if (obj.estado === 'ok') {
+                    getContactos();
+                    limpiar();
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
             }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
+        });
+    }
+
 }
 
 function delContacto(boton) {
@@ -197,6 +216,20 @@ function armarContacto(contacto) {
     $('#email').val(contacto.email);
 
     $('#btn-guardar').removeAttr("hidden");
+}
+
+function validarCampos() {
+    var idcliente = $('#select-cliente').val();
+    var nomcontacto = $('#persona').val();
+    if (idcliente === '0') {
+        alert('Debe seleccionar un cliente del listado.');
+        return false;
+    }
+    if (nomcontacto.length < 3) {
+        alert('Debe ingresar un nombre de contacto válido.');
+        return false;
+    }
+    return true;
 }
 
 function limpiar() {

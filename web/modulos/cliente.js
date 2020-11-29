@@ -15,7 +15,21 @@ function getClientes() {
             if (obj.estado === 'ok') {
                 $('.dataTable').DataTable().destroy();
                 $('#tabla-clientes tbody').html(obj.tabla);
-                $('#tabla-clientes').DataTable(OPCIONES_DATATABLES);
+                var OPCIONES = OPCIONES_DATATABLES;
+                OPCIONES.dom = 'Bfrtip';
+                OPCIONES.buttons = [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Clientes',
+                        exportOptions: {
+                            columns: [0, 1, 2]
+                        }
+                    }
+
+                ];
+                $('#tabla-clientes').DataTable(OPCIONES);
+                $('.buttons-html5').addClass("btn-sm");
+                $('.buttons-html5').addClass("btn-success");
             }
         },
         error: function (a, b, c) {
@@ -89,6 +103,7 @@ function activarEdicion(boton) {
         }
     });
 }
+
 function armarCliente(cliente) {
     ID_CLIENTE_EDICION = cliente.idcliente;
     var nomcliente = cliente.nomcliente;
@@ -145,14 +160,14 @@ function eliminar(boton) {
     var idcliente = $(fila).children(0).children(0).val();
 
     if (confirm("Está seguro de que desea eliminar el cliente seleccionado?")) {
-        
+
         var datos = {
             tipo: 'del-cliente',
             cliente: {
                 idcliente: idcliente
             }
         };
-        
+
         $.ajax({
             url: 'ClienteController',
             type: 'post',

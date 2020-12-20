@@ -379,7 +379,7 @@ public class RemarcadorController extends HttpServlet {
                 }
             }
             //Si existe lectura manual, el consumo se calcula en base a lecturamanual - lecturaanterior.
-            if (haymanual) {
+            if (haymanual || haymanualini) {
                 consumo = lecturafinal - lecturaanterior;
             }
 

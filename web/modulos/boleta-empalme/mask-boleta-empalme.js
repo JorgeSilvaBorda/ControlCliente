@@ -34,7 +34,7 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 graficarDesde(remcli.idremarcador, aniomes);
                 $('#rut-cliente').html($.formatRut(remcli.rutcliente + "-" + remcli.dvcliente));
                 $('#nom-cliente').html(remcli.razoncliente);
-                $('#direccion').html(remcli.direccion + ', ' + remcli.nomcomuna);
+                $('#direccion').html(remcli.direccion + " - " + remcli.nomcomuna);
                 $('#persona').html(remcli.persona);
                 $('#fono').html(remcli.fono);
                 $('#email').html(remcli.email);
@@ -297,7 +297,8 @@ function armarLastBoleta() {
                 $('#consumo').html(formatMiles(obj.boleta.CONSUMO));
                 $('#rut-cliente').html(formatMiles(obj.boleta.RUTCLIENTE) + '-' + obj.boleta.DVCLIENTE);
                 $('#nom-cliente').html(obj.boleta.NOMCLIENTE);
-                $('#direccion').html(obj.boleta.DIRECCION + ', ' + obj.boleta.NOMCOMUNA);
+                var direccion = obj.boleta.DIRECCION + ",&nbsp;" + obj.boleta.NOMCOMUNA
+                $('#direccion').html(direccion);
                 $('#persona').html(obj.boleta.PERSONA);
                 $('#fono').html(obj.boleta.FONO);
                 $('#email').html(obj.boleta.EMAIL);

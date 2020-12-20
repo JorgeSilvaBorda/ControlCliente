@@ -303,6 +303,7 @@ public class RemarcadorController extends HttpServlet {
         int mes = Integer.parseInt(entrada.getString("mes").split("-")[1]);
         int kwtotal = 0;
         boolean haymanual = false;
+        boolean haymanualini = false;
         String query = "CALL SP_GET_REMARCADORES_NUMEMPALME_BOLETA("
                 + "'" + entrada.getString("numempalme") + "',"
                 + "'" + entrada.getString("mes") + "'"
@@ -360,6 +361,9 @@ public class RemarcadorController extends HttpServlet {
                 lecturafinal = filas[filas.length - 1].lecturamanual;
                 haymanual = true;
             }
+            if (filas[0].esmanual.equals("SI")) {
+                haymanualini = true;
+            }
 
             for (FilaNormal fila : filas) {
                 if (fila.lecturaproyectada != fila.delta) {
@@ -389,7 +393,7 @@ public class RemarcadorController extends HttpServlet {
             tablasalida += "<td><span>" + remarcador.nomcliente + "</span></td>";
             tablasalida += "<td style='text-align: center;' ><span>" + remarcador.modulos + "</span></td>";
             tablasalida += "<td><span>" + remarcador.nominstalacion + "</span></td>";
-            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturaanterior) + "</span></td>";
+            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturaanterior) + (filas[0].esmanual.equals("SI") ? " *" : "") + "</span></td>";
             tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturafinal) + (filas[filas.length - 1].esmanual.equals("SI") ? " *" : "") + "</span></td>";
             tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles((int) consumo) + "</span></td>";
 
@@ -455,7 +459,7 @@ public class RemarcadorController extends HttpServlet {
 
         //tablasalida += filas;
         tablasalida += "</tbody></table>";
-        if (haymanual) {
+        if (haymanual || haymanualini) {
             tablasalida += "<span style='font-size: 12px; font-weight: bold;'>* La lectura fue ingresada de forma manual</span>";
         }
         salida.put("tabla", tablasalida);

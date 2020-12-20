@@ -66,7 +66,6 @@ public class ETL {
         String[][] origenes = getOrigenesRemarcador();
         String tabla = "";
         for (String[] fila : origenes) {
-            //System.out.println("Comparar: " + fila[1] + " con " + idRemarcador);
             if (Integer.parseInt(fila[1]) == numremarcador) {
                 tabla = fila[0];
             }
@@ -96,10 +95,11 @@ public class ETL {
 
         try {
             while (rs.next()) {
-                String[] fila = new String[campos];
+                String[] fila = new String[campos + 1];
                 for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
                     fila[i] = rs.getObject(i + 1).toString().trim();
                 }
+                fila[fila.length - 1] = "";
                 filas.add(fila);
                 cont++;
             }
@@ -107,7 +107,7 @@ public class ETL {
             System.out.println("No se puede procesar las filas para el remarcador");
             System.out.println(ex);
         }
-        String[][] salida = new String[cont][campos];
+        String[][] salida = new String[cont][campos + 1];
         for (int x = 0; x < filas.size(); x++) {
             salida[x] = filas.get(x);
         }
@@ -170,10 +170,11 @@ public class ETL {
 
         try {
             while (rs.next()) {
-                String[] fila = new String[campos];
+                String[] fila = new String[campos + 1];
                 for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
                     fila[i] = rs.getObject(i + 1).toString().trim();
                 }
+                fila[fila.length - 1] = "";
                 filas.add(fila);
                 cont++;
             }
@@ -181,7 +182,7 @@ public class ETL {
             System.out.println("No se puede procesar las filas para el remarcador");
             System.out.println(ex);
         }
-        String[][] salida = new String[cont][campos];
+        String[][] salida = new String[cont][campos + 1];
         for (int x = 0; x < filas.size(); x++) {
             salida[x] = filas.get(x);
         }
@@ -358,6 +359,7 @@ public class ETL {
                         if (!tabla[x][4].equals("")) {
                             tabla[i][4] = tabla[x][4];
                             encontrado = true;
+                            tabla[i][tabla[i].length - 1] = "MANUAL";
                         }
                     }
                 } else {
@@ -365,6 +367,7 @@ public class ETL {
                         if (!tabla[z][4].equals("")) {
                             tabla[i][4] = tabla[z][4];
                             encontrado = true;
+                            tabla[i][tabla[i].length - 1] = "MANUAL";
                         }
                     }
                 }
@@ -380,6 +383,7 @@ public class ETL {
                         if (!tabla[x][5].equals("")) {
                             tabla[i][5] = tabla[x][5];
                             encontrado = true;
+                            tabla[i][tabla[i].length - 1] = "MANUAL";
                         }
                     }
                 } else {
@@ -387,6 +391,7 @@ public class ETL {
                         if (!tabla[z][5].equals("")) {
                             tabla[i][5] = tabla[z][5];
                             encontrado = true;
+                            tabla[i][tabla[i].length - 1] = "MANUAL";
                         }
                     }
                 }
@@ -396,14 +401,17 @@ public class ETL {
                 }
             }
         }
-        int acum = 0;
         int lectura = 0;
         for (int i = 0; i < tabla.length; i++) {
             int contador = 0;
             int ultimomax = 0;
             int consumo;
             contador = getValorEnergiaCircutor(Integer.parseInt(tabla[i][5]), Integer.parseInt(tabla[i][4]));
+
             if (i == 0) {
+                if (contador < Integer.parseInt(tabla[i][7]) || tabla[i][6].equals("SI")) {
+                    contador = Integer.parseInt(tabla[i][7]);
+                }
                 ultimomax = 0;
             } else {
                 ultimomax = getValorEnergiaCircutor(Integer.parseInt(tabla[i - 1][5]), Integer.parseInt(tabla[i - 1][4]));
@@ -414,9 +422,16 @@ public class ETL {
             } else {
                 consumo = (ultimomax - contador) - ultimomax;
             }
+
             double potencia = getValorPotenciaCircutor(Integer.parseInt(tabla[i][3]), Integer.parseInt(tabla[i][2]));
-            acum = acum + consumo;
             lectura = lectura + consumo;
+            if (i > 0) {
+                if (consumo == 0 && tablaNormal[0].esmanual.equals("SI")) {
+                    contador = lectura;
+                    ultimomax = lectura;
+                }
+            }
+
             String fechahora = tabla[i][0].replace(".0", "");
             String fecha = tabla[i][0].replace(".0", "").split(" ")[0];
             String hora = tabla[i][0].replace(".0", "").split(" ")[1];
@@ -499,6 +514,7 @@ public class ETL {
                         if (!tabla[x][4].equals("")) {
                             tabla[i][4] = tabla[x][4];
                             encontrado = true;
+                            tabla[i][tabla[i].length - 1] = "MANUAL";
                         }
                     }
                 } else {
@@ -506,6 +522,7 @@ public class ETL {
                         if (!tabla[z][4].equals("")) {
                             tabla[i][4] = tabla[z][4];
                             encontrado = true;
+                            tabla[i][tabla[i].length - 1] = "MANUAL";
                         }
                     }
                 }
@@ -521,6 +538,7 @@ public class ETL {
                         if (!tabla[x][5].equals("")) {
                             tabla[i][5] = tabla[x][5];
                             encontrado = true;
+                            tabla[i][tabla[i].length - 1] = "MANUAL";
                         }
                     }
                 } else {
@@ -528,6 +546,7 @@ public class ETL {
                         if (!tabla[z][5].equals("")) {
                             tabla[i][5] = tabla[z][5];
                             encontrado = true;
+                            tabla[i][tabla[i].length - 1] = "MANUAL";
                         }
                     }
                 }
@@ -543,6 +562,7 @@ public class ETL {
                         if (!tabla[x][6].equals("")) {
                             tabla[i][6] = tabla[x][6];
                             encontrado = true;
+                            tabla[i][tabla[i].length - 1] = "MANUAL";
                         }
                     }
                 } else {
@@ -550,6 +570,7 @@ public class ETL {
                         if (!tabla[z][6].equals("")) {
                             tabla[i][6] = tabla[z][6];
                             encontrado = true;
+                            tabla[i][tabla[i].length - 1] = "MANUAL";
                         }
                     }
                 }
@@ -559,7 +580,6 @@ public class ETL {
                 }
             }
         }
-        double acum = 0.0d;
         double lectura = 0.0d;
         for (int i = 0; i < tabla.length; i++) {
             double contador = 0.0d;
@@ -567,6 +587,9 @@ public class ETL {
             double consumo;
             contador = getValorEnergiaSchneiderPM710(Integer.parseInt(tabla[i][5]), Integer.parseInt(tabla[i][4]), Integer.parseInt(tabla[i][6]));
             if (i == 0) {
+                if (contador < Integer.parseInt(tabla[i][8]) || tabla[i][7].equals("SI")) {
+                    contador = Integer.parseInt(tabla[i][8]);
+                }
                 ultimomax = 0;
             } else {
                 ultimomax = getValorEnergiaSchneiderPM710(Integer.parseInt(tabla[i - 1][5]), Integer.parseInt(tabla[i - 1][4]), Integer.parseInt(tabla[i - 1][6]));
@@ -578,8 +601,13 @@ public class ETL {
                 consumo = (ultimomax - contador) - ultimomax;
             }
             double potencia = getValorPotenciaSchneiderPM710(Integer.parseInt(tabla[i][2]), Integer.parseInt(tabla[i][3]));
-            acum = acum + consumo;
             lectura = lectura + consumo;
+            if (i > 0) {
+                if (consumo == 0 && tablaNormal[0].esmanual.equals("SI")) {
+                    contador = lectura;
+                    ultimomax = lectura;
+                }
+            }
             String fechahora = tabla[i][0].replace(".0", "");
             String fecha = tabla[i][0].replace(".0", "").split(" ")[0];
             String hora = tabla[i][0].replace(".0", "").split(" ")[1];
@@ -604,6 +632,7 @@ public class ETL {
                         if (!tabla[x][2].equals("5.8774717541114E-39")) {
                             tabla[i][2] = tabla[x][2];
                             encontrado = true;
+                            tabla[i][tabla[i].length - 1] = "MANUAL";
                         }
                     }
                 } else {
@@ -611,6 +640,7 @@ public class ETL {
                         if (!tabla[z][2].equals("5.8774717541114E-39")) {
                             tabla[i][2] = tabla[z][2];
                             encontrado = true;
+                            tabla[i][tabla[i].length - 1] = "MANUAL";
                         }
                     }
                 }
@@ -643,7 +673,6 @@ public class ETL {
                 }
             }
         }
-        double acum = 0.0d;
         double lectura = 0.0d;
         for (int i = 0; i < tabla.length; i++) {
             double contador = 0.0d;
@@ -651,6 +680,9 @@ public class ETL {
             double consumo;
             contador = getValorEnergiaSchneiderPM5300(Double.parseDouble(tabla[i][2]));
             if (i == 0) {
+                if (contador < Integer.parseInt(tabla[i][5]) || tabla[i][4].equals("SI")) {
+                    contador = Integer.parseInt(tabla[i][5]);
+                }
                 ultimomax = 0;
             } else {
                 ultimomax = getValorEnergiaSchneiderPM5300(Double.parseDouble(tabla[i - 1][2]));
@@ -662,8 +694,13 @@ public class ETL {
                 consumo = (ultimomax - contador) - ultimomax;
             }
             double potencia = getValorPotenciaSchneiderPM5300(Double.parseDouble(tabla[i][3]));
-            acum = acum + consumo;
             lectura = lectura + consumo;
+            if (i > 0) {
+                if (consumo == 0 && tablaNormal[0].esmanual.equals("SI")) {
+                    contador = lectura;
+                    ultimomax = lectura;
+                }
+            }
             String fechahora = tabla[i][0].replace(".0", "");
             String fecha = tabla[i][0].replace(".0", "").split(" ")[0];
             String hora = tabla[i][0].replace(".0", "").split(" ")[1];

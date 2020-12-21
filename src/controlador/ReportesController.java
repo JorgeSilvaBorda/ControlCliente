@@ -131,7 +131,7 @@ public class ReportesController extends HttpServlet {
             }
             if ((!filas[i].fecha.substring(0, 7).equals(mesanioActual)) && i > 0 && i < filas.length - 1) {
                 finMes = filas[i - 1].fecha;
-                if (filas[i - 1].esmanual.equals("SI")) {
+                if (filas[i - 1].esmanual) {
                     lecturaFinMes = filas[i - 1].lecturamanual;
                 } else {
                     lecturaFinMes = filas[i - 1].lecturaproyectada;
@@ -149,7 +149,7 @@ public class ReportesController extends HttpServlet {
             }
             if (i == filas.length - 1) {
                 finMes = filas[i].fecha;
-                if (filas[i].esmanual.equals("SI")) {
+                if (filas[i].esmanual) {
                     lecturaFinMes = filas[i].lecturamanual;
                 } else {
                     lecturaFinMes = filas[i].lecturaproyectada;
@@ -287,7 +287,7 @@ public class ReportesController extends HttpServlet {
             }
             if ((!filas[i].fecha.substring(0, 7).equals(mesanioActual)) && i > 0 && i < filas.length - 1) {
                 finMes = filas[i - 1].fecha;
-                if (filas[i - 1].esmanual.equals("SI")) {
+                if (filas[i - 1].esmanual) {
                     lecturaFinMes = filas[i - 1].lecturamanual;
                 } else {
                     lecturaFinMes = filas[i - 1].lecturaproyectada;
@@ -305,7 +305,7 @@ public class ReportesController extends HttpServlet {
             }
             if (i == filas.length - 1) {
                 finMes = filas[i].fecha;
-                if (filas[i].esmanual.equals("SI")) {
+                if (filas[i].esmanual) {
                     lecturaFinMes = filas[i].lecturamanual;
                 } else {
                     lecturaFinMes = filas[i].lecturaproyectada;
@@ -506,7 +506,7 @@ public class ReportesController extends HttpServlet {
             boolean encontrado = false;
             for (FilaNormal[] fin : diferencias) {
                 if (fin[1].fecha.equals(fecha)) {
-                    if (fin[1].esmanual.equals("SI")) {
+                    if (fin[1].esmanual) {
                         data.put((int) (fin[1].lecturamanual - fin[0].lecturaproyectada));
                         encontrado = true;
                     } else {
@@ -615,7 +615,7 @@ public class ReportesController extends HttpServlet {
 
             int lecturaini = (int) tabla[0].lecturareal;
             int lecturafin = (int) tabla[tabla.length - 1].lecturareal;
-            if (tabla[tabla.length - 1].esmanual.equals("SI")) {
+            if (tabla[tabla.length - 1].esmanual) {
                 lecturafin = tabla[tabla.length - 1].lecturamanual;
                 haymanual = true;
                 almenosUnManual = true;

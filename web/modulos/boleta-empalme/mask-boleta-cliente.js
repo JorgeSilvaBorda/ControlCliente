@@ -37,7 +37,7 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 graficarDesde(remcli.idremarcador, aniomes);
                 $('#rut-cliente').html($.formatRut(remcli.rutcliente + "-" + remcli.dvcliente));
                 $('#nom-cliente').html(remcli.razoncliente);
-                $('#direccion').html(remcli.direccion + ', ' + remcli.nomcomuna);
+                $('#direccion').html(remcli.direccion + ',&nbsp;' + remcli.nomcomuna);
                 $('#persona').html(remcli.persona);
                 $('#fono').html(remcli.fono);
                 $('#email').html(remcli.email);

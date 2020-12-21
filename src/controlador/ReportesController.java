@@ -41,46 +41,6 @@ public class ReportesController extends HttpServlet {
         }
     }
 
-    @Deprecated
-    private JSONObject consumoClienteRemarcadorOld(JSONObject entrada) {
-        JSONObject salida = new JSONObject();
-
-        String query = "CALL SP_GET_CONSUMO_13_MESES_REMARCADOR(" + entrada.getInt("numremarcador") + ")";
-        System.out.println(query);
-        Conexion c = new Conexion();
-        c.abrir();
-        ResultSet rs = c.ejecutarQuery(query);
-        JSONArray labels = new JSONArray();
-        JSONArray datasets = new JSONArray();
-        JSONArray datasetData = new JSONArray();
-
-        try {
-            while (rs.next()) {
-                labels.put(Util.invertirFecha(rs.getString("FECHA")));
-                datasetData.put(rs.getInt("CONSUMO"));
-            }
-
-            JSONObject dataset = new JSONObject();
-            dataset.put("data", datasetData);
-            dataset.put("label", "Remarcador ID: " + entrada.getInt("numremarcador"));
-            dataset.put("borderWidth", "2");
-            datasets.put(dataset);
-            JSONObject data = new JSONObject();
-            data.put("labels", labels);
-            data.put("datasets", datasets);
-            salida.put("data", data);
-            salida.put("estado", "ok");
-        } catch (JSONException | SQLException ex) {
-            System.out.println("Problemas en controlador.ReportesController.consumoClienteRemarcador().");
-            System.out.println(ex);
-            ex.printStackTrace();
-            salida.put("estado", "error");
-            salida.put("error", ex);
-        }
-        c.cerrar();
-        return salida;
-    }
-
     private JSONObject consumoClienteRemarcador(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         String mesini = "", mesfin = "";
@@ -131,12 +91,7 @@ public class ReportesController extends HttpServlet {
             }
             if ((!filas[i].fecha.substring(0, 7).equals(mesanioActual)) && i > 0 && i < filas.length - 1) {
                 finMes = filas[i - 1].fecha;
-                if (filas[i - 1].esmanual) {
-                    //lecturaFinMes = filas[i - 1].lecturamanual;
-                    lecturaFinMes = filas[i - 1].lecturaproyectada;
-                } else {
-                    lecturaFinMes = filas[i - 1].lecturaproyectada;
-                }
+                lecturaFinMes = filas[i - 1].lecturaproyectada;
                 Object[] fecha = new Object[4];
                 fecha[0] = mesanioActual;
                 fecha[1] = iniMes;
@@ -150,12 +105,7 @@ public class ReportesController extends HttpServlet {
             }
             if (i == filas.length - 1) {
                 finMes = filas[i].fecha;
-                if (filas[i].esmanual) {
-                    //lecturaFinMes = filas[i].lecturamanual;
-                    lecturaFinMes = filas[i].lecturaproyectada;
-                } else {
-                    lecturaFinMes = filas[i].lecturaproyectada;
-                }
+                lecturaFinMes = filas[i].lecturaproyectada;
                 Object[] fecha = new Object[4];
                 fecha[0] = mesanioActual;
                 fecha[1] = iniMes;
@@ -246,12 +196,7 @@ public class ReportesController extends HttpServlet {
             }
             if ((!filas[i].fecha.substring(0, 7).equals(mesanioActual)) && i > 0 && i < filas.length - 1) {
                 finMes = filas[i - 1].fecha;
-                if (filas[i - 1].esmanual) {
-                    //lecturaFinMes = filas[i - 1].lecturamanual;
-                    lecturaFinMes = filas[i - 1].lecturaproyectada;
-                } else {
-                    lecturaFinMes = filas[i - 1].lecturaproyectada;
-                }
+                lecturaFinMes = filas[i - 1].lecturaproyectada;
                 Object[] fecha = new Object[4];
                 fecha[0] = mesanioActual;
                 fecha[1] = iniMes;
@@ -265,12 +210,7 @@ public class ReportesController extends HttpServlet {
             }
             if (i == filas.length - 1) {
                 finMes = filas[i].fecha;
-                if (filas[i].esmanual) {
-                    //lecturaFinMes = filas[i].lecturamanual;
-                    lecturaFinMes = filas[i].lecturaproyectada;
-                } else {
-                    lecturaFinMes = filas[i].lecturaproyectada;
-                }
+                lecturaFinMes = filas[i].lecturaproyectada;
                 Object[] fecha = new Object[4];
                 fecha[0] = mesanioActual;
                 fecha[1] = iniMes;
@@ -317,8 +257,8 @@ public class ReportesController extends HttpServlet {
         String query = "";
         Conexion c = new Conexion();
         LinkedList<Integer> ides = new LinkedList();
+        
         //Obtener Remarcadores asociados al cliente ----------------------------
-        //query = "CALL SP_GET_SELECT_REMARCADORES_CLIENTE(" + entrada.getInt("idcliente") + ")";
         query = "CALL SP_GET_REMARCADORES_IDCLIENTE_IDINSTALACION("
                 + "" + entrada.getInt("idcliente") + ", "
                 + "" + (entrada.getInt("idinstalacion") == 0 ? "NULL" : entrada.getInt("idinstalacion")) + ""
@@ -389,34 +329,6 @@ public class ReportesController extends HttpServlet {
         return salida;
     }
 
-    @Deprecated
-    private JSONObject getDatasetRemarcadorMesOld(int numremarcador, int mes, int anio) {
-        JSONObject dataset = new JSONObject();
-        JSONObject salida = new JSONObject();
-        JSONArray data = new JSONArray();
-        JSONArray labels = new JSONArray();
-        String query = "CALL SP_GET_DATASET_REMARCADOR_MES_ANIO(" + numremarcador + ", " + mes + ", " + anio + ")";
-        Conexion c = new Conexion();
-        c.abrir();
-        ResultSet rs = c.ejecutarQuery(query);
-        System.out.println(query);
-        try {
-            while (rs.next()) {
-                data.put(rs.getInt("CONSUMO"));
-                labels.put(rs.getDate("FECHA"));
-            }
-            dataset.put("data", data);
-            dataset.put("label", "Remarcador ID: " + numremarcador);
-            salida.put("dataset", dataset);
-            salida.put("labels", labels);
-        } catch (JSONException | SQLException ex) {
-            System.out.println("No se pudo obtener la data para el remarcador " + numremarcador);
-            System.out.println(ex);
-        }
-        c.cerrar();
-        return salida;
-    }
-
     private JSONObject getDatasetRemarcadorMes(int numremarcador, int mes, int anio) {
         System.out.println("Entra a buscar Dataset del remarcador Nº: " + numremarcador);
         JSONObject dataset = new JSONObject();
@@ -467,14 +379,8 @@ public class ReportesController extends HttpServlet {
             boolean encontrado = false;
             for (FilaNormal[] fin : diferencias) {
                 if (fin[1].fecha.equals(fecha)) {
-                    if (fin[1].esmanual) {
-                        data.put((int) (fin[1].lecturamanual - fin[0].lecturaproyectada));
-                        encontrado = true;
-                    } else {
-                        data.put((int) (fin[1].lecturaproyectada - fin[0].lecturaproyectada));
-                        encontrado = true;
-                    }
-
+                    data.put((int) (fin[1].lecturaproyectada - fin[0].lecturaproyectada));
+                    encontrado = true;
                 }
             }
             if (!encontrado) {
@@ -488,68 +394,6 @@ public class ReportesController extends HttpServlet {
         salida.put("dataset", dataset);
         salida.put("labels", labels);
         return salida;
-    }
-
-    @Deprecated
-    private String tablaResumenMesRemarcadoresOld(LinkedList<Integer> ides, int mes, int anio) {
-        String where = "(";
-        for (int i = 0; i < ides.size(); i++) {
-            if (i == ides.size() - 1) {
-                where += ides.get(i) + ")";
-            } else {
-                where += ides.get(i) + ", ";
-            }
-        }
-        String query = "SELECT "
-                + "REMARCADOR_ID, "
-                + "LECTURA_INICIAL, "
-                + "LECTURA_FINAL, "
-                + "(LECTURA_FINAL - LECTURA_INICIAL) CONSUMO, "
-                + "CAST(ROUND(MAX_DEMANDA_LEIDA, 2) AS CHAR) MAX_DEMANDA_LEIDA, "
-                + "CAST(ROUND(MAX_DEMANDA_HORA_PUNTA, 2) AS CHAR) MAX_DEMANDA_HORA_PUNTA "
-                + "FROM "
-                + "LECTURAS "
-                + "WHERE "
-                + "YEAR(FECHA_LECTURA_FINAL) = " + anio + " "
-                + "AND MONTH(FECHA_LECTURA_FINAL) = " + mes + " "
-                + "AND REMARCADOR_ID IN" + where;
-        System.out.println(query);
-        Conexion c = new Conexion();
-        String tabla = ""
-                + "<table class='table table-sm small table-condensed table-bordered' style='font-size: 10px;'>"
-                + "<thead>"
-                + "<tr>"
-                + "<th style='text-align:center;' >Remarcador</th>"
-                + "<th style='text-align:center;'>Lectura Inicial</th>"
-                + "<th style='text-align:center;'>Lectura Final</th>"
-                + "<th style='text-align:center;'>Consumo (kWh)</th>"
-                + "<th style='text-align:center;'>Demanda Máx.<br />Leída</th>"
-                + "<th style='text-align:center;'>Demanda Máx.<br />H. Punta</th>"
-                + "</tr>"
-                + "</thead>"
-                + "<tbody>";
-        c.abrir();
-        ResultSet rs = c.ejecutarQuery(query);
-        try {
-            while (rs.next()) {
-                tabla += "<tr>";
-                tabla += "<td style='text-align:center;'>" + rs.getInt("REMARCADOR_ID") + "</td>";
-                tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURA_INICIAL")) + "</td>";
-                tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("LECTURA_FINAL")) + "</td>";
-                tabla += "<td style='text-align:right;'>" + Util.formatMiles(rs.getInt("CONSUMO")) + "</td>";
-                tabla += "<td style='text-align:right;'>" + rs.getString("MAX_DEMANDA_LEIDA").replace(".", ",") + "</td>";
-                tabla += "<td style='text-align:right;'>" + rs.getString("MAX_DEMANDA_HORA_PUNTA").replace(".", ",") + "</td>";
-                tabla += "</tr>";
-            }
-            tabla += "</tbody>";
-            tabla += "</table>";
-        } catch (Exception ex) {
-            System.out.println("No se puede obtener la tabla resumen de consumo de los remarcadores del cliente.");
-            System.out.println(ex);
-            tabla = "";
-        }
-        c.cerrar();
-        return tabla;
     }
 
     private String tablaResumenMesRemarcadores(LinkedList<Integer> ides, int mes, int anio) {
@@ -700,32 +544,4 @@ public class ReportesController extends HttpServlet {
         return salida;
     }
 
-    @Deprecated
-    private JSONObject getDataSetPorRemarcador(int numremarcador, LinkedList<String> fechas) {
-        JSONObject dataset = new JSONObject();
-
-        dataset.put("label", "Remarcador ID: " + numremarcador);
-        dataset.put("borderWidth", "2");
-
-        JSONArray data = new JSONArray();
-
-        for (String fecha : fechas) {
-            String query = "SELECT FN_GET_CONSUMO_DIA_REMARCADOR(" + numremarcador + ", '" + fecha + "') AS CONSUMO";
-            Conexion c = new Conexion();
-            c.abrir();
-            ResultSet rs = c.ejecutarQuery(query);
-            try {
-                while (rs.next()) {
-                    data.put(rs.getInt("CONSUMO"));
-                }
-                dataset.put("data", data);
-            } catch (JSONException | SQLException ex) {
-                System.out.println("No se pudo obtener la data para el remarcador " + numremarcador);
-                System.out.println(ex);
-            }
-            c.cerrar();
-        }
-
-        return dataset;
-    }
 }

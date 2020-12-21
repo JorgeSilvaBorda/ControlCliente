@@ -352,8 +352,6 @@ public class RemarcadorController extends HttpServlet {
             double consumo = 0;
             String fechainilectura = filas[0].fecha;
             String fechafinlectura = filas[filas.length - 1].fecha;
-            //int lecturaanterior = (int) filas[0].lecturaproyectada;
-            //int lecturafinal = (int) filas[filas.length - 1].lecturaproyectada;
 
             int lecturaanterior = (int) filas[0].lecturareal;
             if(filas[0].esmanual){

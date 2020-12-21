@@ -357,11 +357,11 @@ public class RemarcadorController extends HttpServlet {
 
             int lecturaanterior = (int) filas[0].lecturareal;
             int lecturafinal = (int) filas[filas.length - 1].lecturareal;
-            if (filas[filas.length - 1].esmanual.equals("SI")) {
+            if (filas[filas.length - 1].esmanual) {
                 lecturafinal = filas[filas.length - 1].lecturamanual;
                 haymanual = true;
             }
-            if (filas[0].esmanual.equals("SI")) {
+            if (filas[0].esmanual) {
                 haymanualini = true;
             }
 
@@ -393,8 +393,8 @@ public class RemarcadorController extends HttpServlet {
             tablasalida += "<td><span>" + remarcador.nomcliente + "</span></td>";
             tablasalida += "<td style='text-align: center;' ><span>" + remarcador.modulos + "</span></td>";
             tablasalida += "<td><span>" + remarcador.nominstalacion + "</span></td>";
-            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturaanterior) + (filas[0].esmanual.equals("SI") ? " *" : "") + "</span></td>";
-            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturafinal) + (filas[filas.length - 1].esmanual.equals("SI") ? " *" : "") + "</span></td>";
+            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturaanterior) + (filas[0].esmanual ? " *" : "") + "</span></td>";
+            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturafinal) + (filas[filas.length - 1].esmanual ? " *" : "") + "</span></td>";
             tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles((int) consumo) + "</span></td>";
 
             if (remarcador.hayboleta == 0) {
@@ -499,7 +499,7 @@ public class RemarcadorController extends HttpServlet {
                 lecturafin = (int)registro.lecturaproyectada;
             }
         }
-        if(entrada.getString("hasta").equals(registrosRemarcador[registrosRemarcador.length - 1].fecha) && registrosRemarcador[registrosRemarcador.length - 1].esmanual.equals("SI")){
+        if(entrada.getString("hasta").equals(registrosRemarcador[registrosRemarcador.length - 1].fecha) && registrosRemarcador[registrosRemarcador.length - 1].esmanual){
             haymanual = true;
             lecturafin = registrosRemarcador[registrosRemarcador.length - 1].lecturamanual;
         }

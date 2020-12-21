@@ -303,431 +303,268 @@ public class ETL {
      * continuidad.
      */
     private static FilaNormal[] getTablaCircutor(String[][] tabla) {
-        FilaNormal[] tablaNormal = new FilaNormal[tabla.length];
+        //[0]TIMESTAMP, [1]ID, [2]ITEM49, [3]ITEM50, [4]ITEM95, [5]ITEM96, [6]ESMANUAL, [7]VALORMANUAL
+        FilaNormal[] lecturas = new FilaNormal[tabla.length];
         for (int i = 0; i < tabla.length; i++) {
+            lecturas[i] = new FilaNormal();
 
-            if (tabla[i][2].equals("")) {
-                boolean encontrado = false;
-                if (i == 0) {
-                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                        if (!tabla[x][2].equals("")) {
-                            tabla[i][2] = tabla[x][2];
-                            encontrado = true;
-                        }
-                    }
-                } else {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][2].equals("")) {
-                            tabla[i][2] = tabla[z][2];
-                            encontrado = true;
-                        }
-                    }
-                }
-
-                if (!encontrado) {
-                    tabla[i][2] = "0";
-                }
-
-            }
-            if (tabla[i][3].equals("")) {
-                boolean encontrado = false;
-                if (i == 0) {
-                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                        if (!tabla[x][3].equals("")) {
-                            tabla[i][3] = tabla[x][3];
-                            encontrado = true;
-                        }
-                    }
-                } else {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][3].equals("")) {
-                            tabla[i][3] = tabla[z][3];
-                            encontrado = true;
-                        }
-                    }
-                }
-
-                if (!encontrado) {
-                    tabla[i][3] = "0";
-                }
-            }
-
-            if (tabla[i][4].equals("")) {
-                boolean encontrado = false;
-                if (i == 0) {
-                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                        if (!tabla[x][4].equals("")) {
-                            tabla[i][4] = tabla[x][4];
-                            encontrado = true;
-                            tabla[i][tabla[i].length - 1] = "MANUAL";
-                        }
-                    }
-                } else {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][4].equals("")) {
-                            tabla[i][4] = tabla[z][4];
-                            encontrado = true;
-                            tabla[i][tabla[i].length - 1] = "MANUAL";
-                        }
-                    }
-                }
-
-                if (!encontrado) {
-                    tabla[i][4] = "0";
-                }
-            }
-            if (tabla[i][5].equals("")) {
-                boolean encontrado = false;
-                if (i == 0) {
-                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                        if (!tabla[x][5].equals("")) {
-                            tabla[i][5] = tabla[x][5];
-                            encontrado = true;
-                            tabla[i][tabla[i].length - 1] = "MANUAL";
-                        }
-                    }
-                } else {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][5].equals("")) {
-                            tabla[i][5] = tabla[z][5];
-                            encontrado = true;
-                            tabla[i][tabla[i].length - 1] = "MANUAL";
-                        }
-                    }
-                }
-
-                if (!encontrado) {
-                    tabla[i][5] = "0";
-                }
-            }
-        }
-        int lectura = 0;
-        for (int i = 0; i < tabla.length; i++) {
-            int contador = 0;
-            int ultimomax = 0;
-            int consumo;
-            contador = getValorEnergiaCircutor(Integer.parseInt(tabla[i][5]), Integer.parseInt(tabla[i][4]));
-
-            if (i == 0) {
-                if (contador < Integer.parseInt(tabla[i][7]) || tabla[i][6].equals("SI")) {
-                    contador = Integer.parseInt(tabla[i][7]);
-                }
-                ultimomax = 0;
-            } else {
-                ultimomax = getValorEnergiaCircutor(Integer.parseInt(tabla[i - 1][5]), Integer.parseInt(tabla[i - 1][4]));
-            }
-
-            if (ultimomax <= contador) {
-                consumo = contador - ultimomax;
-            } else {
-                consumo = (ultimomax - contador) - ultimomax;
-            }
-
-            double potencia = getValorPotenciaCircutor(Integer.parseInt(tabla[i][3]), Integer.parseInt(tabla[i][2]));
-            lectura = lectura + consumo;
-            if (i > 0) {
-                if (consumo == 0 && tablaNormal[0].esmanual.equals("SI")) {
-                    contador = lectura;
-                    ultimomax = lectura;
-                }
-            }
-
+            //Poner valores fijos.
             String fechahora = tabla[i][0].replace(".0", "");
             String fecha = tabla[i][0].replace(".0", "").split(" ")[0];
             String hora = tabla[i][0].replace(".0", "").split(" ")[1];
             int idremarcador = Integer.parseInt(tabla[i][1]);
+            lecturas[i].idremarcador = idremarcador;
+            lecturas[i].fechahora = fechahora;
+            lecturas[i].fecha = fecha;
+            lecturas[i].hora = hora;
             String esmanual = tabla[i][6];
-            int lecturamanual = Integer.parseInt(tabla[i][7]);
 
-            tablaNormal[i] = new FilaNormal(fechahora, fecha, hora, idremarcador, lectura, potencia, contador, consumo, ultimomax, esmanual, lecturamanual);
+            //Verificar si existe valor y guardarlo
+            if (tabla[i][4].equals("") || tabla[i][5].equals("")) {
+                lecturas[i].existe = false;
+            } else {
+                lecturas[i].existe = true;
+                lecturas[i].lecturareal = getValorEnergiaCircutor(Integer.parseInt(tabla[i][5]), Integer.parseInt(tabla[i][4]));
+            }
+
+            if (tabla[i][2].equals("") || tabla[i][3].equals("")) {
+                lecturas[i].potencia = 0;
+            } else {
+                lecturas[i].potencia = getValorPotenciaCircutor(Integer.parseInt(tabla[i][3]), Integer.parseInt(tabla[i][2]));
+            }
+
+            //Verificar si es manual y guardarlo
+            if (esmanual.equals("SI")) {
+                lecturas[i].esmanual = true;
+                lecturas[i].lecturamanual = Integer.parseInt(tabla[i][7]);
+            } else {
+                lecturas[i].esmanual = false;
+            }
         }
+
+        for (int i = 0; i < lecturas.length; i++) {
+            if (i == 0) {
+
+                lecturas[i].ultimomax = 0;
+                if (!lecturas[i].existe) {
+                    for (int x = (i + 1); x < lecturas.length; x++) {
+                        if (lecturas[x].existe) {
+                            lecturas[i].lecturareal = lecturas[x].lecturareal;
+                            lecturas[i].pisada = true;
+                            break;
+                        }
+                    }
+                }
+                if (!lecturas[i].existe && lecturas[i].esmanual) {
+                    lecturas[i].lecturaproyectada = lecturas[i].lecturamanual;
+                } else if (!lecturas[i].existe && !lecturas[i].esmanual && lecturas[i].pisada) {
+                    lecturas[i].lecturaproyectada = lecturas[i].lecturareal;
+                } else if (lecturas[i].existe || lecturas[i].pisada) {
+                    lecturas[i].lecturaproyectada = lecturas[i].lecturareal;
+                }
+            } else if (i > 0) {
+                if (!lecturas[i].existe) {
+                    for (int x = (i - 1); x >= 0; x--) {
+                        if (lecturas[x].existe || lecturas[x].pisada) {
+                            lecturas[i].lecturareal = lecturas[x].lecturareal;
+                            break;
+                        }
+                    }
+                }
+                lecturas[i].ultimomax = lecturas[i - 1].lecturareal;
+            }
+            if (lecturas[i].ultimomax <= lecturas[i].lecturareal) {
+                lecturas[i].delta = lecturas[i].lecturareal - lecturas[i].ultimomax;
+            } else {
+                lecturas[i].delta = (lecturas[i].ultimomax - lecturas[i].lecturareal) - lecturas[i].ultimomax;
+            }
+            if (i > 0) {
+                lecturas[i].lecturaproyectada = lecturas[i - 1].lecturaproyectada + lecturas[i].delta;
+            }
+        }
+
+        if (lecturas[lecturas.length - 1].esmanual) {
+            lecturas[lecturas.length - 1].lecturaproyectada = lecturas[lecturas.length - 1].lecturamanual;
+        }
+
         System.out.println("Tabla circutorcvmC10 lista");
-        return tablaNormal;
+        return lecturas;
     }
 
-    /**
-     * Crea la tabla de salida de remarcador SchneiderPM710 con la recibida
-     * desde los datos crudos. Genera continuidad en la remarcación detectando
-     * las bajas en los valores que puede ser generada por reseteos del
-     * remarcador. Mantiene una cuenta pareja ascendente, además de entregar
-     * también la lectura real del remarcador.
-     *
-     * @param tabla {@code String[][]} con los datos de remarcación crudos sin
-     * vacíos, pero puede contener regresos en la continuidad.
-     * @return {@link etl.FilaNormal[]} con los dato ordenados y con
-     * continuidad.
-     */
     private static FilaNormal[] getTablaSchneiderPM710(String[][] tabla) {
-        FilaNormal[] tablaNormal = new FilaNormal[tabla.length];
+        FilaNormal[] lecturas = new FilaNormal[tabla.length];
         for (int i = 0; i < tabla.length; i++) {
+            lecturas[i] = new FilaNormal();
 
-            if (tabla[i][2].equals("")) {
-                boolean encontrado = false;
-                if (i == 0) {
-                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                        if (!tabla[x][2].equals("")) {
-                            tabla[i][2] = tabla[x][2];
-                            encontrado = true;
-                        }
-                    }
-                } else {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][2].equals("")) {
-                            tabla[i][2] = tabla[z][2];
-                            encontrado = true;
-                        }
-                    }
-                }
-
-                if (!encontrado) {
-                    tabla[i][2] = "0";
-                }
-
-            }
-            if (tabla[i][3].equals("")) {
-                boolean encontrado = false;
-                if (i == 0) {
-                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                        if (!tabla[x][3].equals("")) {
-                            tabla[i][3] = tabla[x][3];
-                            encontrado = true;
-                        }
-                    }
-                } else {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][3].equals("")) {
-                            tabla[i][3] = tabla[z][3];
-                            encontrado = true;
-                        }
-                    }
-                }
-
-                if (!encontrado) {
-                    tabla[i][3] = "0";
-                }
-            }
-
-            if (tabla[i][4].equals("")) {
-                boolean encontrado = false;
-                if (i == 0) {
-                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                        if (!tabla[x][4].equals("")) {
-                            tabla[i][4] = tabla[x][4];
-                            encontrado = true;
-                            tabla[i][tabla[i].length - 1] = "MANUAL";
-                        }
-                    }
-                } else {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][4].equals("")) {
-                            tabla[i][4] = tabla[z][4];
-                            encontrado = true;
-                            tabla[i][tabla[i].length - 1] = "MANUAL";
-                        }
-                    }
-                }
-
-                if (!encontrado) {
-                    tabla[i][4] = "0";
-                }
-            }
-            if (tabla[i][5].equals("")) {
-                boolean encontrado = false;
-                if (i == 0) {
-                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                        if (!tabla[x][5].equals("")) {
-                            tabla[i][5] = tabla[x][5];
-                            encontrado = true;
-                            tabla[i][tabla[i].length - 1] = "MANUAL";
-                        }
-                    }
-                } else {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][5].equals("")) {
-                            tabla[i][5] = tabla[z][5];
-                            encontrado = true;
-                            tabla[i][tabla[i].length - 1] = "MANUAL";
-                        }
-                    }
-                }
-
-                if (!encontrado) {
-                    tabla[i][5] = "0";
-                }
-            }
-            if (tabla[i][6].equals("")) {
-                boolean encontrado = false;
-                if (i == 0) {
-                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                        if (!tabla[x][6].equals("")) {
-                            tabla[i][6] = tabla[x][6];
-                            encontrado = true;
-                            tabla[i][tabla[i].length - 1] = "MANUAL";
-                        }
-                    }
-                } else {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][6].equals("")) {
-                            tabla[i][6] = tabla[z][6];
-                            encontrado = true;
-                            tabla[i][tabla[i].length - 1] = "MANUAL";
-                        }
-                    }
-                }
-
-                if (!encontrado) {
-                    tabla[i][6] = "0";
-                }
-            }
-        }
-        double lectura = 0.0d;
-        for (int i = 0; i < tabla.length; i++) {
-            double contador = 0.0d;
-            double ultimomax = 0.0d;
-            double consumo;
-            contador = getValorEnergiaSchneiderPM710(Integer.parseInt(tabla[i][5]), Integer.parseInt(tabla[i][4]), Integer.parseInt(tabla[i][6]));
-            if (i == 0) {
-                if (contador < Integer.parseInt(tabla[i][8]) || tabla[i][7].equals("SI")) {
-                    contador = Integer.parseInt(tabla[i][8]);
-                }
-                ultimomax = 0;
-            } else {
-                ultimomax = getValorEnergiaSchneiderPM710(Integer.parseInt(tabla[i - 1][5]), Integer.parseInt(tabla[i - 1][4]), Integer.parseInt(tabla[i - 1][6]));
-            }
-
-            if (ultimomax <= contador) {
-                consumo = contador - ultimomax;
-            } else {
-                consumo = (ultimomax - contador) - ultimomax;
-            }
-            double potencia = getValorPotenciaSchneiderPM710(Integer.parseInt(tabla[i][2]), Integer.parseInt(tabla[i][3]));
-            lectura = lectura + consumo;
-            if (i > 0) {
-                if (consumo == 0 && tablaNormal[0].esmanual.equals("SI")) {
-                    contador = lectura;
-                    ultimomax = lectura;
-                }
-            }
+            //Poner valores fijos.
             String fechahora = tabla[i][0].replace(".0", "");
             String fecha = tabla[i][0].replace(".0", "").split(" ")[0];
             String hora = tabla[i][0].replace(".0", "").split(" ")[1];
             int idremarcador = Integer.parseInt(tabla[i][1]);
+            lecturas[i].idremarcador = idremarcador;
+            lecturas[i].fechahora = fechahora;
+            lecturas[i].fecha = fecha;
+            lecturas[i].hora = hora;
             String esmanual = tabla[i][7];
-            int lecturamanual = Integer.parseInt(tabla[i][8]);
 
-            tablaNormal[i] = new FilaNormal(fechahora, fecha, hora, idremarcador, lectura, potencia, contador, consumo, ultimomax, esmanual, lecturamanual);
+            //Verificar si existe valor y guardarlo
+            if (tabla[i][4].equals("") || tabla[i][5].equals("") || tabla[i][6].equals("")) {
+                lecturas[i].existe = false;
+            } else {
+                lecturas[i].existe = true;
+                lecturas[i].lecturareal = getValorEnergiaSchneiderPM710(Integer.parseInt(tabla[i][5]), Integer.parseInt(tabla[i][4]), Integer.parseInt(tabla[i][6]));
+            }
+
+            if (tabla[i][2].equals("") || tabla[i][3].equals("")) {
+                lecturas[i].potencia = 0;
+            } else {
+                lecturas[i].potencia = getValorPotenciaSchneiderPM710(Integer.parseInt(tabla[i][2]), Integer.parseInt(tabla[i][3]));
+            }
+
+            //Verificar si es manual y guardarlo
+            if (esmanual.equals("SI")) {
+                lecturas[i].esmanual = true;
+                lecturas[i].lecturamanual = Integer.parseInt(tabla[i][8]);
+            } else {
+                lecturas[i].esmanual = false;
+            }
         }
+
+        for (int i = 0; i < lecturas.length; i++) {
+            if (i == 0) {
+
+                lecturas[i].ultimomax = 0;
+                if (!lecturas[i].existe) {
+                    for (int x = (i + 1); x < lecturas.length; x++) {
+                        if (lecturas[x].existe) {
+                            lecturas[i].lecturareal = lecturas[x].lecturareal;
+                            lecturas[i].pisada = true;
+                            break;
+                        }
+                    }
+                }
+                if (!lecturas[i].existe && lecturas[i].esmanual) {
+                    lecturas[i].lecturaproyectada = lecturas[i].lecturamanual;
+                } else if (!lecturas[i].existe && !lecturas[i].esmanual && lecturas[i].pisada) {
+                    lecturas[i].lecturaproyectada = lecturas[i].lecturareal;
+                } else if (lecturas[i].existe || lecturas[i].pisada) {
+                    lecturas[i].lecturaproyectada = lecturas[i].lecturareal;
+                }
+            } else if (i > 0) {
+                if (!lecturas[i].existe) {
+                    for (int x = (i - 1); x >= 0; x--) {
+                        if (lecturas[x].existe || lecturas[x].pisada) {
+                            lecturas[i].lecturareal = lecturas[x].lecturareal;
+                            break;
+                        }
+                    }
+                }
+                lecturas[i].ultimomax = lecturas[i - 1].lecturareal;
+            }
+            if (lecturas[i].ultimomax <= lecturas[i].lecturareal) {
+                lecturas[i].delta = lecturas[i].lecturareal - lecturas[i].ultimomax;
+            } else {
+                lecturas[i].delta = (lecturas[i].ultimomax - lecturas[i].lecturareal) - lecturas[i].ultimomax;
+            }
+            if (i > 0) {
+                lecturas[i].lecturaproyectada = lecturas[i - 1].lecturaproyectada + lecturas[i].delta;
+            }
+        }
+
+        if (lecturas[lecturas.length - 1].esmanual) {
+            lecturas[lecturas.length - 1].lecturaproyectada = lecturas[lecturas.length - 1].lecturamanual;
+        }
+
         System.out.println("Tabla SchneiderPM710 lista");
-        return tablaNormal;
+        return lecturas;
     }
 
     private static FilaNormal[] getTablaSchneiderPM5300(String[][] tabla) {
-        FilaNormal[] tablaNormal = new FilaNormal[tabla.length];
+        FilaNormal[] lecturas = new FilaNormal[tabla.length];
         for (int i = 0; i < tabla.length; i++) {
+            lecturas[i] = new FilaNormal();
 
-            if (tabla[i][2].equals("5.8774717541114E-39")) {
-                boolean encontrado = false;
-                if (i == 0) {
-                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                        if (!tabla[x][2].equals("5.8774717541114E-39")) {
-                            tabla[i][2] = tabla[x][2];
-                            encontrado = true;
-                            tabla[i][tabla[i].length - 1] = "MANUAL";
-                        }
-                    }
-                } else {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][2].equals("5.8774717541114E-39")) {
-                            tabla[i][2] = tabla[z][2];
-                            encontrado = true;
-                            tabla[i][tabla[i].length - 1] = "MANUAL";
-                        }
-                    }
-                }
-
-                if (!encontrado) {
-                    tabla[i][2] = "0";
-                }
-
-            }
-            if (tabla[i][3].equals("5.8774717541114E-39")) {
-                boolean encontrado = false;
-                if (i == 0) {
-                    for (int x = (i + 1); (x < tabla.length) && !encontrado; x++) {
-                        if (!tabla[x][3].equals("5.8774717541114E-39")) {
-                            tabla[i][3] = tabla[x][3];
-                            encontrado = true;
-                        }
-                    }
-                } else {
-                    for (int z = (i - 1); (z >= 0) && !encontrado; z--) {
-                        if (!tabla[z][3].equals("5.8774717541114E-39")) {
-                            tabla[i][3] = tabla[z][3];
-                            encontrado = true;
-                        }
-                    }
-                }
-
-                if (!encontrado) {
-                    tabla[i][3] = "0";
-                }
-            }
-        }
-        double lectura = 0.0d;
-        for (int i = 0; i < tabla.length; i++) {
-            double contador = 0.0d;
-            double ultimomax = 0.0d;
-            double consumo;
-            contador = getValorEnergiaSchneiderPM5300(Double.parseDouble(tabla[i][2]));
-            if (i == 0) {
-                if (contador < Integer.parseInt(tabla[i][5]) || tabla[i][4].equals("SI")) {
-                    contador = Integer.parseInt(tabla[i][5]);
-                }
-                ultimomax = 0;
-            } else {
-                ultimomax = getValorEnergiaSchneiderPM5300(Double.parseDouble(tabla[i - 1][2]));
-            }
-
-            if (ultimomax <= contador) {
-                consumo = contador - ultimomax;
-            } else {
-                consumo = (ultimomax - contador) - ultimomax;
-            }
-            double potencia = getValorPotenciaSchneiderPM5300(Double.parseDouble(tabla[i][3]));
-            lectura = lectura + consumo;
-            if (i > 0) {
-                if (consumo == 0 && tablaNormal[0].esmanual.equals("SI")) {
-                    contador = lectura;
-                    ultimomax = lectura;
-                }
-            }
+            //Poner valores fijos.
             String fechahora = tabla[i][0].replace(".0", "");
             String fecha = tabla[i][0].replace(".0", "").split(" ")[0];
             String hora = tabla[i][0].replace(".0", "").split(" ")[1];
             int idremarcador = Integer.parseInt(tabla[i][1]);
+            lecturas[i].idremarcador = idremarcador;
+            lecturas[i].fechahora = fechahora;
+            lecturas[i].fecha = fecha;
+            lecturas[i].hora = hora;
             String esmanual = tabla[i][4];
-            int lecturamanual = Integer.parseInt(tabla[i][5]);
 
-            tablaNormal[i] = new FilaNormal(fechahora, fecha, hora, idremarcador, lectura, potencia, contador, consumo, ultimomax, esmanual, lecturamanual);
-        }
-        System.out.println("Tabla SchneiderPM5300 lista");
-        return tablaNormal;
-    }
-
-    /**
-     * Imprime un array del tipo String[][].
-     *
-     * @param filas {@code String[][]} con los datos a mostrar en pantalla.
-     */
-    private static void imprimirArreglo(String[][] filas) {
-
-        for (String[] fila : filas) {
-            String filaString = "";
-            for (String campo : fila) {
-                filaString += campo + ";";
+            //Verificar si existe valor y guardarlo
+            if (tabla[i][2].equals("5.8774717541114E-39")) {
+                lecturas[i].existe = false;
+            } else {
+                lecturas[i].existe = true;
+                lecturas[i].lecturareal = getValorEnergiaSchneiderPM5300(Double.parseDouble(tabla[i][2]));
             }
-            System.out.println(filaString);
+
+            if (tabla[i][3].equals("5.8774717541114E-39")) {
+                lecturas[i].potencia = 0;
+            } else {
+                lecturas[i].potencia = getValorPotenciaSchneiderPM5300(Double.parseDouble(tabla[i][3]));
+            }
+
+            //Verificar si es manual y guardarlo
+            if (esmanual.equals("SI")) {
+                lecturas[i].esmanual = true;
+                lecturas[i].lecturamanual = Integer.parseInt(tabla[i][5]);
+            } else {
+                lecturas[i].esmanual = false;
+            }
         }
+
+        for (int i = 0; i < lecturas.length; i++) {
+            if (i == 0) {
+
+                lecturas[i].ultimomax = 0;
+                if (!lecturas[i].existe) {
+                    for (int x = (i + 1); x < lecturas.length; x++) {
+                        if (lecturas[x].existe) {
+                            lecturas[i].lecturareal = lecturas[x].lecturareal;
+                            lecturas[i].pisada = true;
+                            break;
+                        }
+                    }
+                }
+                if (!lecturas[i].existe && lecturas[i].esmanual) {
+                    lecturas[i].lecturaproyectada = lecturas[i].lecturamanual;
+                } else if (!lecturas[i].existe && !lecturas[i].esmanual && lecturas[i].pisada) {
+                    lecturas[i].lecturaproyectada = lecturas[i].lecturareal;
+                } else if (lecturas[i].existe || lecturas[i].pisada) {
+                    lecturas[i].lecturaproyectada = lecturas[i].lecturareal;
+                }
+            } else if (i > 0) {
+                if (!lecturas[i].existe) {
+                    for (int x = (i - 1); x >= 0; x--) {
+                        if (lecturas[x].existe || lecturas[x].pisada) {
+                            lecturas[i].lecturareal = lecturas[x].lecturareal;
+                            break;
+                        }
+                    }
+                }
+                lecturas[i].ultimomax = lecturas[i - 1].lecturareal;
+            }
+            if (lecturas[i].ultimomax <= lecturas[i].lecturareal) {
+                lecturas[i].delta = lecturas[i].lecturareal - lecturas[i].ultimomax;
+            } else {
+                lecturas[i].delta = (lecturas[i].ultimomax - lecturas[i].lecturareal) - lecturas[i].ultimomax;
+            }
+            if (i > 0) {
+                lecturas[i].lecturaproyectada = lecturas[i - 1].lecturaproyectada + lecturas[i].delta;
+            }
+        }
+
+        if (lecturas[lecturas.length - 1].esmanual) {
+            lecturas[lecturas.length - 1].lecturaproyectada = lecturas[lecturas.length - 1].lecturamanual;
+        }
+
+        System.out.println("Tabla SchneiderPM5300 lista");
+        return lecturas;
     }
 
 }

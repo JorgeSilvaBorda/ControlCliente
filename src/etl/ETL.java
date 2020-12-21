@@ -379,12 +379,17 @@ public class ETL {
                 lecturas[i].delta = (lecturas[i].ultimomax - lecturas[i].lecturareal) - lecturas[i].ultimomax;
             }
             if (i > 0) {
+                if(lecturas[i].esmanual && !lecturas[i - 1].esmanual){
+                    lecturas[i].delta = lecturas[i].lecturamanual - lecturas[i].lecturareal;
+                }
                 lecturas[i].lecturaproyectada = lecturas[i - 1].lecturaproyectada + lecturas[i].delta;
             }
         }
 
         if (lecturas[lecturas.length - 1].esmanual) {
-            lecturas[lecturas.length - 1].lecturaproyectada = lecturas[lecturas.length - 1].lecturamanual;
+            if(lecturas[lecturas.length - 1].lecturamanual < lecturas[lecturas.length - 1].lecturaproyectada){
+                lecturas[lecturas.length - 1].lecturaproyectada = lecturas[lecturas.length - 1].lecturaproyectada + (lecturas[lecturas.length - 1].lecturamanual - lecturas[lecturas.length - 1].lecturareal);
+            }
         }
 
         System.out.println("Tabla circutorcvmC10 lista");

@@ -226,7 +226,19 @@
             <table style='border-collapse: collapse; border: 3px solid white; font-size: 11px; background-color: #E9EFF8; width: 100%; height:100%;' class="print-friendly" id='detalle-tarifa-remarcador'>
             </table>
             <div class="col-md-12">
-                <canvas id="grafico" width="1000" height="420" ></canvas>
+                <div id="loader-grafico" class="loader" style="left: 50%; position: absolute;"><!-- Contenedor del Spinner -->
+                    <br />
+                    <div class="ldio-sa9px9nknjc"> <!-- El Spinner -->
+                        <div>
+                        </div>
+                        <div>
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+                <canvas id="grafico" width="1000" height="420" >
+
+                </canvas>
             </div>
         </div>
 

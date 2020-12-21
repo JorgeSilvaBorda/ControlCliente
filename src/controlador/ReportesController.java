@@ -132,7 +132,8 @@ public class ReportesController extends HttpServlet {
             if ((!filas[i].fecha.substring(0, 7).equals(mesanioActual)) && i > 0 && i < filas.length - 1) {
                 finMes = filas[i - 1].fecha;
                 if (filas[i - 1].esmanual) {
-                    lecturaFinMes = filas[i - 1].lecturamanual;
+                    //lecturaFinMes = filas[i - 1].lecturamanual;
+                    lecturaFinMes = filas[i - 1].lecturaproyectada;
                 } else {
                     lecturaFinMes = filas[i - 1].lecturaproyectada;
                 }
@@ -150,7 +151,8 @@ public class ReportesController extends HttpServlet {
             if (i == filas.length - 1) {
                 finMes = filas[i].fecha;
                 if (filas[i].esmanual) {
-                    lecturaFinMes = filas[i].lecturamanual;
+                    //lecturaFinMes = filas[i].lecturamanual;
+                    lecturaFinMes = filas[i].lecturaproyectada;
                 } else {
                     lecturaFinMes = filas[i].lecturaproyectada;
                 }
@@ -185,49 +187,6 @@ public class ReportesController extends HttpServlet {
         data.put("datasets", datasets);
         salida.put("data", data);
         salida.put("estado", "ok");
-        return salida;
-    }
-
-    @Deprecated
-    private JSONObject consumoClienteRemarcadorAnioMesOld(JSONObject entrada) {
-        JSONObject salida = new JSONObject();
-
-        String query = "CALL SP_GET_CONSUMO_13_MESES_REMARCADOR_DESDE("
-                + +entrada.getInt("numremarcador") + ", "
-                + "'" + entrada.getString("aniomes") + "'"
-                + ")";
-        System.out.println(query);
-        Conexion c = new Conexion();
-        c.abrir();
-        ResultSet rs = c.ejecutarQuery(query);
-        JSONArray labels = new JSONArray();
-        JSONArray datasets = new JSONArray();
-        JSONArray datasetData = new JSONArray();
-
-        try {
-            while (rs.next()) {
-                labels.put(Util.invertirFecha(rs.getString("FECHA")));
-                datasetData.put(rs.getInt("CONSUMO"));
-            }
-
-            JSONObject dataset = new JSONObject();
-            dataset.put("data", datasetData);
-            dataset.put("label", "Remarcador ID: " + entrada.getInt("numremarcador"));
-            dataset.put("borderWidth", "2");
-            datasets.put(dataset);
-            JSONObject data = new JSONObject();
-            data.put("labels", labels);
-            data.put("datasets", datasets);
-            salida.put("data", data);
-            salida.put("estado", "ok");
-        } catch (JSONException | SQLException ex) {
-            System.out.println("Problemas en controlador.ReportesController.consumoClienteRemarcadorAnioMes().");
-            System.out.println(ex);
-            ex.printStackTrace();
-            salida.put("estado", "error");
-            salida.put("error", ex);
-        }
-        c.cerrar();
         return salida;
     }
 
@@ -288,7 +247,8 @@ public class ReportesController extends HttpServlet {
             if ((!filas[i].fecha.substring(0, 7).equals(mesanioActual)) && i > 0 && i < filas.length - 1) {
                 finMes = filas[i - 1].fecha;
                 if (filas[i - 1].esmanual) {
-                    lecturaFinMes = filas[i - 1].lecturamanual;
+                    //lecturaFinMes = filas[i - 1].lecturamanual;
+                    lecturaFinMes = filas[i - 1].lecturaproyectada;
                 } else {
                     lecturaFinMes = filas[i - 1].lecturaproyectada;
                 }
@@ -306,7 +266,8 @@ public class ReportesController extends HttpServlet {
             if (i == filas.length - 1) {
                 finMes = filas[i].fecha;
                 if (filas[i].esmanual) {
-                    lecturaFinMes = filas[i].lecturamanual;
+                    //lecturaFinMes = filas[i].lecturamanual;
+                    lecturaFinMes = filas[i].lecturaproyectada;
                 } else {
                     lecturaFinMes = filas[i].lecturaproyectada;
                 }

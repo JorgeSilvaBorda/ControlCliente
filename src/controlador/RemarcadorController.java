@@ -356,6 +356,9 @@ public class RemarcadorController extends HttpServlet {
             //int lecturafinal = (int) filas[filas.length - 1].lecturaproyectada;
 
             int lecturaanterior = (int) filas[0].lecturareal;
+            if(filas[0].esmanual){
+                lecturaanterior = (int) filas[0].lecturamanual;
+            }
             int lecturafinal = (int) filas[filas.length - 1].lecturareal;
             if (filas[filas.length - 1].esmanual) {
                 lecturafinal = filas[filas.length - 1].lecturamanual;

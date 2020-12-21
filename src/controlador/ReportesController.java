@@ -413,12 +413,17 @@ public class ReportesController extends HttpServlet {
                 + "</thead>"
                 + "<tbody>";
         boolean haymanual = false;
+        boolean haymanualini = false;
         boolean almenosUnManual = false;
         for (int i = 0; i < ides.size(); i++) {
             FilaNormal[] tabla = etl.ETL.getDatasetRemarcador(ides.get(i), mes, anio);
             int idrem = ides.get(i);
 
             int lecturaini = (int) tabla[0].lecturareal;
+            if(tabla[0].esmanual){
+                lecturaini = (int) tabla[0].lecturamanual;
+                haymanualini = true;
+            }
             int lecturafin = (int) tabla[tabla.length - 1].lecturareal;
             if (tabla[tabla.length - 1].esmanual) {
                 lecturafin = tabla[tabla.length - 1].lecturamanual;
@@ -463,7 +468,7 @@ public class ReportesController extends HttpServlet {
             DecimalFormat formato = new DecimalFormat("#.##");
             tablasalida += "<tr>";
             tablasalida += "<td style='text-align:center;'>" + idrem + "</td>";
-            tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(lecturaini) + "</td>";
+            tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(lecturaini) + " " + (haymanualini ? "*" : "") + "</td>";
             tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(lecturafin) + " " + (haymanual ? "*" : "") + "</td>";
             tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(consumo) + "</td>";
             tablasalida += "<td style='text-align:right;'>" + formato.format(demmax).replace(".", ",") + "</td>";
@@ -472,6 +477,7 @@ public class ReportesController extends HttpServlet {
             tablasalida += "<td style='text-align:right;'>" + formato.format(maxdem12).replace(".", ",") + "</td>";
             tablasalida += "</tr>";
             haymanual = false;
+            haymanualini = false;
         }
         tablasalida += "</tbody>";
         tablasalida += "</table>";

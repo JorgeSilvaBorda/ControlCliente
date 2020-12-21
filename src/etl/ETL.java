@@ -342,6 +342,97 @@ public class ETL {
             }
         }
 
+        System.out.println("Tabla circutorcvmC10 lista");
+        return procesarLecturas(lecturas);
+    }
+
+    private static FilaNormal[] getTablaSchneiderPM710(String[][] tabla) {
+        FilaNormal[] lecturas = new FilaNormal[tabla.length];
+        for (int i = 0; i < tabla.length; i++) {
+            lecturas[i] = new FilaNormal();
+
+            //Poner valores fijos.
+            String fechahora = tabla[i][0].replace(".0", "");
+            String fecha = tabla[i][0].replace(".0", "").split(" ")[0];
+            String hora = tabla[i][0].replace(".0", "").split(" ")[1];
+            int idremarcador = Integer.parseInt(tabla[i][1]);
+            lecturas[i].idremarcador = idremarcador;
+            lecturas[i].fechahora = fechahora;
+            lecturas[i].fecha = fecha;
+            lecturas[i].hora = hora;
+            String esmanual = tabla[i][7];
+
+            //Verificar si existe valor y guardarlo
+            if (tabla[i][4].equals("") || tabla[i][5].equals("") || tabla[i][6].equals("")) {
+                lecturas[i].existe = false;
+            } else {
+                lecturas[i].existe = true;
+                lecturas[i].lecturareal = getValorEnergiaSchneiderPM710(Integer.parseInt(tabla[i][5]), Integer.parseInt(tabla[i][4]), Integer.parseInt(tabla[i][6]));
+            }
+
+            if (tabla[i][2].equals("") || tabla[i][3].equals("")) {
+                lecturas[i].potencia = 0;
+            } else {
+                lecturas[i].potencia = getValorPotenciaSchneiderPM710(Integer.parseInt(tabla[i][2]), Integer.parseInt(tabla[i][3]));
+            }
+
+            //Verificar si es manual y guardarlo
+            if (esmanual.equals("SI")) {
+                lecturas[i].esmanual = true;
+                lecturas[i].lecturamanual = Integer.parseInt(tabla[i][8]);
+            } else {
+                lecturas[i].esmanual = false;
+            }
+        }
+
+        System.out.println("Tabla SchneiderPM710 lista");
+        return procesarLecturas(lecturas);
+    }
+
+    private static FilaNormal[] getTablaSchneiderPM5300(String[][] tabla) {
+        FilaNormal[] lecturas = new FilaNormal[tabla.length];
+        for (int i = 0; i < tabla.length; i++) {
+            lecturas[i] = new FilaNormal();
+
+            //Poner valores fijos.
+            String fechahora = tabla[i][0].replace(".0", "");
+            String fecha = tabla[i][0].replace(".0", "").split(" ")[0];
+            String hora = tabla[i][0].replace(".0", "").split(" ")[1];
+            int idremarcador = Integer.parseInt(tabla[i][1]);
+            lecturas[i].idremarcador = idremarcador;
+            lecturas[i].fechahora = fechahora;
+            lecturas[i].fecha = fecha;
+            lecturas[i].hora = hora;
+            String esmanual = tabla[i][4];
+
+            //Verificar si existe valor y guardarlo
+            if (tabla[i][2].equals("5.8774717541114E-39")) {
+                lecturas[i].existe = false;
+            } else {
+                lecturas[i].existe = true;
+                lecturas[i].lecturareal = getValorEnergiaSchneiderPM5300(Double.parseDouble(tabla[i][2]));
+            }
+
+            if (tabla[i][3].equals("5.8774717541114E-39")) {
+                lecturas[i].potencia = 0;
+            } else {
+                lecturas[i].potencia = getValorPotenciaSchneiderPM5300(Double.parseDouble(tabla[i][3]));
+            }
+
+            //Verificar si es manual y guardarlo
+            if (esmanual.equals("SI")) {
+                lecturas[i].esmanual = true;
+                lecturas[i].lecturamanual = Integer.parseInt(tabla[i][5]);
+            } else {
+                lecturas[i].esmanual = false;
+            }
+        }
+
+        System.out.println("Tabla SchneiderPM5300 lista");
+        return procesarLecturas(lecturas);
+    }
+    
+    private static FilaNormal[] procesarLecturas(FilaNormal[] lecturas){
         for (int i = 0; i < lecturas.length; i++) {
             if (i == 0) {
 
@@ -391,184 +482,6 @@ public class ETL {
                 lecturas[lecturas.length - 1].lecturaproyectada = lecturas[lecturas.length - 1].lecturaproyectada + (lecturas[lecturas.length - 1].lecturamanual - lecturas[lecturas.length - 1].lecturareal);
             }
         }
-
-        System.out.println("Tabla circutorcvmC10 lista");
-        return lecturas;
-    }
-
-    private static FilaNormal[] getTablaSchneiderPM710(String[][] tabla) {
-        FilaNormal[] lecturas = new FilaNormal[tabla.length];
-        for (int i = 0; i < tabla.length; i++) {
-            lecturas[i] = new FilaNormal();
-
-            //Poner valores fijos.
-            String fechahora = tabla[i][0].replace(".0", "");
-            String fecha = tabla[i][0].replace(".0", "").split(" ")[0];
-            String hora = tabla[i][0].replace(".0", "").split(" ")[1];
-            int idremarcador = Integer.parseInt(tabla[i][1]);
-            lecturas[i].idremarcador = idremarcador;
-            lecturas[i].fechahora = fechahora;
-            lecturas[i].fecha = fecha;
-            lecturas[i].hora = hora;
-            String esmanual = tabla[i][7];
-
-            //Verificar si existe valor y guardarlo
-            if (tabla[i][4].equals("") || tabla[i][5].equals("") || tabla[i][6].equals("")) {
-                lecturas[i].existe = false;
-            } else {
-                lecturas[i].existe = true;
-                lecturas[i].lecturareal = getValorEnergiaSchneiderPM710(Integer.parseInt(tabla[i][5]), Integer.parseInt(tabla[i][4]), Integer.parseInt(tabla[i][6]));
-            }
-
-            if (tabla[i][2].equals("") || tabla[i][3].equals("")) {
-                lecturas[i].potencia = 0;
-            } else {
-                lecturas[i].potencia = getValorPotenciaSchneiderPM710(Integer.parseInt(tabla[i][2]), Integer.parseInt(tabla[i][3]));
-            }
-
-            //Verificar si es manual y guardarlo
-            if (esmanual.equals("SI")) {
-                lecturas[i].esmanual = true;
-                lecturas[i].lecturamanual = Integer.parseInt(tabla[i][8]);
-            } else {
-                lecturas[i].esmanual = false;
-            }
-        }
-
-        for (int i = 0; i < lecturas.length; i++) {
-            if (i == 0) {
-
-                lecturas[i].ultimomax = 0;
-                if (!lecturas[i].existe) {
-                    for (int x = (i + 1); x < lecturas.length; x++) {
-                        if (lecturas[x].existe) {
-                            lecturas[i].lecturareal = lecturas[x].lecturareal;
-                            lecturas[i].pisada = true;
-                            break;
-                        }
-                    }
-                }
-                if (!lecturas[i].existe && lecturas[i].esmanual) {
-                    lecturas[i].lecturaproyectada = lecturas[i].lecturamanual;
-                } else if (!lecturas[i].existe && !lecturas[i].esmanual && lecturas[i].pisada) {
-                    lecturas[i].lecturaproyectada = lecturas[i].lecturareal;
-                } else if (lecturas[i].existe || lecturas[i].pisada) {
-                    lecturas[i].lecturaproyectada = lecturas[i].lecturareal;
-                }
-            } else if (i > 0) {
-                if (!lecturas[i].existe) {
-                    for (int x = (i - 1); x >= 0; x--) {
-                        if (lecturas[x].existe || lecturas[x].pisada) {
-                            lecturas[i].lecturareal = lecturas[x].lecturareal;
-                            break;
-                        }
-                    }
-                }
-                lecturas[i].ultimomax = lecturas[i - 1].lecturareal;
-            }
-            if (lecturas[i].ultimomax <= lecturas[i].lecturareal) {
-                lecturas[i].delta = lecturas[i].lecturareal - lecturas[i].ultimomax;
-            } else {
-                lecturas[i].delta = (lecturas[i].ultimomax - lecturas[i].lecturareal) - lecturas[i].ultimomax;
-            }
-            if (i > 0) {
-                lecturas[i].lecturaproyectada = lecturas[i - 1].lecturaproyectada + lecturas[i].delta;
-            }
-        }
-
-        if (lecturas[lecturas.length - 1].esmanual) {
-            lecturas[lecturas.length - 1].lecturaproyectada = lecturas[lecturas.length - 1].lecturamanual;
-        }
-
-        System.out.println("Tabla SchneiderPM710 lista");
-        return lecturas;
-    }
-
-    private static FilaNormal[] getTablaSchneiderPM5300(String[][] tabla) {
-        FilaNormal[] lecturas = new FilaNormal[tabla.length];
-        for (int i = 0; i < tabla.length; i++) {
-            lecturas[i] = new FilaNormal();
-
-            //Poner valores fijos.
-            String fechahora = tabla[i][0].replace(".0", "");
-            String fecha = tabla[i][0].replace(".0", "").split(" ")[0];
-            String hora = tabla[i][0].replace(".0", "").split(" ")[1];
-            int idremarcador = Integer.parseInt(tabla[i][1]);
-            lecturas[i].idremarcador = idremarcador;
-            lecturas[i].fechahora = fechahora;
-            lecturas[i].fecha = fecha;
-            lecturas[i].hora = hora;
-            String esmanual = tabla[i][4];
-
-            //Verificar si existe valor y guardarlo
-            if (tabla[i][2].equals("5.8774717541114E-39")) {
-                lecturas[i].existe = false;
-            } else {
-                lecturas[i].existe = true;
-                lecturas[i].lecturareal = getValorEnergiaSchneiderPM5300(Double.parseDouble(tabla[i][2]));
-            }
-
-            if (tabla[i][3].equals("5.8774717541114E-39")) {
-                lecturas[i].potencia = 0;
-            } else {
-                lecturas[i].potencia = getValorPotenciaSchneiderPM5300(Double.parseDouble(tabla[i][3]));
-            }
-
-            //Verificar si es manual y guardarlo
-            if (esmanual.equals("SI")) {
-                lecturas[i].esmanual = true;
-                lecturas[i].lecturamanual = Integer.parseInt(tabla[i][5]);
-            } else {
-                lecturas[i].esmanual = false;
-            }
-        }
-
-        for (int i = 0; i < lecturas.length; i++) {
-            if (i == 0) {
-
-                lecturas[i].ultimomax = 0;
-                if (!lecturas[i].existe) {
-                    for (int x = (i + 1); x < lecturas.length; x++) {
-                        if (lecturas[x].existe) {
-                            lecturas[i].lecturareal = lecturas[x].lecturareal;
-                            lecturas[i].pisada = true;
-                            break;
-                        }
-                    }
-                }
-                if (!lecturas[i].existe && lecturas[i].esmanual) {
-                    lecturas[i].lecturaproyectada = lecturas[i].lecturamanual;
-                } else if (!lecturas[i].existe && !lecturas[i].esmanual && lecturas[i].pisada) {
-                    lecturas[i].lecturaproyectada = lecturas[i].lecturareal;
-                } else if (lecturas[i].existe || lecturas[i].pisada) {
-                    lecturas[i].lecturaproyectada = lecturas[i].lecturareal;
-                }
-            } else if (i > 0) {
-                if (!lecturas[i].existe) {
-                    for (int x = (i - 1); x >= 0; x--) {
-                        if (lecturas[x].existe || lecturas[x].pisada) {
-                            lecturas[i].lecturareal = lecturas[x].lecturareal;
-                            break;
-                        }
-                    }
-                }
-                lecturas[i].ultimomax = lecturas[i - 1].lecturareal;
-            }
-            if (lecturas[i].ultimomax <= lecturas[i].lecturareal) {
-                lecturas[i].delta = lecturas[i].lecturareal - lecturas[i].ultimomax;
-            } else {
-                lecturas[i].delta = (lecturas[i].ultimomax - lecturas[i].lecturareal) - lecturas[i].ultimomax;
-            }
-            if (i > 0) {
-                lecturas[i].lecturaproyectada = lecturas[i - 1].lecturaproyectada + lecturas[i].delta;
-            }
-        }
-
-        if (lecturas[lecturas.length - 1].esmanual) {
-            lecturas[lecturas.length - 1].lecturaproyectada = lecturas[lecturas.length - 1].lecturamanual;
-        }
-
-        System.out.println("Tabla SchneiderPM5300 lista");
         return lecturas;
     }
 

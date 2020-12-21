@@ -763,7 +763,7 @@ public class BoletaController extends HttpServlet {
 
     private JSONObject getResumenPagos(JSONObject entrada) {
         JSONObject salida = new JSONObject();
-
+        LinkedList<String> bodegas = new LinkedList();
         String query = "CALL SP_GET_PAGOS("
                 + "'" + entrada.getString("mes") + "',"
                 + "'" + entrada.getString("numempalme") + "'"
@@ -808,8 +808,19 @@ public class BoletaController extends HttpServlet {
                 + "<tbody>";
         int filastotales = 0;
         int contBFC = 0;
+        boolean bodegaEncontrada = false;
         try {
             while (rs.next()) {
+                for (int i = 0; i < bodegas.size(); i++) {
+                    if (rs.getString("NOMPARQUE").equals(bodegas.get(i))) {
+                        bodegaEncontrada = true;
+                    }
+                }
+                
+                if (!bodegaEncontrada) {
+                    bodegas.add(rs.getString("NOMPARQUE"));    
+                }
+                bodegaEncontrada = false;
 
                 if (rs.getString("NOMCLIENTE").equals("BFC")) {
                     cuerpoBFC += "<tr>";
@@ -926,6 +937,7 @@ public class BoletaController extends HttpServlet {
                 tabla = "<button type='button' onclick='tableToExcel(\"tabla-resumen-pagos\", \"Resumen-Pagos\");' class='btn btn-success btn-sm' >Excel</button><br /><br />" + tabla;
             }
             salida.put("tabla", tabla);
+            salida.put("bodegas", bodegas);
             salida.put("estado", "ok");
         } catch (Exception ex) {
             System.out.println("No se puede obtener el listado de pagos.");
@@ -1052,21 +1064,21 @@ public class BoletaController extends HttpServlet {
             c.cerrar();
         }
     }
-    
-    private JSONObject buscarBoletasMasivo(JSONObject entrada){
+
+    private JSONObject buscarBoletasMasivo(JSONObject entrada) {
         JSONArray ides = entrada.getJSONArray("ides");
         JSONObject salida = new JSONObject();
         JSONArray boletas = new JSONArray();
         System.out.println(ides);
         Iterator i = ides.iterator();
-        try{
-            while(i.hasNext()){
+        try {
+            while (i.hasNext()) {
                 JSONObject jsonboleta = new JSONObject();
-                jsonboleta.put("idboleta", (int)i.next());
+                jsonboleta.put("idboleta", (int) i.next());
                 JSONObject lastBoleta = getLastBoleta(jsonboleta);
                 boletas.put(lastBoleta);
             }
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("No se puede buscar las boletas masivo.");
             System.out.println(ex);
         }

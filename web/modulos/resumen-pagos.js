@@ -1,4 +1,5 @@
-
+var BODEGAS = null;
+var NOMARCHIVO = null;
 function getSelectInstalacion() {
     var datos = {
         tipo: 'get-select-instalacion'
@@ -83,6 +84,17 @@ function getPagos() {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
+                BODEGAS = obj.bodegas;
+                var nomarchivo = "Resumen-Pagos_";
+                for (var i = 0; i < BODEGAS.length; i++) {
+                    if (i === BODEGAS.length - 1) {
+                        nomarchivo += BODEGAS[i] + "_";
+                    } else {
+                        nomarchivo += BODEGAS[i] + "-";
+                    }
+                }
+                nomarchivo += $('#mes').val() + '.xls';
+                NOMARCHIVO = nomarchivo;
                 $('.dataTable').DataTable().destroy();
                 $('#resumen-pagos').html(obj.tabla);
                 $('.loader').fadeOut(500);
@@ -118,11 +130,12 @@ function limpiar() {
 }
 
 function exportExcel(tableID, filename = '') {
+
     var downloadLink;
     var dataType = 'application/vnd.ms-excel;base64';
     var tableSelect = document.getElementById(tableID);
     var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-    filename = filename ? filename + '.xlsx' : 'Resumen-Pagos-' + $('#mes').val() + '.xlsx';
+    filename = filename ? filename + '.xlsx' : nomarchivo;
     downloadLink = document.createElement("a");
     document.body.appendChild(downloadLink);
     if (navigator.msSaveOrOpenBlob) {
@@ -152,7 +165,7 @@ var tableToExcel = (function () {
         if (!table.nodeType)
             table = document.getElementById(table);
         var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML};
-        var filename = 'Resumen-Pagos-' + $('#mes').val() + '.xls';
+        var filename = NOMARCHIVO;
         downloadLink = document.createElement("a");
         downloadLink.download = filename;
 

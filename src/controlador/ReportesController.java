@@ -423,6 +423,7 @@ public class ReportesController extends HttpServlet {
             if(tabla[0].esmanual){
                 lecturaini = (int) tabla[0].lecturamanual;
                 haymanualini = true;
+                almenosUnManual = true;
             }
             int lecturafin = (int) tabla[tabla.length - 1].lecturareal;
             if (tabla[tabla.length - 1].esmanual) {

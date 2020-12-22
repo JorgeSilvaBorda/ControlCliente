@@ -41,10 +41,12 @@ public class RemarcadorBoleta {
 
     private JSONObject boleta;
     private JSONObject remcli;
+    
+    private Remarcador remarcador;
 
-    public RemarcadorBoleta(int idremarcador, int consumo, int idtarifa, String mesanio, String fechaemision, String fechadesde, String fechahasta, String nextfecha) {
+    public RemarcadorBoleta(int idremarcador, int consumo, int idtarifa, String mesanio, String fechaemision, String fechadesde, String fechahasta, String nextfecha, Remarcador remarcador) {
         this.idremarcador = idremarcador;
-        this.consumo = consumo;
+        this.consumo = remarcador.diffperiodo;
         this.idtarifa = idtarifa;
         this.anio = Integer.parseInt(mesanio.split("-")[0]);
         this.mes = Integer.parseInt(mesanio.split("-")[1]);
@@ -57,6 +59,7 @@ public class RemarcadorBoleta {
         remcli = new JSONObject();
         boleta.put("idtarifa", this.idtarifa);
         boleta.put("nextfecha", this.nextfecha);
+        this.remarcador = remarcador;
         setNomTarifa();
         construir();
         hacerBoleta();
@@ -70,8 +73,8 @@ public class RemarcadorBoleta {
         ResultSet rs = c.ejecutarQuery(queryremarcador);
         try {
             while (rs.next()) {
-                boleta.put("lecturaanterior", rs.getInt("LECTURAANTERIOR"));
-                boleta.put("lecturaactual", rs.getInt("LECTURAACTUAL"));
+                boleta.put("lecturaanterior", this.remarcador.lecturaanterior);
+                boleta.put("lecturaactual", this.remarcador.lecturaactual);
                 boleta.put("fechadesde", this.fechainicial);
                 boleta.put("fechahasta", this.fechafinal);
                 boleta.put("consumo", this.consumo);

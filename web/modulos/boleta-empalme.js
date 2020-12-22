@@ -72,6 +72,7 @@ function getRemarcadoresNumEmpalmeBoleta() {
         },
         success: function (resp) {
             var obj = JSON.parse(resp);
+            console.log(obj);
             if (obj.estado === 'ok') {
                 $('.dataTable').DataTable().destroy();
                 $('#detalle-remarcadores').html(obj.tabla);
@@ -192,11 +193,10 @@ function generarTodas() {
             }
         }
     });
-
     for (var i = 0; i < remarcadores.length; i++) {
         var buscado = remarcadores[i];
         for (var x = 0; x < REMARCADORES.length; x++) {
-            if (REMARCADORES[x].numremarcador === buscado) {
+            if (parseInt(REMARCADORES[x].numremarcador) === parseInt(buscado)) {
                 REMARCADORES_MASIVO.push(REMARCADORES[x]);
             }
         }

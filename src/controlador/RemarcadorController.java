@@ -346,7 +346,8 @@ public class RemarcadorController extends HttpServlet {
         for (Remarcador remarcador : remarcadores) {
             //System.out.println(r.printCsv());
             FilaNormal[] filas = etl.ETL.getDatasetRemarcador(remarcador.numremarcador, mes, anio);
-
+            int lecturaproyectadaini = (int)filas[0].lecturaproyectada;
+            int lecturaproyectadafin = (int) filas[filas.length - 1].lecturaproyectada;
             double demmax = 0;
             double demmaxhp = 0;
             double consumo = 0;
@@ -383,6 +384,7 @@ public class RemarcadorController extends HttpServlet {
             if (haymanual || haymanualini) {
                 consumo = lecturafinal - lecturaanterior;
             }
+            consumo = lecturaproyectadafin - lecturaproyectadaini;
 
             String demmaxString = new DecimalFormat("#.##").format(demmax).replace(",", ".");
             String demmaxhpString = new DecimalFormat("#.##").format(demmaxhp).replace(",", ".");
@@ -464,7 +466,7 @@ public class RemarcadorController extends HttpServlet {
             tablasalida += "<span style='font-size: 12px; font-weight: bold;'>* La lectura fue ingresada de forma manual</span>";
         }
         salida.put("tabla", tablasalida);
-        salida.put("remarcadores", remarcadores);
+        salida.put("remarcadores", remarcadoresJson);
         salida.put("kwtotal", kwtotal);
         salida.put("idcomuna", idcomuna);
         salida.put("estado", "ok");

@@ -952,10 +952,13 @@ public class BoletaController extends HttpServlet {
         LinkedList<RemarcadorBoleta> remarcadoresboleta = new LinkedList();
         JSONObject salida = new JSONObject();
         JSONArray remarcadores = entrada.getJSONArray("remarcadores");
+        System.out.println(remarcadores);
         Iterator i = remarcadores.iterator();
         while (i.hasNext()) {
             JSONObject remarcador = (JSONObject) i.next();
-            remarcadoresboleta.add(new RemarcadorBoleta(remarcador.getInt("idremarcador"), remarcador.getInt("consumo"), entrada.getInt("idtarifa"), entrada.getString("mesanio"), entrada.getString("fechaemision"), remarcador.getString("fechainicial"), remarcador.getString("fechafinal"), entrada.getString("nextfecha")));
+            Remarcador r = new Remarcador(remarcador.getInt("idremarcador"));
+            r.getSetDiferencia(remarcador.getString("fechainicial"), remarcador.getString("fechafinal"));
+            remarcadoresboleta.add(new RemarcadorBoleta(remarcador.getInt("idremarcador"), remarcador.getInt("consumo"), entrada.getInt("idtarifa"), entrada.getString("mesanio"), entrada.getString("fechaemision"), remarcador.getString("fechainicial"), remarcador.getString("fechafinal"), entrada.getString("nextfecha"), r));
         }
 
         for (int x = 0; x < remarcadoresboleta.size(); x++) {
@@ -1024,6 +1027,7 @@ public class BoletaController extends HttpServlet {
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(querycabecera);
+        
         String numboleta = "";
         int idboleta = 0;
         try {

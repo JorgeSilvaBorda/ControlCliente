@@ -1,6 +1,9 @@
 package modelo;
 
 import clases.json.JSONException;
+import clases.json.JSONObject;
+import etl.ETL;
+import etl.FilaNormal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -57,12 +60,29 @@ public class Remarcador {
     }
 
     public void getSetDiferencia(String fechaIni, String fechaFin) {
+        /*
         int lecturaAnterior = getLecturaDia(fechaIni);
         int lecturaActual = getLecturaDia(fechaFin);
         int diferencia = lecturaActual - lecturaAnterior;
         this.diffperiodo = diferencia;
         this.lecturaactual = lecturaActual;
         this.lecturaanterior = lecturaAnterior;
+        */
+        
+        FilaNormal[] lecturas = ETL.getDatasetRemarcador(this.numremarcador, fechaIni, fechaFin);
+        if(lecturas[0].esmanual){
+            this.lecturaanterior = lecturas[0].lecturamanual;
+        }else{
+            this.lecturaanterior = (int)lecturas[0].lecturareal;
+        }
+        
+        if(lecturas[lecturas.length - 1].esmanual){
+            this.lecturaactual = lecturas[lecturas.length - 1].lecturamanual;
+        }else{
+            this.lecturaactual = (int)lecturas[lecturas.length - 1].lecturareal;
+        }
+        
+        this.diffperiodo = ((int)lecturas[lecturas.length - 1].lecturaproyectada - (int)lecturas[0].lecturaproyectada);
     }
 
     private int getLecturaDia(String fecha) {
@@ -132,6 +152,22 @@ public class Remarcador {
         return direccion;
     }
     
-    
+    public JSONObject getJson(){
+        JSONObject remarcador = new JSONObject();
+        remarcador.put("idremarcador", this.idremarcador);
+        remarcador.put("idparque", this.idparque);
+        remarcador.put("nomparque", this.nomparque);
+        remarcador.put("idempalme", this.idempalme);
+        remarcador.put("idequipomodbus", this.idequipomodbus);
+        remarcador.put("numempalme", this.numempalme);
+        remarcador.put("nominstalacion", this.nominstalacion);
+        remarcador.put("modulos", this.numremarcador);
+        remarcador.put("idinstalacion", this.idinstalacion);
+        remarcador.put("direccion", this.direccion);
+        remarcador.put("diffperiodo", this.diffperiodo);
+        remarcador.put("lecturaactual", this.lecturaactual);
+        remarcador.put("lecturaanterior", this.lecturaanterior);
+        return remarcador;
+    }
 
 }

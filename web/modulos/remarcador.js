@@ -319,6 +319,37 @@ function saveRemarcador(callback) {
 
 }
 
+function deshabilitarRemarcador(idremarcador) {
+
+    var datos = {
+        tipo: 'deshabilitar-remarcador',
+        idremarcador: idremarcador
+    };
+
+    if (confirm("Está seguro de que desea eliminar el remarcador seleccionado?\nDejará de leerse y se eliminará de cualquier asignación exxistente a clientes.")) {
+        $.ajax({
+            url: 'RemarcadorController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (res) {
+                var obj = JSON.parse(res);
+                if (obj.estado === 'ok') {
+                    limpiar();
+                    getRemarcadores();
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            }
+        });
+    }
+
+}
+
 function armarRemarcador(remarcador) {
     ID_REMARCADOR_EDICION = remarcador.idremarcador;
     $('#num-remarcador').val(remarcador.numremarcador);

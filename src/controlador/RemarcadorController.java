@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import modelo.Conexion;
 import modelo.Util;
 
@@ -23,6 +24,7 @@ public class RemarcadorController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         response.setContentType("text/html; charset=UTF-8");
+        HttpSession session = request.getSession();
         JSONObject entrada = new JSONObject(request.getParameter("datos"));
         switch (entrada.getString("tipo")) {
             case "get-remarcadores":
@@ -70,6 +72,9 @@ public class RemarcadorController extends HttpServlet {
             case "del-remarcador":
                 out.print(delRemarcador(entrada));
                 break;
+            case "deshabilitar-remarcador":
+                out.print(deshabilitarRemarcador(entrada, session));
+                break;
             case "get-last-lectura-mes":
                 out.print(getLastLecturaMes(entrada));
                 break;
@@ -96,9 +101,10 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
                 filas += "<td><span>" + rs.getString("MODULOS") + "</span></td>";
-                filas += "<td style='width: 15%;'>"
-                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>"
-                        + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>"
+                filas += "<td style='width: 20%;'>"
+                        + (rs.getInt("ESTADO") == 1 ? "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>" : "")
+                        + (rs.getInt("ESTADO") == 1 ? "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>" : "")
+                        + (rs.getInt("ESTADO") == 1 ? "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-info' onclick='deshabilitarRemarcador(" + rs.getInt("IDREMARCADOR") + ")'>Deshabilitar</button>" : "")
                         + "</td>";
                 filas += "</tr>";
             }
@@ -945,6 +951,21 @@ public class RemarcadorController extends HttpServlet {
     private JSONObject delRemarcador(JSONObject remarador) {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_DEL_REMARCADOR(" + remarador.getInt("idremarcador") + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        c.ejecutar(query);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject deshabilitarRemarcador(JSONObject remarador, HttpSession session) {
+        JSONObject salida = new JSONObject();
+        int idusuario = Integer.parseInt(session.getAttribute("idusuario").toString());
+        String query = "CALL SP_DESHABILITAR_REMARCADOR(" 
+                + remarador.getInt("idremarcador") + ", "
+                + idusuario
+                + ")";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import modelo.Conexion;
 
 public class ClienteRemarcadorController extends HttpServlet {
@@ -17,6 +18,7 @@ public class ClienteRemarcadorController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
         response.setContentType("text/html; charset=UTF-8");
         JSONObject entrada = new JSONObject(request.getParameter("datos"));
         switch (entrada.getString("tipo")) {
@@ -24,10 +26,10 @@ public class ClienteRemarcadorController extends HttpServlet {
                 out.print(getRemarcadoresAsignadosIdCliente(entrada));
                 break;
             case "asignar-remarcador-cliente":
-                out.print(asignarRemarcadorCliente(entrada));
+                out.print(asignarRemarcadorCliente(entrada, session));
                 break;
             case "quitar-remarcador-cliente":
-                out.print(quitarRemarcadorCliente(entrada));
+                out.print(quitarRemarcadorCliente(entrada, session));
                 break;
         }
     }
@@ -52,6 +54,7 @@ public class ClienteRemarcadorController extends HttpServlet {
                 filas += "<td><span>" + rs.getString("PERSONA") + "</span></td>";
                 filas += "<td><span>" + rs.getString("FONO") + "</span></td>";
                 filas += "<td><span>" + rs.getString("FECHAASIGNACION") + "</span></td>";
+                filas += "<td><span>" + rs.getString("NOMUSUARIO") + "</span></td>";
                 filas += "<td><a href='#' style='color:#D25E45; font-size:12px;' class='oi oi-x' onclick='quitar(" + rs.getInt("IDREMARCADOR") + ", " + rs.getInt("IDCLIENTE") + ")'></a></td>";
                 filas += "</tr>";
             }
@@ -68,13 +71,16 @@ public class ClienteRemarcadorController extends HttpServlet {
         return salida;
     }
 
-    private JSONObject asignarRemarcadorCliente(JSONObject entrada) {
+    private JSONObject asignarRemarcadorCliente(JSONObject entrada, HttpSession session) {
+        int idusuario = Integer.parseInt(session.getAttribute("idusuario").toString());
         JSONObject salida = new JSONObject();
         String query = "CALL SP_ASIGNAR_REMARCADOR_CLIENTE("
                 + entrada.getInt("idremarcador") + ", "
                 + entrada.getInt("idcliente") + ", "
-                + entrada.getInt("idcontacto")
+                + entrada.getInt("idcontacto") + ", "
+                + idusuario
                 + ")";
+        System.out.println(query);
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);
@@ -83,9 +89,14 @@ public class ClienteRemarcadorController extends HttpServlet {
         return salida;
     }
 
-    private JSONObject quitarRemarcadorCliente(JSONObject entrada) {
+    private JSONObject quitarRemarcadorCliente(JSONObject entrada, HttpSession session) {
         JSONObject salida = new JSONObject();
-        String query = "CALL SP_QUITAR_REMARCADOR_CLIENTE(" + entrada.getInt("idremarcador") + ", " + entrada.getInt("idcliente") + ")";
+        int idusuario = Integer.parseInt(session.getAttribute("idusuario").toString());
+        String query = "CALL SP_QUITAR_REMARCADOR_CLIENTE(" 
+                + entrada.getInt("idremarcador") + ", " 
+                + entrada.getInt("idcliente") + ", " 
+                + idusuario + ""
+                + ")";
         Conexion c = new Conexion();
         c.abrir();
         c.ejecutar(query);

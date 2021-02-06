@@ -115,6 +115,7 @@
                                 <th>Contacto</th>
                                 <th>Fono</th>
                                 <th>Fecha Asignación</th>
+                                <th>Usuario</th>
                                 <th>Quitar</th>
                             </tr>
                         </thead>

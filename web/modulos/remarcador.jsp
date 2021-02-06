@@ -60,7 +60,7 @@
             </form>
         </div>
 
-        <div class="col-sm-7">
+        <div class="col-sm-9">
             <table id="tabla-remarcadores" class="table table-condensed table-borderless table-striped table-hover table-sm small">
                 <thead>
                     <tr>

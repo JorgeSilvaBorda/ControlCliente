@@ -183,6 +183,12 @@ public class Util {
         String[] campos = fecha.split("-");
         return campos[2] + "-" + campos[1] + "-" + campos[0];
     }
+    
+    public static String invertirDateTimeGetFecha(String datetime) {
+        String fecha = datetime.substring(0, 10);
+        String[] campos = fecha.split("-");
+        return campos[2] + "-" + campos[1] + "-" + campos[0];
+    }
 
     public static String capitalizar(String frase) {
         System.out.println(frase);

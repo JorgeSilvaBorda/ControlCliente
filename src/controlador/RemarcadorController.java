@@ -93,7 +93,11 @@ public class RemarcadorController extends HttpServlet {
         String filas = "";
         try {
             while (rs.next()) {
-                filas += "<tr>";
+                if(rs.getInt("ESTADO") == 1){
+                    filas += "<tr>";
+                }else{
+                    filas += "<tr class='info' style='background-color: #c8d5db; color: #b8b8b8;' disabled='disabled'>";
+                }
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
                 filas += "<td><span>" + rs.getString("MARCA") + "</span></td>";
                 filas += "<td><span>" + rs.getString("MODELO") + "</span></td>";
@@ -101,11 +105,15 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDEMPALME") + "' /><span>" + rs.getString("NUMEMPALME") + "</span></td>";
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
                 filas += "<td><span>" + rs.getString("MODULOS") + "</span></td>";
-                filas += "<td style='width: 20%;'>"
-                        + (rs.getInt("ESTADO") == 1 ? "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>" : "")
-                        + (rs.getInt("ESTADO") == 1 ? "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>" : "")
-                        + (rs.getInt("ESTADO") == 1 ? "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-info' onclick='deshabilitarRemarcador(" + rs.getInt("IDREMARCADOR") + ")'>Deshabilitar</button>" : "")
-                        + "</td>";
+                filas += "<td style='width: 20%;'>";
+                if(rs.getInt("ESTADO") == 0){
+                    filas += "Fecha baja: " + modelo.Util.invertirDateTimeGetFecha(rs.getString("FECHABAJASTRING"));
+                }else{
+                    filas += "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>";
+                    filas += "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>";
+                    filas += "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-info' onclick='deshabilitarRemarcador(" + rs.getInt("IDREMARCADOR") + ")'>Deshabilitar</button>";
+                }
+                filas += "</td>";
                 filas += "</tr>";
             }
             salida.put("tabla", filas);
@@ -352,7 +360,7 @@ public class RemarcadorController extends HttpServlet {
         for (Remarcador remarcador : remarcadores) {
             //System.out.println(r.printCsv());
             FilaNormal[] filas = etl.ETL.getDatasetRemarcador(remarcador.numremarcador, mes, anio);
-            int lecturaproyectadaini = (int)filas[0].lecturaproyectada;
+            int lecturaproyectadaini = (int) filas[0].lecturaproyectada;
             int lecturaproyectadafin = (int) filas[filas.length - 1].lecturaproyectada;
             double demmax = 0;
             double demmaxhp = 0;
@@ -361,7 +369,7 @@ public class RemarcadorController extends HttpServlet {
             String fechafinlectura = filas[filas.length - 1].fecha;
 
             int lecturaanterior = (int) filas[0].lecturareal;
-            if(filas[0].esmanual){
+            if (filas[0].esmanual) {
                 lecturaanterior = (int) filas[0].lecturamanual;
             }
             int lecturafinal = (int) filas[filas.length - 1].lecturareal;
@@ -498,23 +506,22 @@ public class RemarcadorController extends HttpServlet {
         String fechalecturaini = "";
         String fechalecturafin = "";
         boolean haymanual = false;
-        for(FilaNormal registro : registrosRemarcador){
-            if(registro.fecha.equals(entrada.getString("desde"))){
+        for (FilaNormal registro : registrosRemarcador) {
+            if (registro.fecha.equals(entrada.getString("desde"))) {
                 fechalecturaini = registro.fecha;
-                lecturaini = (int)registro.lecturaproyectada;
+                lecturaini = (int) registro.lecturaproyectada;
             }
-            if(registro.fecha.equals(entrada.getString("hasta"))){
+            if (registro.fecha.equals(entrada.getString("hasta"))) {
                 fechalecturafin = registro.fecha;
-                lecturafin = (int)registro.lecturaproyectada;
+                lecturafin = (int) registro.lecturaproyectada;
             }
         }
-        if(entrada.getString("hasta").equals(registrosRemarcador[registrosRemarcador.length - 1].fecha) && registrosRemarcador[registrosRemarcador.length - 1].esmanual){
+        if (entrada.getString("hasta").equals(registrosRemarcador[registrosRemarcador.length - 1].fecha) && registrosRemarcador[registrosRemarcador.length - 1].esmanual) {
             haymanual = true;
             lecturafin = registrosRemarcador[registrosRemarcador.length - 1].lecturamanual;
         }
         consumo = lecturafin - lecturaini;
-        
-        
+
         System.out.println(entrada);
         JSONObject salida = new JSONObject();
         int kwtotal = 0;
@@ -552,17 +559,17 @@ public class RemarcadorController extends HttpServlet {
         ResultSet rs = con.ejecutarQuery(querybol);
         int idboleta = 0;
         String numboleta = "";
-        try{
-            while(rs.next()){
+        try {
+            while (rs.next()) {
                 idboleta = rs.getInt("IDBOLETA");
                 numboleta = rs.getString("NUMBOLETA");
             }
-        }catch (SQLException ex) {
+        } catch (SQLException ex) {
             System.out.println("No se puede obtener la última boleta del mes seleccionado para el remarcador.");
             System.out.println(ex);
             ex.printStackTrace();
         }
-        
+
         filas += "<tr>";
         filas += "<td style='text-align: center;' ><input type='hidden' value='" + remcli.getInt("idremarcador") + "' /><span>" + remcli.getInt("numremarcador") + "</span></td>";
         filas += "<td><input type='hidden' value='" + remcli.getString("numserie") + "' /><span>" + remcli.getString("numserie") + "</span></td>";
@@ -580,7 +587,7 @@ public class RemarcadorController extends HttpServlet {
         } else {
             filas += "<td>"
                     + "<div id='botones_" + remcli.getInt("idremarcador") + "' style='display:none;' class='btn-group' role='group' aria-label='Sobreescritura'>"
-                    + "<button type='button' onclick='calcular(" + remcli.getInt("idremarcador") + ", " + remcli.getInt("numremarcador") + ", \"" + remcli.getString("numserie") + "\", " + consumo + ", \"" + entrada.getString("desde") + "\", \"" + entrada.getString("hasta") + "\", " + lecturaini + ", " + lecturafin+ ", \"" + remcli.getString("dmps_string") + "\", \"" + remcli.getString("dmplhp_string") + "\", \"" + fechalecturaini + "\", \"" + fechalecturafin + "\");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Sobreescribir</button>"
+                    + "<button type='button' onclick='calcular(" + remcli.getInt("idremarcador") + ", " + remcli.getInt("numremarcador") + ", \"" + remcli.getString("numserie") + "\", " + consumo + ", \"" + entrada.getString("desde") + "\", \"" + entrada.getString("hasta") + "\", " + lecturaini + ", " + lecturafin + ", \"" + remcli.getString("dmps_string") + "\", \"" + remcli.getString("dmplhp_string") + "\", \"" + fechalecturaini + "\", \"" + fechalecturafin + "\");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Sobreescribir</button>"
                     + "<button type='button' onclick='deshabilitarSobreescritura(" + remcli.getInt("idremarcador") + ");' class='btn btn-sm btn-warning' style='padding: 0px 5px 0px 5px; vertical-align:middle;'>x</button>"
                     + "</div>"
                     + "<button id='btn_" + remcli.getInt("idremarcador") + "' type='button' onclick='habilitarSobreescritura(" + remcli.getInt("idremarcador") + ");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Habilitar</button>"
@@ -627,7 +634,7 @@ public class RemarcadorController extends HttpServlet {
 
         tabla += filas;
         tabla += "</tbody></table>";
-        if(haymanual){
+        if (haymanual) {
             tabla += "* El registro fue ingresado de forma manual.";
         }
         salida.put("tabla", tabla);
@@ -958,11 +965,11 @@ public class RemarcadorController extends HttpServlet {
         c.cerrar();
         return salida;
     }
-    
+
     private JSONObject deshabilitarRemarcador(JSONObject remarador, HttpSession session) {
         JSONObject salida = new JSONObject();
         int idusuario = Integer.parseInt(session.getAttribute("idusuario").toString());
-        String query = "CALL SP_DESHABILITAR_REMARCADOR(" 
+        String query = "CALL SP_DESHABILITAR_REMARCADOR("
                 + remarador.getInt("idremarcador") + ", "
                 + idusuario
                 + ")";

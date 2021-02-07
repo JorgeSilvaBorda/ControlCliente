@@ -45,6 +45,9 @@ public class RemarcadorController extends HttpServlet {
             case "get-remarcadores-asignados":
                 out.print(getRemarcadoresAsignados());
                 break;
+            case "get-remarcadores-baja":
+                out.print(getRemarcadoresBaja());
+                break;
             case "get-select-remarcadores-cliente":
                 out.print(getSelectRemarcadoresCliente(entrada));
                 break;
@@ -93,9 +96,9 @@ public class RemarcadorController extends HttpServlet {
         String filas = "";
         try {
             while (rs.next()) {
-                if(rs.getInt("ESTADO") == 1){
+                if (rs.getInt("ESTADO") == 1) {
                     filas += "<tr>";
-                }else{
+                } else {
                     filas += "<tr class='info' style='background-color: #c8d5db; color: #b8b8b8;' disabled='disabled'>";
                 }
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
@@ -106,9 +109,9 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
                 filas += "<td><span>" + rs.getString("MODULOS") + "</span></td>";
                 filas += "<td style='width: 20%;'>";
-                if(rs.getInt("ESTADO") == 0){
+                if (rs.getInt("ESTADO") == 0) {
                     filas += "Fecha baja: " + modelo.Util.invertirDateTimeGetFecha(rs.getString("FECHABAJASTRING"));
-                }else{
+                } else {
                     filas += "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-warning' onclick='activarEdicion(this)'>Editar</button>";
                     filas += "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(this)'>Eliminar</button>";
                     filas += "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-info' onclick='deshabilitarRemarcador(" + rs.getInt("IDREMARCADOR") + ")'>Deshabilitar</button>";
@@ -735,6 +738,43 @@ public class RemarcadorController extends HttpServlet {
             salida.put("estado", "ok");
         } catch (JSONException | SQLException ex) {
             System.out.println("Problemas en controlador.RemarcadorController.getRemarcadoresAsignados().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getRemarcadoresBaja() {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_HIST_BAJA_REMARCADORES()";
+        Conexion c = new Conexion();
+        System.out.println(query);
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String filas = "";
+
+        try {
+            while (rs.next()) {
+                filas += "<tr>";
+                filas += "<td>" + rs.getInt("NUMREMARCADOR") + "</td>";
+                filas += "<td>" + rs.getString("NUMSERIE") + "</td>";
+                filas += "<td>" + rs.getString("NUMEMPALME") + "</td>";
+                filas += "<td>" + rs.getString("NOMPARQUE") + "</td>";
+                filas += "<td>" + rs.getString("MODULOS") + "</td>";
+                filas += "<td>" + rs.getString("NOMINSTALACION") + "</td>";
+                filas += "<td>" + rs.getString("FECHAASIGNACIONSTRING") + "</td>";
+                filas += "<td>" + rs.getString("FECHAULTLECTURAVALIDASTRING") + "</td>";
+                filas += "<td>" + rs.getString("USUARIO") + "</td>";
+                filas += "</tr>";
+            }
+
+            salida.put("tabla", filas);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.RemarcadorController.getRemarcadoresBaja().");
             System.out.println(ex);
             ex.printStackTrace();
             salida.put("estado", "error");

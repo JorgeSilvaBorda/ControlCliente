@@ -27,7 +27,7 @@
 
                         <!-- Modal footer -->
                         <div id="modal-footer" class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                            <button id='btn-cerrar-modal' type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                         </div>
 
                     </div>
@@ -104,19 +104,20 @@
                     <strong>Remarcadores asignados al Cliente seleccionado</strong>
                 </div>
                 <div class="card-body">
-                    <table id='tabla-cliente-remarcador' class="table table-condensed table-borderless table-striped table-hover table-sm small">
+                    <table style='font-size: 0.7em;' id='tabla-cliente-remarcador' class="table table-condensed table-borderless table-striped table-hover table-sm small">
                         <thead>
                             <tr>
-                                <th>ID Remarcador</th>
+                                <th style='width: 9%;'>ID<br />Remarcador</th>
                                 <th>Nº Serie</th>
                                 <th>Empalme</th>
                                 <th>Bodega</th>
                                 <th>Instalación</th>
                                 <th>Contacto</th>
                                 <th>Fono</th>
-                                <th>Fecha Asignación</th>
-                                <th>Usuario</th>
-                                <th>Quitar</th>
+                                <th>Fecha<br /> Asignación</th>
+                                <th style='width: 12%;'>Usuario</th>
+                                <th style='width: 5%;' >Quitar</th>
+                                <th style='width: 5%;' >Reasignar</th>
                             </tr>
                         </thead>
                     </table>

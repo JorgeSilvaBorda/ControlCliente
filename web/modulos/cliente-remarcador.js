@@ -29,6 +29,56 @@ function getSelectClientes() {
     });
 }
 
+function getContactosClienteIdCliente(idcliente) {
+    var datos = {
+        tipo: 'get-contactos-idcliente',
+        idcliente: idcliente
+    };
+    $.ajax({
+        url: 'ContactoController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-contacto-reasig').html(obj.options);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function getSelectClienteReasig() {
+    var datos = {
+        tipo: 'get-select-clientes-nombre'
+    };
+
+    $.ajax({
+        url: 'ClienteController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-cliente-reasig').html(obj.options);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
 function getRemarcadoresLibres() {
     var datos = {
         tipo: 'get-remarcadores-libres'
@@ -112,7 +162,7 @@ function getRemarcadoresAsignadosIdCliente(idcliente) {
     });
 }
 
-function getSelectContactosIdCliente(){
+function getSelectContactosIdCliente() {
     var idcliente = $('#select-cliente').val();
     var datos = {
         tipo: 'get-contactos-idcliente',
@@ -140,7 +190,7 @@ function getSelectContactosIdCliente(){
 
 function asignar(idremarcador) {
     var idcontacto = $('#select-contacto').val();
-    if(idcontacto === 0 || idcontacto === '0' || idcontacto === '' || idcontacto === null || idcontacto === undefined){
+    if (idcontacto === 0 || idcontacto === '0' || idcontacto === '' || idcontacto === null || idcontacto === undefined) {
         alert("Debe seleccionar un contacto del listado para poder asignar el remarcador.");
         return false;
     }
@@ -230,4 +280,98 @@ function verAsignados() {
             console.log(c);
         }
     });
+}
+
+function panelReAsignacion(idremarcador, idclienteanterior) {
+    var datos = {
+        tipo: "get-last-asignacion-remarcador-cliente",
+        idremarcador: idremarcador,
+        idclienteanterior: idclienteanterior
+    };
+    $.ajax({
+        url: 'ClienteRemarcadorController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#modal-title').html("Remarcadores asignados");
+                $('.dataTable#tabla-remarcadores-asignados').DataTable().destroy();
+                $('#modal-body').html(obj.tabla);
+
+                $('#modal').modal('show');
+                getSelectClienteReasig();
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function validaReAsignacion() {
+    var nuevoidcliente = $('#select-cliente-reasig').val();
+    var idclienteanterior = $('#hid-id-cliente-anterior').val();
+    var idcontacto = $('#select-contacto-reasig').val();
+    
+    if (nuevoidcliente === 0 || nuevoidcliente === '0') {
+        alert('Debe seleccionar un cliente del listado para reasignar el remarcador.');
+        return false;
+    }
+    if (parseInt(nuevoidcliente) === parseInt(idclienteanterior)) {
+        alert('El nuevo cliente no puede ser el mismo que el anterior.');
+        return false;
+    }
+    if(idcontacto === 0 || idcontacto === '0'){
+        alert('Debe seleccionar un contacto de cliente para signar el remarcador.');
+        return false;
+    }
+    return true;
+}
+
+function reasignarRemarcador() {
+
+    if (validaReAsignacion()) {
+        if (confirm("Si se reasigna el remarcador, dejarán de efectuarse cálculos para el cliente actual y comenzará a registrar para el nuevo.\n¿Está seguro que desea continuar?")) {
+            var idcliente = $('#select-cliente-reasig').val();
+            var idremarcador = $('#hid-id-remarcador').val();
+            var idclienteanterior = $('#hid-id-cliente-anterior').val();
+            var idcontacto = $('#select-contacto-reasig').val();
+
+            var datos = {
+                tipo: 'reasignar-remarcador-cliente',
+                idcliente: idcliente,
+                idremarcador: idremarcador,
+                idclienteanterior: idclienteanterior,
+                idcontacto: idcontacto
+            };
+            $.ajax({
+                url: 'ClienteRemarcadorController',
+                type: 'post',
+                data: {
+                    datos: JSON.stringify(datos)
+                },
+                success: function (resp) {
+                    var obj = JSON.parse(resp);
+                    if (obj.estado === 'ok') {
+                        getRemarcadoresAsignadosIdCliente(idclienteanterior);
+                        $('#btn-cerrar-modal').click();
+                    }
+                },
+                error: function (a, b, c) {
+                    console.log(a);
+                    console.log(b);
+                    console.log(c);
+                }
+            });
+        }
+
+
+    }
+
+
 }

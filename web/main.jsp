@@ -87,6 +87,8 @@
                                                     + "<a onclick='cargarModulo(\"resumen-mes-cliente\");' class='dropdown-item' href='#'>Resumen Mes Cliente</a> \n"
                                                     + "<a onclick='cargarModulo(\"resumen-mes-remarcadores\");' class='dropdown-item' href='#'>Resumen Mes Remarcadores</a> \n"
                                                     + "<a onclick='cargarModulo(\"hist-tarifa\");' class='dropdown-item' href='#'>Histórico de Tarifa</a> \n"
+                                                    + "<a onclick='cargarModulo(\"hist-bajas-remarcadores\");' class='dropdown-item' href='#'>Histórico remarcadores dados de baja</a> \n"
+                                                    + "<a onclick='cargarModulo(\"hist-asignaciones-remarcadores\");' class='dropdown-item' href='#'>Histórico de reasignación de remarcadores por cambio de cliente</a> \n"
                                                     + "</div>"
                                                     + "</li>");
                                             out.print("<li class='nav-item dropdown'>"

@@ -28,7 +28,12 @@
             </div>
             <div class="form-group">
                 <label for="select-empalme">Empalme</label>
-                <select onchange="getSelectRemarcadorIdEmpalme($(this).val());" class="form-control-sm form-control small" id="select-empalme">
+                <select onchange="getSelectClienteIdempalme();" class="form-control-sm form-control small" id="select-empalme">
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="select-cliente">Cliente</label>
+                <select onchange="getSelectRemarcadorIdcliente();" class="form-control-sm form-control small" id="select-cliente">
                 </select>
             </div>
             <div class="form-group">

@@ -35,6 +35,9 @@ public class ClienteController extends HttpServlet {
             case "get-cliente-idcliente":
                 out.print(getClienteIdCliente(entrada));
                 break;
+            case "get-select-cliente-idempalme":
+                out.print(getSelectClienteIdempalme(entrada));
+                break;
             case "upd-cliente":
                 out.print(updCliente(entrada.getJSONObject("cliente")));
                 break;
@@ -118,6 +121,20 @@ public class ClienteController extends HttpServlet {
             salida.put("estado", "error");
             salida.put("error", ex);
         }
+        c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject getSelectClienteIdempalme(JSONObject entrada) {
+        int idempalme = entrada.getInt("idempalme");
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_SELECT_CLIENTE_IDEMPALME(" + idempalme + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String select = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDCLIENTE", "NOMCLIENTE");
+        salida.put("estado", "ok");
+        salida.put("options", select);
         c.cerrar();
         return salida;
     }

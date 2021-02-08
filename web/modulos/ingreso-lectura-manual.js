@@ -82,31 +82,66 @@ function getSelectEmpalmeIdParque(idparque) {
     });
 }
 
-function getSelectRemarcadorIdEmpalme(idempalme) {
-    $('#select-remarcador').html('<option value="0" selected="selected" >Seleccione</option>');
-    var datos = {
-        tipo: 'get-select-remarcador-idempalme',
-        idempalme: idempalme
-    };
-    $.ajax({
-        url: 'RemarcadorController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (resp) {
-            var obj = JSON.parse(resp);
-            if (obj.estado === 'ok') {
-                $('#select-remarcador').html('');
-                $('#select-remarcador').html(obj.options);
+function getSelectClienteIdempalme() {
+    var idempalme = $('#select-empalme').val();
+    if (idempalme !== 0 && idempalme !== '0') {
+        var datos = {
+            tipo: 'get-select-cliente-idempalme',
+            idempalme: idempalme
+        };
+        $.ajax({
+            url: 'ClienteController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (resp) {
+                var obj = JSON.parse(resp);
+                if (obj.estado === 'ok') {
+                    $('#select-cliente').html('');
+                    $('#select-cliente').html(obj.options);
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
             }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
+        });
+    }
+
+}
+
+function getSelectRemarcadorIdcliente() {
+    $('#select-remarcador').html('<option value="0" selected="selected" >Seleccione</option>');
+
+    var idcliente = $('#select-cliente').val();
+    if (idcliente !== 0 && idcliente !== '0') {
+        var datos = {
+            tipo: 'get-select-remarcador-idcliente',
+            idcliente: idcliente
+        };
+        $.ajax({
+            url: 'RemarcadorController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (resp) {
+                var obj = JSON.parse(resp);
+                if (obj.estado === 'ok') {
+                    $('#select-remarcador').html('');
+                    $('#select-remarcador').html(obj.options);
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            }
+        });
+    }
+
 }
 
 function getLastMes() {
@@ -144,20 +179,30 @@ function validarCampos() {
     var idempalme = $('#select-empalme').val();
     var idremarcador = $('#select-remarcador').val();
     var mesanio = $('#fecha').val();
+    var idcliente = $('#select-cliente').val();
 
     if (parseInt(idinstalacion) === 0 || idinstalacion === null) {
+        alert("Debe seleccionar una instalación del listado.");
         return false;
     }
     if (parseInt(idbodega) === 0 || idbodega === null) {
+        alert("Debe seleccionar una bodega del listado.");
         return false;
     }
     if (parseInt(idempalme) === 0 || idempalme === null) {
+        alert("Debe seleccionar un empalme del listado.");
+        return false;
+    }
+    if (parseInt(idcliente) === 0 || idcliente === null) {
+        alert("Debe seleccionar un cliente del listado.");
         return false;
     }
     if (parseInt(idremarcador) === 0 || idremarcador === null) {
+        alert("Debe seleccionar un remarcador del listado.");
         return false;
     }
     if (mesanio === '') {
+        alert("Debe seleccionar unn mes válido.");
         return false;
     }
     return true;
@@ -169,12 +214,14 @@ function getLastLecturaMes() {
         var numremarcador = $('#select-remarcador option:selected').text();
         var mes = $('#fecha').val().split("-")[1];
         var anio = $('#fecha').val().split("-")[0];
+        var idcliente = $('#select-cliente').val();
         var datos = {
             tipo: 'get-last-lectura-mes',
             idremarcador: idremarcador,
             numremarcador: numremarcador,
             mes: mes,
-            anio: anio
+            anio: anio,
+            idcliente: idcliente
         };
         $.ajax({
             url: 'RemarcadorController',
@@ -202,6 +249,7 @@ function getLastLecturaMes() {
                     $('#select-parque').attr("disabled", "disabled");
                     $('#select-empalme').attr("disabled", "disabled");
                     $('#select-remarcador').attr("disabled", "disabled");
+                    $('#select-cliente').attr("disabled", "disabled");
                     $('#fecha').attr("disabled", "disabled");
                     $('#btn-buscar').attr("disabled", "disabled");
                 }
@@ -285,6 +333,8 @@ function limpiar() {
     $('#select-empalme').removeAttr("disabled");
     $('#select-remarcador').html("");
     $('#select-remarcador').removeAttr("disabled");
+    $('#select-cliente').html("");
+    $('#select-cliente').removeAttr("disabled");
     $('#fecha').val("");
     $('#fecha').removeAttr("disabled");
     $('#btn-buscar').removeAttr("disabled");

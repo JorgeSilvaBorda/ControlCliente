@@ -66,6 +66,9 @@ public class RemarcadorController extends HttpServlet {
             case "get-select-remarcador-idempalme":
                 out.print(getSelectRemarcadorIdEmpalme(entrada));
                 break;
+            case "get-select-remarcador-idcliente":
+                out.print(getSelectRemarcadorIdcliente(entrada));
+                break;
             case "ins-remarcador":
                 out.print(insRemarcador(entrada));
                 break;
@@ -672,6 +675,19 @@ public class RemarcadorController extends HttpServlet {
         return salida;
     }
 
+    private JSONObject getSelectRemarcadorIdcliente(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_SELECT_REMARCADOR_IDCLIENTE(" + entrada.getInt("idcliente") + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDREMARCADOR", "NUMREMARCADOR");
+        salida.put("options", options);
+        salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+    }
+
     private JSONObject getRemarcadoresLibres() {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_REMARCADORES_LIBRES()";
@@ -1079,14 +1095,33 @@ public class RemarcadorController extends HttpServlet {
         int numremarcador = entrada.getInt("numremarcador");
         int anio = entrada.getInt("anio");
         int mes = entrada.getInt("mes");
+        int idcliente = entrada.getInt("idcliente");
 
         FilaNormal[] registros = etl.ETL.getDatasetRemarcador(numremarcador, mes, anio);
         FilaNormal ultregistro = registros[registros.length - 1];
+
+        //Obtener datos del remarcador
+        String query = "CALL SP_GET_DATOS_UN_REMARCADOR_ASIGNADO(" + idremarcador + ", " + idcliente + ")";
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String nomcliente = "";
+        try {
+            while (rs.next()) {
+                nomcliente = rs.getString("NOMCLIENTE");
+            }
+        } catch (Exception ex) {
+            System.out.println("No se pudo obtener los datos del remarcador.");
+            System.out.println(ex);
+            salida.put("estado", "error");
+            return salida;
+        }
 
         String tabla = "<label for='tab-last-lectura-mes'>Última lectura del mes</label><table style='font-size: 12px;' class='table table-bordered table-sm small'id='tab-last-lectura-mes'>\n"
                 + "<thead>\n"
                 + "<tr>\n"
                 + "<th>ID</th>\n"
+                + "<th>Cliente</th>\n"
                 + "<th>Energía (KWh)</th>\n"
                 + "<th>Potencia Activa (KW)</th>\n"
                 + "<th>Fecha</th>\n"
@@ -1098,6 +1133,7 @@ public class RemarcadorController extends HttpServlet {
         DecimalFormat df = new DecimalFormat("#.##");
         filas += "<tr>";
         filas += "<td>" + ultregistro.idremarcador + "</td>";
+        filas += "<td>" + nomcliente + "</td>";
         filas += "<td>" + (int) ultregistro.lecturareal + "</td>";
         filas += "<td>" + df.format(ultregistro.potencia).replace(",", ".") + "</td>";
         filas += "<td>" + Util.invertirFecha(ultregistro.fecha) + "</td>";
@@ -1190,7 +1226,7 @@ public class RemarcadorController extends HttpServlet {
 
     }
 
-private JSONObject existeNumremarcador(JSONObject entrada) {
+    private JSONObject existeNumremarcador(JSONObject entrada) {
         System.out.println(entrada);
         int cantidad = 0;
         JSONObject salida = new JSONObject();
@@ -1202,18 +1238,18 @@ private JSONObject existeNumremarcador(JSONObject entrada) {
         Conexion c = new Conexion();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
-        try{
-            while(rs.next()){
+        try {
+            while (rs.next()) {
                 cantidad = rs.getInt("CANTIDAD");
             }
             salida.put("estado", "ok");
             salida.put("cantidad", cantidad);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println("Problemas al validar existencia de remarcador.");
             System.out.println(ex);
             salida.put("estado", "error");
         }
-        
+
         c.cerrar();
         return salida;
 

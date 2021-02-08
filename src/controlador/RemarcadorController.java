@@ -48,6 +48,12 @@ public class RemarcadorController extends HttpServlet {
             case "get-remarcadores-baja":
                 out.print(getRemarcadoresBaja());
                 break;
+            case "get-hist-asignaciones-remarcadores":
+                out.print(getAsignacionesRemarcadores(entrada));
+                break;
+            case "get-asignacionesremarcadores":
+                out.print(getAsignacionesRemarcadores(entrada));
+                break;
             case "get-select-remarcadores-cliente":
                 out.print(getSelectRemarcadoresCliente(entrada));
                 break;
@@ -765,8 +771,51 @@ public class RemarcadorController extends HttpServlet {
                 filas += "<td>" + rs.getString("NOMPARQUE") + "</td>";
                 filas += "<td>" + rs.getString("MODULOS") + "</td>";
                 filas += "<td>" + rs.getString("NOMINSTALACION") + "</td>";
+                filas += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
                 filas += "<td>" + rs.getString("FECHAASIGNACIONSTRING") + "</td>";
+                filas += "<td>" + rs.getString("HORAASIGNACIONSTRING") + "</td>";
                 filas += "<td>" + rs.getString("FECHAULTLECTURAVALIDASTRING") + "</td>";
+                filas += "<td>" + rs.getString("HORAULTLECTURASTRING") + "</td>";
+                filas += "<td>" + rs.getString("USUARIO") + "</td>";
+                filas += "</tr>";
+            }
+
+            salida.put("tabla", filas);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.RemarcadorController.getRemarcadoresBaja().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+
+    private JSONObject getAsignacionesRemarcadores(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        String query = "CALL SP_GET_HIST_ASIGNACION_REMARCADORES()";
+        Conexion c = new Conexion();
+        System.out.println(query);
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String filas = "";
+
+        try {
+            while (rs.next()) {
+                filas += "<tr>";
+                filas += "<td>" + rs.getInt("NUMREMARCADOR") + "</td>";
+                filas += "<td>" + rs.getString("NUMSERIE") + "</td>";
+                filas += "<td>" + rs.getString("NUMEMPALME") + "</td>";
+                filas += "<td>" + rs.getString("NOMPARQUE") + "</td>";
+                filas += "<td>" + rs.getString("MODULOS") + "</td>";
+                filas += "<td>" + rs.getString("NOMINSTALACION") + "</td>";
+                filas += "<td>" + rs.getString("NOMCLIENTE") + "</td>";
+                filas += "<td>" + rs.getString("FECHAASIGNACIONSTRING") + "</td>";
+                filas += "<td>" + rs.getString("HORAASIGNACIONSTRING") + "</td>";
+                filas += "<td>" + rs.getString("FECHAULTLECTURAVALIDASTRING") + "</td>";
+                filas += "<td>" + rs.getString("HORAULTLECTURASTRING") + "</td>";
                 filas += "<td>" + rs.getString("USUARIO") + "</td>";
                 filas += "</tr>";
             }

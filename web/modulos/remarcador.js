@@ -196,37 +196,66 @@ function validarCampos() {
 }
 
 function insRemarcador(callback) {
-    var idempalme = $('#select-empalme').val();
-    var idparque = $('#select-parque').val();
-    var numremarcador = $('#num-remarcador').val();
-    var numserie = $('#num-serie').val();
-    var modulos = $('#modulos').val();
-    var marca = $('#marca').val();
-    var modelo = $('#modelo').val();
-
-    var datos = {
-        tipo: 'ins-remarcador',
-        idempalme: idempalme,
-        idparque: idparque,
-        numremarcador: numremarcador,
-        numserie: numserie,
-        modulos: modulos,
-        marca: marca,
-        modelo: modelo
-    };
-
     if (validarCampos()) {
+        var idempalme = $('#select-empalme').val();
+        var idparque = $('#select-parque').val();
+        var numremarcador = $('#num-remarcador').val();
+        var numserie = $('#num-serie').val();
+        var modulos = $('#modulos').val();
+        var marca = $('#marca').val();
+        var modelo = $('#modelo').val();
+
+        var datosvalida = {
+            tipo: 'existe-numremarcador',
+            numremarcador: numremarcador
+        };
+
+        var datos = {
+            tipo: 'ins-remarcador',
+            idempalme: idempalme,
+            idparque: idparque,
+            numremarcador: numremarcador,
+            numserie: numserie,
+            modulos: modulos,
+            marca: marca,
+            modelo: modelo
+        };
+
         $.ajax({
             url: 'RemarcadorController',
-            type: 'post',
             data: {
-                datos: JSON.stringify(datos)
+                datos: JSON.stringify(datosvalida)
             },
-            success: function (res) {
-                var obj = JSON.parse(res);
+            type: 'post',
+            success: function (ressp) {
+                var obj = JSON.parse(ressp);
                 if (obj.estado === 'ok') {
-                    limpiarAfterInsert();
-                    callback();
+                    console.log(obj.cantidad);
+                    if (parseInt(obj.cantidad) === 0 || obj.cantidad === '0') {
+                       
+                        $.ajax({
+                            url: 'RemarcadorController',
+                            type: 'post',
+                            data: {
+                                datos: JSON.stringify(datos)
+                            },
+                            success: function (res) {
+                                var obj = JSON.parse(res);
+                                if (obj.estado === 'ok') {
+                                    limpiarAfterInsert();
+                                    callback();
+                                }
+                            },
+                            error: function (a, b, c) {
+                                console.log(a);
+                                console.log(b);
+                                console.log(c);
+                            }
+                        });
+                        
+                    } else {
+                        alert("El ID de remarcador que intenta ingresar ya existe.");
+                    }
                 }
             },
             error: function (a, b, c) {

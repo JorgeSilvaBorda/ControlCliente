@@ -90,6 +90,9 @@ public class RemarcadorController extends HttpServlet {
             case "ins-lectura-manual":
                 out.print(insLecturaManual(entrada));
                 break;
+            case "existe-numremarcador":
+                out.print(existeNumremarcador(entrada));
+                break;
         }
     }
 
@@ -1182,6 +1185,35 @@ public class RemarcadorController extends HttpServlet {
         c.abrir();
         c.ejecutar(query);
         salida.put("estado", "ok");
+        c.cerrar();
+        return salida;
+
+    }
+
+private JSONObject existeNumremarcador(JSONObject entrada) {
+        System.out.println(entrada);
+        int cantidad = 0;
+        JSONObject salida = new JSONObject();
+        int numremarcador = entrada.getInt("numremarcador");
+        String query = "CALL SP_EXISTE_NUMREMARCADOR("
+                + numremarcador
+                + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        try{
+            while(rs.next()){
+                cantidad = rs.getInt("CANTIDAD");
+            }
+            salida.put("estado", "ok");
+            salida.put("cantidad", cantidad);
+        }catch(Exception ex){
+            System.out.println("Problemas al validar existencia de remarcador.");
+            System.out.println(ex);
+            salida.put("estado", "error");
+        }
+        
         c.cerrar();
         return salida;
 

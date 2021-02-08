@@ -45,6 +45,11 @@
                             <input id="opt-falla" type="radio" class="form-check-input" value="3" name="opciones" />En falla
                         </label> 
                     </p>
+                    <p>
+                        <label for="opt-sscc-bfc" class="form-check-label">
+                            <input id="opt-sscc-bfc" type="radio" class="form-check-input" value="4" name="opciones" />SSCC BFC
+                        </label> 
+                    </p>
 
                 </div>
             </div>

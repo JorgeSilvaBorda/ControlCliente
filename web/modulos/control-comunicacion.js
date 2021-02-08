@@ -292,6 +292,8 @@ function insExcepcion() {
             motivo = 'Bodega pulmón';
         } else if (valmotivo === '3') {
             motivo = 'En falla';
+        } else if (valmotivo === '4') {
+            motivo = 'SSCC BFC';
         }
         var numremarcador = $('#numremarcador').val();
         var duracion = parseInt($('#select-duracion').val());

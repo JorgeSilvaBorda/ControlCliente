@@ -1,0 +1,13 @@
+./lectura-circutor.sh 192.168.102.181 2 1
+./lectura-schneiderPM5300.sh 192.168.102.190 10 1
+./lectura-schneiderPM710.sh 192.168.94.2 38 10
+
+
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_CIRCUTOR('2021-04-06')" &
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_PM710('2021-04-06')" &
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_PM5300('2021-04-06')" &
+
+## Finalizados estos, se deben ejecutar estos otros dos:
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_MENSUAL()" &
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_DIARIO()" &
+

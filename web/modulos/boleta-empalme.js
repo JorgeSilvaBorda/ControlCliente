@@ -52,6 +52,63 @@ function getSelectInstalacion() {
     });
 }
 
+function getSelectEmpalmesNumEmpalmesInstalacion() {
+    var idinstalacion = $('#select-instalacion').val();
+
+    var datos = {
+        tipo: 'get-select-empalmes-numempalmes-idinstalacion',
+        idinstalacion: idinstalacion
+    };
+    $.ajax({
+        url: 'EmpalmeController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-empalme').html(obj.options);
+                var idinstalacion = $('#select-instalacion').val();
+                getSelectTarifasIdInstalacion(idinstalacion);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+
+}
+
+
+
+function calcularDiferencia() {
+    var text = $('#consumo-facturado-empalme').val().replaceAll("\\.", "");
+    var num = text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    $('#consumo-facturado-empalme').val(num);
+    var kwtotal = KWTOTAL;
+    var facturadoempalme = $('#consumo-facturado-empalme').val().replaceAll("\\.", "");
+    var resta = kwtotal - facturadoempalme;
+    var porc = 100 - ((facturadoempalme * 100) / kwtotal);
+
+    resta = resta * -1;
+    porc = porc * -1;
+
+    $('#kw-diferencia').text(formatMiles(parseInt(resta)));
+    $('#porc-diferencia').text(porc.toFixed(2) + " %");
+}
+
+function buscar() {
+    if (validarCampos()) {
+        $('#btn-buscar').attr("disabled", "disabled");
+        $('.loader').fadeIn(500);
+        //$('.loader').fadeIn(500);
+        getRemarcadoresNumEmpalmeBoleta();
+    }
+}
+
 function getRemarcadoresNumEmpalmeBoleta() {
     REMARCADORES = null;
     //Función trabaja sólo con el número de empalme.
@@ -91,35 +148,6 @@ function getRemarcadoresNumEmpalmeBoleta() {
     });
 }
 
-function getSelectEmpalmesNumEmpalmesInstalacion() {
-    var idinstalacion = $('#select-instalacion').val();
-
-    var datos = {
-        tipo: 'get-select-empalmes-numempalmes-idinstalacion',
-        idinstalacion: idinstalacion
-    };
-    $.ajax({
-        url: 'EmpalmeController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (resp) {
-            var obj = JSON.parse(resp);
-            if (obj.estado === 'ok') {
-                $('#select-empalme').html(obj.options);
-                var idinstalacion = $('#select-instalacion').val();
-                getSelectTarifasIdInstalacion(idinstalacion);
-            }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
-
-}
 
 function validarCampos() {
     var idinstalacion = $('#select-instalacion').val();
@@ -140,32 +168,6 @@ function validarCampos() {
     }
     return true;
 }
-
-function calcularDiferencia() {
-    var text = $('#consumo-facturado-empalme').val().replaceAll("\\.", "");
-    var num = text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    $('#consumo-facturado-empalme').val(num);
-    var kwtotal = KWTOTAL;
-    var facturadoempalme = $('#consumo-facturado-empalme').val().replaceAll("\\.", "");
-    var resta = kwtotal - facturadoempalme;
-    var porc = 100 - ((facturadoempalme * 100) / kwtotal);
-
-    resta = resta * -1;
-    porc = porc * -1;
-
-    $('#kw-diferencia').text(formatMiles(parseInt(resta)));
-    $('#porc-diferencia').text(porc.toFixed(2) + " %");
-}
-
-function buscar() {
-    if (validarCampos()) {
-        $('#btn-buscar').attr("disabled", "disabled");
-        $('.loader').fadeIn(500);
-        //$('.loader').fadeIn(500);
-        getRemarcadoresNumEmpalmeBoleta();
-    }
-}
-
 function calcular(idremarcador, numremarcador, numserie, consumo, mes, lecturaanterior, lecturaactual, maxdemandaleida, maxdemandahorapunta, fechalecturaini, fechalecturafin) {
     //console.log("modulos/boleta-empalme/mask-boleta-empalme.jsp?idremarcador=" + idremarcador + "&numremarcador=" + numremarcador + "&consumo=" + consumo + "&mes='" + mes + "'&lecturaanterior=" + lecturaanterior + "&lecturaactual=" + lecturaactual + "&fechalecturaini='" + fechalecturaini + "'&fechalecturafin='" + fechalecturafin + "'");
     var idtarifa = $('#select-tarifa').val();

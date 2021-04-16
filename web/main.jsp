@@ -51,6 +51,7 @@
                 setTimeout(actualizaNuevosEventos, 300000);
             });
         </script>
+        <%@include file="modulos/includes.jsp" %>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">

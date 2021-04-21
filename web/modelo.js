@@ -17,7 +17,7 @@ function Instalacion(idinstalacion = undefined, nominstalacion = undefined, dire
 function Bodega(idbodega = undefined, nombodega = undefined, instalacion = new Instalacion()){
     this.idbodega = idbodega;
     this.nombodega = nombodega;
-    this.instalacion = instalacion();
+    this.instalacion = instalacion;
 }
 
 function Remarcador(idremarcador = undefined, numremarcador = undefined, marca = undefined, modelo = undefined, numserie = undefined, modulos = undefined, bodega = new Bodega(), empalme = new Empalme(), lastasignacion = undefined){
@@ -38,7 +38,7 @@ function Comuna(idcomuna = undefined, nomcomuna = undefined, provincia = new Pro
     this.provincia = provincia;
 }
 
-function provincia(idprovincia = undefined, nomprovincia = undefined, region = new Region()){
+function Provincia(idprovincia = undefined, nomprovincia = undefined, region = new Region()){
     this.idprovincia = idprovincia;
     this.nomprovincia = nomprovincia;
     this.region = region;
@@ -49,4 +49,9 @@ function Region(idregion = undefined, nomregion = undefined, abreviatura = undef
     this.nomregion = nomregion;
     this.abreviatura = abreviatura;
     this.capital = capital;
+}
+
+function Red(idred = undefined, nomred = undefined){
+    this.idread = idred;
+    this.nomread = nomred;
 }

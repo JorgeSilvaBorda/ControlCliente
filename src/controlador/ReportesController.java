@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.Conexion;
+import modelo.Lectura;
 import modelo.Util;
 
 public class ReportesController extends HttpServlet {
@@ -232,7 +233,7 @@ public class ReportesController extends HttpServlet {
             labels.put(Util.invertirFecha(fecs[2].toString()));
             datasetData.put(Double.parseDouble(fecs[3].toString()));
         }
-        
+
         JSONObject dataset = new JSONObject();
         dataset.put("data", datasetData);
         dataset.put("label", "Remarcador ID: " + entrada.getInt("numremarcador"));
@@ -257,7 +258,7 @@ public class ReportesController extends HttpServlet {
         String query = "";
         Conexion c = new Conexion();
         LinkedList<Integer> ides = new LinkedList();
-        
+
         //Obtener Remarcadores asociados al cliente ----------------------------
         query = "CALL SP_GET_REMARCADORES_IDCLIENTE_IDINSTALACION("
                 + "" + entrada.getInt("idcliente") + ", "
@@ -271,10 +272,11 @@ public class ReportesController extends HttpServlet {
         try {
             //Por cada remarcador ir a buscar el dataset
             while (rs.next()) {
-                JSONObject dataset = getDatasetRemarcadorMes(rs.getInt("NUMREMARCADOR"), entrada.getInt("mes"), entrada.getInt("anio"));
-                JSONObject datasetdemandas = getDatasetDemandasRemarcadorMes(rs.getInt("NUMREMARCADOR"), entrada.getInt("mes"), entrada.getInt("anio"));
+                //JSONObject dataset = getDatasetRemarcadorMes(rs.getInt("NUMREMARCADOR"), entrada.getInt("mes"), entrada.getInt("anio"));
+                JSONObject dataset = modelo.Lectura.getDatasetMesRemarcadorNumremarcador(rs.getInt("NUMREMARCADOR"), entrada.getInt("anio"), entrada.getInt("mes"));
+                JSONObject datasetdemandas = modelo.Lectura.getDatasetPotenciasMesRemarcadorNumremarcador(rs.getInt("NUMREMARCADOR"), entrada.getInt("anio"), entrada.getInt("mes"));
                 labels = dataset.getJSONArray("labels");
-                datasets.put(dataset.getJSONObject("dataset"));
+                datasets.put(dataset);
                 datasetsdemandas.put(datasetdemandas.getJSONObject("datasetdemanda"));
                 datasetsdemandas.put(datasetdemandas.getJSONObject("datasethpunta"));
                 ides.add(rs.getInt("NUMREMARCADOR"));
@@ -289,7 +291,7 @@ public class ReportesController extends HttpServlet {
             salida.put("data", data);
             salida.put("datademandas", datademandas);
             //salida.put("datademandas", datasetsdemandas);
-            System.out.println(salida);
+            //System.out.println(salida);
             salida.put("estado", "ok");
         } catch (JSONException | SQLException ex) {
             System.out.println("Problemas en controlador.ReportesController.resumenMesCliente().");
@@ -311,88 +313,23 @@ public class ReportesController extends HttpServlet {
         Iterator i = remarcadores.iterator();
 
         while (i.hasNext()) {
+            //String query = "CALL SP_GET_LECTURAS_MES_CIRCUTOR";
             JSONObject remarcador = (JSONObject) i.next();
             int numremarcador = remarcador.getInt("numremarcador");
-            JSONObject d = getDatasetRemarcadorMes(numremarcador, entrada.getInt("mes"), entrada.getInt("anio"));
-            JSONObject dataset = d.getJSONObject("dataset");
-            labels = d.getJSONArray("labels");
-            dataset.put("label", "Remarcador ID: " + numremarcador);
-            dataset.put("borderWidth", "2");
+            //JSONObject d = getDatasetRemarcadorMes(numremarcador, entrada.getInt("mes"), entrada.getInt("anio"));
+            JSONObject dataset = modelo.Lectura.getDatasetMesRemarcadorNumremarcador(numremarcador, entrada.getInt("anio"), entrada.getInt("mes"));
+            //JSONObject dataset = d.getJSONObject("dataset");
+            labels = dataset.getJSONArray("labels");
+            //dataset.put("label", "Remarcador ID: " + numremarcador);
+            //dataset.put("borderWidth", "2");
             datasets.put(dataset);
             System.out.println(dataset);
         }
         data.put("labels", labels);
         data.put("datasets", datasets);
-        //System.out.println(data);
+        System.out.println(data);
         salida.put("data", data);
         salida.put("estado", "ok");
-        return salida;
-    }
-
-    private JSONObject getDatasetRemarcadorMes(int numremarcador, int mes, int anio) {
-        System.out.println("Entra a buscar Dataset del remarcador Nº: " + numremarcador);
-        JSONObject dataset = new JSONObject();
-        JSONObject salida = new JSONObject();
-        JSONArray data = new JSONArray();
-        JSONArray labels = new JSONArray();
-        FilaNormal[] filas = etl.ETL.getDatasetRemarcador(numremarcador, mes, anio);
-        LinkedList<FilaNormal[]> diferencias = new LinkedList();
-        FilaNormal[] diferencia = new FilaNormal[2];
-        String diaant = "";
-        for (int i = 0; i < filas.length; i++) {
-            if (i == 0) {
-                diaant = filas[i].fecha;
-                diferencia[0] = filas[i];
-            } else {
-                diaant = filas[i - 1].fecha;
-            }
-            if (!filas[i].fecha.equals(diaant)) {
-                diferencia[1] = filas[i - 1];
-                diferencias.add(diferencia);
-                diferencia = new FilaNormal[2];
-                diferencia[0] = filas[i];
-            }
-            if (i == filas.length - 1) {
-                diferencia[1] = filas[i];
-                diferencias.add(diferencia);
-            }
-
-        }
-        //Obtener fechas de referencia
-        Conexion c = new Conexion();
-        String query = "CALL SP_GET_DIAS_MES(" + mes + ", " + anio + ");";
-        c.abrir();
-        ResultSet rs = c.ejecutarQuery(query);
-        LinkedList<String> fechas = new LinkedList();
-        try {
-            while (rs.next()) {
-                fechas.add(rs.getString("FECHA"));
-            }
-        } catch (Exception ex) {
-            System.out.println("No se puede obtener las fechas de referencia.");
-            System.out.println(ex);
-        }
-        c.cerrar();
-
-        for (String fecha : fechas) {
-            //System.out.println("Fecha: " + fecha);
-            boolean encontrado = false;
-            for (FilaNormal[] fin : diferencias) {
-                if (fin[1].fecha.equals(fecha)) {
-                    data.put((int) (fin[1].lecturaproyectada - fin[0].lecturaproyectada));
-                    encontrado = true;
-                }
-            }
-            if (!encontrado) {
-                data.put(0);
-            }
-            labels.put(fecha);
-        }
-
-        dataset.put("data", data);
-        dataset.put("label", "Remarcador ID: " + numremarcador);
-        salida.put("dataset", dataset);
-        salida.put("labels", labels);
         return salida;
     }
 
@@ -420,7 +357,7 @@ public class ReportesController extends HttpServlet {
             int idrem = ides.get(i);
 
             int lecturaini = (int) tabla[0].lecturareal;
-            if(tabla[0].esmanual){
+            if (tabla[0].esmanual) {
                 lecturaini = (int) tabla[0].lecturamanual;
                 haymanualini = true;
                 almenosUnManual = true;
@@ -487,68 +424,6 @@ public class ReportesController extends HttpServlet {
         }
 
         return tablasalida;
-    }
-
-    private JSONObject getDatasetDemandasRemarcadorMes(int numremarcador, int mes, int anio) {
-        JSONArray datasets = new JSONArray();
-        JSONObject datasetdemanda = new JSONObject();
-        JSONObject datasethpunta = new JSONObject();
-        JSONObject salida = new JSONObject();
-        JSONArray demandamax = new JSONArray();
-        JSONArray demandahpunta = new JSONArray();
-        JSONArray labels = new JSONArray();
-        FilaNormal[] filas = etl.ETL.getDatasetRemarcador(numremarcador, mes, anio);
-        //Obtener fechas de referencia
-        Conexion c = new Conexion();
-        String query = "CALL SP_GET_DIAS_MES(" + mes + ", " + anio + ");";
-        c.abrir();
-        ResultSet rs = c.ejecutarQuery(query);
-        LinkedList<String> fechas = new LinkedList();
-        try {
-            while (rs.next()) {
-                fechas.add(rs.getString("FECHA"));
-            }
-        } catch (SQLException ex) {
-            System.out.println("No se puede obtener las fechas de referencia.");
-            System.out.println(ex);
-        }
-        c.cerrar();
-        double demmax = 0;
-        double demmaxhp = 0;
-        DecimalFormat format = new DecimalFormat("#.##");
-        for (String fecha : fechas) {
-            String fec = fecha;
-            for (FilaNormal fila : filas) {
-                if (fila.fecha.equals(fec)) {
-                    if (fila.potencia > demmax) {
-                        demmax = fila.potencia;
-                    }
-                    if (Integer.parseInt(fila.hora.substring(0, 2)) >= 18 && Integer.parseInt(fila.hora.substring(0, 2)) <= 23) {
-                        if (fila.potencia > demmaxhp) {
-                            demmaxhp = fila.potencia;
-                        }
-                    }
-                }
-            }
-            demmax = Double.parseDouble(format.format(demmax).replace(",", "."));
-            demmaxhp = Double.parseDouble(format.format(demmaxhp).replace(",", "."));
-            demandamax.put(demmax);
-            demandahpunta.put(demmaxhp);
-            labels.put(fec);
-            demmax = 0;
-            demmaxhp = 0;
-        }
-        datasetdemanda.put("data", demandamax);
-        datasetdemanda.put("label", "Demanda Máx. Remarcador ID: " + numremarcador);
-        datasethpunta.put("data", demandahpunta);
-        datasethpunta.put("label", "Demanda Máx. H. Punta Remarcador ID: " + numremarcador);
-        datasets.put(datasetdemanda);
-        datasets.put(datasethpunta);
-        salida.put("datasetdemanda", datasetdemanda);
-        salida.put("datasethpunta", datasethpunta);
-        salida.put("labels", labels);
-
-        return salida;
     }
 
 }

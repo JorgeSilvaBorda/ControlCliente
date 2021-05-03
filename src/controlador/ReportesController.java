@@ -269,25 +269,33 @@ public class ReportesController extends HttpServlet {
         c.abrir();
 
         ResultSet rs = c.ejecutarQuery(query);
+        JSONArray resumenesConsumo = new JSONArray();
+        JSONArray resumenesPotencia = new JSONArray();
         try {
             //Por cada remarcador ir a buscar el dataset
             while (rs.next()) {
                 //JSONObject dataset = getDatasetRemarcadorMes(rs.getInt("NUMREMARCADOR"), entrada.getInt("mes"), entrada.getInt("anio"));
                 JSONObject dataset = modelo.Lectura.getDatasetMesRemarcadorNumremarcador(rs.getInt("NUMREMARCADOR"), entrada.getInt("anio"), entrada.getInt("mes"));
+                resumenesConsumo.put(dataset.getJSONObject("resumen"));
                 JSONObject datasetdemandas = modelo.Lectura.getDatasetPotenciasMesRemarcadorNumremarcador(rs.getInt("NUMREMARCADOR"), entrada.getInt("anio"), entrada.getInt("mes"));
+                resumenesPotencia.put(datasetdemandas.getJSONObject("resumen"));
                 labels = dataset.getJSONArray("labels");
                 datasets.put(dataset);
                 datasetsdemandas.put(datasetdemandas.getJSONObject("datasetdemanda"));
                 datasetsdemandas.put(datasetdemandas.getJSONObject("datasethpunta"));
                 ides.add(rs.getInt("NUMREMARCADOR"));
             }
-            String tablaresumen = tablaResumenMesRemarcadores(ides, entrada.getInt("mes"), entrada.getInt("anio"));
+
             data.put("labels", labels);
-            data.put("tablaresumen", tablaresumen);
             data.put("datasets", datasets);
             datademandas.put("labels", labels);
-
             datademandas.put("datasets", datasetsdemandas);
+
+            //String tablaresumen = tablaResumenMesRemarcadores(ides, entrada.getInt("mes"), entrada.getInt("anio"));
+            String tablaresumen = tablaResumenMesRemarcadores(resumenesConsumo, resumenesPotencia, entrada.getInt("mes"), entrada.getInt("anio"));
+
+            data.put("tablaresumen", tablaresumen);
+
             salida.put("data", data);
             salida.put("datademandas", datademandas);
             //salida.put("datademandas", datasetsdemandas);
@@ -332,8 +340,88 @@ public class ReportesController extends HttpServlet {
         salida.put("estado", "ok");
         return salida;
     }
+    
+    private String tablaResumenMesRemarcadores(JSONArray resumenesConsumo, JSONArray resumenesPotencia, int mes, int anio) {
+        String tablasalida = ""
+                + "<table class='table table-sm small table-condensed table-bordered' style='font-size: 10px;'>"
+                + "<thead>"
+                + "<tr>"
+                + "<th style='text-align:center;' >Remarcador</th>"
+                + "<th style='text-align:center;'>Lectura Inicial</th>"
+                + "<th style='text-align:center;'>Lectura Final</th>"
+                + "<th style='text-align:center;'>Consumo (kWh)</th>"
+                + "<th style='text-align:center;'>Demanda Máx.<br />Leída (KW)</th>"
+                + "<th style='text-align:center;'>Demanda Máx.<br />H. Punta (KW)</th>"
+                + "<th style='text-align:center;'>Demanda Máx.<br />6 meses (KW)</th>"
+                + "<th style='text-align:center;'>Demanda Máx.<br />12 meses (KW)</th>"
+                + "</tr>"
+                + "</thead>"
+                + "<tbody>";
+        boolean haymanual = false;
+        boolean haymanualini = false;
+        boolean almenosUnManual = false;
+        
+        Iterator i = resumenesConsumo.iterator();
+        int arrcont = 0;
+        while(i.hasNext()) {
+            JSONObject resumen = (JSONObject)i.next();
+            boolean inimanual = resumen.getBoolean("lecturainimanual");
+            boolean finmanual = resumen.getBoolean("lecturafinmanual");
+            if(inimanual || finmanual){
+                almenosUnManual = true;
+            }
+            Integer idrem = resumen.getInt("numremarcador");
+            Double lecturaini = resumen.getDouble("lecturaini");
+            Double lecturafin = resumen.getDouble("lecturafin");
+            Double consumo = resumen.getDouble("consumototalmes");
+            
+            Double demmax = resumenesPotencia.getJSONObject(arrcont).getDouble("maxdemandaleida");
+            Double demmaxhp = resumenesPotencia.getJSONObject(arrcont).getDouble("maxdemandahpunta");
+            
+            Conexion conn = new Conexion();
+            String querydem = "CALL SP_GET_MAXDEM_6_12_MESES(" + idrem + ", " + mes + ", " + anio + ")";
+            System.out.println("Query demandas 6 y 12 meses: " + querydem);
+            conn.abrir();
+            double maxdem6 = 0.0d;
+            double maxdem12 = 0.0d;
+            ResultSet resset = conn.ejecutarQuery(querydem);
+            try {
+                while (resset.next()) {
+                    maxdem6 = resset.getDouble("MAXDEM6");
+                    maxdem12 = resset.getDouble("MAXDEM12");
+                }
+            } catch (SQLException ex) {
+                System.out.println("No se pueden obtener las demandas máximas de los últimos 6 y 12 meses.");
+                System.out.println(ex);
+                ex.printStackTrace();
+            }
+            conn.cerrar();
 
-    private String tablaResumenMesRemarcadores(LinkedList<Integer> ides, int mes, int anio) {
+            DecimalFormat formato = new DecimalFormat("#.##");
+            tablasalida += "<tr>";
+            tablasalida += "<td style='text-align:center;'>" + idrem + "</td>";
+            tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(lecturaini) + " " + (inimanual ? "*" : "") + "</td>";
+            tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(lecturafin) + " " + (finmanual ? "*" : "") + "</td>";
+            tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(consumo) + "</td>";
+            tablasalida += "<td style='text-align:right;'>" + formato.format(demmax).replace(".", ",") + "</td>";
+            tablasalida += "<td style='text-align:right;'>" + formato.format(demmaxhp).replace(".", ",") + "</td>";
+            tablasalida += "<td style='text-align:right;'>" + formato.format(maxdem6).replace(".", ",") + "</td>";
+            tablasalida += "<td style='text-align:right;'>" + formato.format(maxdem12).replace(".", ",") + "</td>";
+            tablasalida += "</tr>";
+            inimanual = false;
+            finmanual = false;
+            arrcont ++;
+        }
+        tablasalida += "</tbody>";
+        tablasalida += "</table>";
+        if (almenosUnManual) {
+            tablasalida += "* La lectura fue ingresada de forma manual.";
+        }
+
+        return tablasalida;
+    }
+
+    private String tablaResumenMesRemarcadoresOld(LinkedList<Integer> ides, int mes, int anio) {
         String tablasalida = ""
                 + "<table class='table table-sm small table-condensed table-bordered' style='font-size: 10px;'>"
                 + "<thead>"

@@ -103,7 +103,7 @@ public class Lectura {
                 for (int i = registros.size() - 1; i >= 0 || !encontrado; i--) {
                     if (rs.getString("FECHA").equals(registros.get(i).dia)) {
                         System.out.println("La fecha que viene con la manual: " + rs.getString("FECHA"));
-                        
+
                         registros.get(i).lecturaManual = rs.getDouble("LECTURA");
                         registros.get(i).esmanual = true;
                         encontrado = true;
@@ -186,19 +186,28 @@ public class Lectura {
         String fechaActual = "";
         Double consumoDia = 0.0D;
         int last = 0;
+        Double lecturaini = 0.0D;
+        Double lecturafin = 0.0D;
+        boolean inidia = false;
         for (int i = 0; i < registros.size(); i++) {
+
             if (!registros.get(i).timestamp.substring(0, 10).equals(fechaActual)) {
+
                 if (!fechaActual.equals("")) {
                     Dia d = new Dia();
                     d.consumo = consumoDia;
                     d.fecha = fechaActual;
-                    d.numremarcador = registros.get(i).numremarcador;
-                    d.esmanual = registros.get(i).esmanual;
+                    d.numremarcador = registros.get(i - 1).numremarcador;
+                    d.esmanual = registros.get(i - 1).esmanual;
+                    d.lecturafinal = registros.get(i - 1).lectura;
+                    d.lecturainicial = lecturaini;
                     dias.add(d);
                 }
                 consumoDia = 0.0D;
                 fechaActual = registros.get(i).timestamp.substring(0, 10);
                 consumoDia += registros.get(i).delta;
+
+                lecturaini = registros.get(i).lectura;
             } else {
                 consumoDia += registros.get(i).delta;
             }
@@ -210,6 +219,8 @@ public class Lectura {
         d.fecha = fechaActual;
         d.numremarcador = registros.get(last).numremarcador;
         d.esmanual = registros.get(last).esmanual;
+        d.lecturainicial = lecturaini;
+        d.lecturafinal = registros.get(last).lectura;
         dias.add(d);
 
         //QUITAR LOS ANTERIORES Y POSTERIORES AL MES QUE SE CONSULTA
@@ -234,21 +245,33 @@ public class Lectura {
         }
 
         for (Dia ds : diasSalida) {
-            System.out.println(ds.numremarcador + ";" + ds.fecha + ";" + ds.consumo + ";" + ds.esmanual);
+            System.out.println(ds.numremarcador + ";" + ds.fecha + ";" + ds.lecturainicial + ";" + ds.lecturafinal + ";" + ds.consumo + ";" + ds.esmanual);
         }
 
         JSONArray labels = new JSONArray();
         JSONArray data = new JSONArray();
         //JSONObject dataset = new JSONObject();
+        Double consumoTotal = 0.0D;
         for (Dia dia : diasSalida) {
             labels.put(dia.fecha);
             data.put(dia.consumo);
+            consumoTotal += dia.consumo;
         }
+        JSONObject resumen = new JSONObject();
+
+        resumen.put("numremarcador", diasSalida.get(0).numremarcador);
+        resumen.put("lecturaini", diasSalida.get(0).lecturainicial);
+        resumen.put("lecturainimanual", diasSalida.get(0).esmanual);
+        resumen.put("lecturafin", diasSalida.get(diasSalida.size() - 1).lecturafinal);
+        resumen.put("lecturafinmanual", diasSalida.get(diasSalida.size() - 1).esmanual);
+        resumen.put("consumototalmes", consumoTotal);
+        dataset.put("resumen", resumen);
+
         dataset.put("data", data);
         dataset.put("labels", labels);
+
         dataset.put("borderWidth", "2");
         dataset.put("label", "Remarcador ID: " + numremarcador);
-
         //System.out.println(dataset);
         return dataset;
     }
@@ -352,7 +375,7 @@ public class Lectura {
                 if (registros.get(i).hh == null) {
                     demmax = 0.0D;
                     demmaxhp = 0.0D;
-                }else{
+                } else {
                     if (registros.get(i).hh >= 18 && registros.get(i).hh <= 23) {
                         if (demmaxhp <= registros.get(i).potencia) {
                             demmaxhp = registros.get(i).potencia;
@@ -363,7 +386,7 @@ public class Lectura {
                         }
                     }
                 }
-                
+
             }
             last = i;
             //}
@@ -393,11 +416,25 @@ public class Lectura {
         JSONObject datasetdemanda = new JSONObject();
         JSONObject datasethpunta = new JSONObject();
 
+        Double maxdemandaleida = 0.0D;
+        Double maxdemandahp = 0.0D;
+
         for (DiaPotencia dia : diasSalida) {
             labels.put(dia.fecha);
             datademanda.put(dia.demmax);
+            if (maxdemandaleida < dia.demmax) {
+                maxdemandaleida = dia.demmax;
+            }
             datademandahp.put(dia.demmaxhpunta);
+            if(maxdemandahp < dia.demmaxhpunta){
+                maxdemandahp = dia.demmaxhpunta;
+            }
         }
+
+        JSONObject resumen = new JSONObject();
+        resumen.put("numremarcador", diasSalida.get(0).numremarcador);
+        resumen.put("maxdemandaleida", maxdemandaleida);
+        resumen.put("maxdemandahpunta", maxdemandahp);
 
         datasetdemanda.put("label", "Demanda Máx. Remarcador ID: " + numremarcador);
         datasethpunta.put("label", "Demanda Máx. H. Punta Remarcador ID: " + numremarcador);
@@ -405,6 +442,7 @@ public class Lectura {
         datasetdemanda.put("data", datademanda);
         datasethpunta.put("data", datademandahp);
 
+        dataset.put("resumen", resumen);
         dataset.put("datasetdemanda", datasetdemanda);
         dataset.put("datasethpunta", datasethpunta);
         dataset.put("labels", labels);
@@ -413,6 +451,141 @@ public class Lectura {
 
         //System.out.println(dataset);
         return dataset;
+    }
+
+    public static LinkedList<DiaPotencia> getPotenciaPorAnioMes(Integer numremarcador, Integer anio, Integer mes) {
+        LinkedList<RegistroPotencia> registros = new LinkedList<>();
+
+        System.out.println("Buscando dataset remarcador num: " + numremarcador + " Año: " + anio + " Mes: " + mes);
+
+        //Obtener orígen del remarcador que viene con su número
+        String queryOrigen = "SELECT FN_GET_ORIGEN_NUMREMARCADOR(" + numremarcador + ") ORIGEN";
+        System.out.println(queryOrigen);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(queryOrigen);
+        String origen = "";
+
+        try {
+            while (rs.next()) {
+                origen = rs.getString("ORIGEN");
+            }
+        } catch (Exception ex) {
+            System.out.println("No se pudo obtener el origen del remarcador NUM: " + numremarcador);
+            System.out.println(ex);
+            c.cerrar();
+            //return new JSONObject();
+        }
+        c.cerrar();
+        String query = "";
+
+        //Ir a traer todas las lecturas del mes
+        if (origen.equals("circutorcvmC10")) {
+            query = "CALL SP_GET_POTENCIAS_MES_CIRCUTOR(" + numremarcador + ", " + anio + ", " + mes + ")";
+        } else if (origen.equals("schneiderPM710")) {
+            query = "CALL SP_GET_POTENCIAS_MES_PM710(" + numremarcador + ", " + anio + ", " + mes + ")";
+        } else if (origen.equals("schneiderPM5300")) {
+            query = "CALL SP_GET_POTENCIAS_MES_PM5300(" + numremarcador + ", " + anio + ", " + mes + ")";
+        }
+        c = new Conexion();
+        c.abrir();
+        System.out.println(query);
+        rs = c.ejecutarQuery(query);
+        try {
+            while (rs.next()) {
+
+                RegistroPotencia rp = new RegistroPotencia();
+                double lec = rs.getDouble("POTENCIA");
+                if (rs.wasNull()) {
+                    rp = new RegistroPotencia(rs.getString("FECHA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), null, rs.getInt("ANIO"), rs.getInt("MES"), rs.getInt("DIA"), rs.getInt("HH"), rs.getInt("MM"), rs.getInt("SS"));
+                } else {
+                    rp = new RegistroPotencia(rs.getString("FECHA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), rs.getDouble("POTENCIA"), rs.getInt("ANIO"), rs.getInt("MES"), rs.getInt("DIA"), rs.getInt("HH"), rs.getInt("MM"), rs.getInt("SS"));
+                }
+                registros.add(rp);
+            }
+        } catch (Exception ex) {
+            System.out.println("No se pudo obtener los registros de potencia del remarcador.");
+            System.out.println(ex);
+            c.cerrar();
+            //return new JSONObject();
+        }
+        c.cerrar();
+
+        LinkedList<DiaPotencia> dias = new LinkedList<>();
+        String fechaActual = "";
+        Double consumoDia = 0.0D;
+
+        Double demmax = 0.0D;
+        Double demmaxhp = 0.0D;
+        int last = 0;
+        for (int i = 0; i < registros.size(); i++) {
+            //if (registros.get(i).potencia != null) {
+            if (!registros.get(i).timestamp.substring(0, 10).equals(fechaActual)) {
+                if (!fechaActual.equals("")) {
+                    DiaPotencia d = new DiaPotencia();
+                    d.demmax = demmax;
+                    d.demmaxhpunta = demmaxhp;
+                    d.fecha = fechaActual;
+                    d.numremarcador = registros.get(i).numremarcador;
+                    dias.add(d);
+                }
+                demmax = 0.0D;
+                demmaxhp = 0.0D;
+                fechaActual = registros.get(i).timestamp.substring(0, 10);
+                if (registros.get(i).hh == null) {
+                    demmax = 0.0D;
+                    demmaxhp = 0.0D;
+                } else {
+                    if (registros.get(i).hh >= 18 && registros.get(i).hh <= 23) {
+                        if (demmaxhp <= registros.get(i).potencia) {
+                            demmaxhp = registros.get(i).potencia;
+                        }
+                    } else {
+                        if (demmax <= registros.get(i).potencia) {
+                            demmax = registros.get(i).potencia;
+                        }
+                    }
+                }
+
+            } else {
+                if (registros.get(i).hh == null) {
+                    demmax = 0.0D;
+                    demmaxhp = 0.0D;
+                } else {
+                    if (registros.get(i).hh >= 18 && registros.get(i).hh <= 23) {
+                        if (demmaxhp <= registros.get(i).potencia) {
+                            demmaxhp = registros.get(i).potencia;
+                        }
+                    } else {
+                        if (demmax <= registros.get(i).potencia) {
+                            demmax = registros.get(i).potencia;
+                        }
+                    }
+                }
+
+            }
+            last = i;
+            //}
+
+            //System.out.println(r.numremarcador + ";" + r.timestamp + ";" + r.lectura + ";" + r.lecturaManual + ";" + r.delta + ";");
+        }
+        DiaPotencia d = new DiaPotencia();
+        d.demmax = demmax;
+        d.demmaxhpunta = demmaxhp;
+        d.fecha = fechaActual;
+        d.numremarcador = registros.get(last).numremarcador;
+        dias.add(d);
+
+        //QUITAR LOS ANTERIORES Y POSTERIORES AL MES QUE SE CONSULTA
+        LinkedList<DiaPotencia> diasSalida = new LinkedList<>();
+
+        for (DiaPotencia dia : dias) {
+            if (Integer.parseInt(dia.fecha.substring(5, 7)) == mes) {
+                diasSalida.add(dia);
+            }
+        }
+
+        return diasSalida;
     }
 
     static class Registro {
@@ -471,6 +644,8 @@ public class Lectura {
         public String fecha;
         public Integer numremarcador;
         public Double consumo;
+        public Double lecturainicial;
+        public Double lecturafinal;
         public boolean esmanual = false;
     }
 

@@ -22,6 +22,7 @@
         <script src="js/bootstrap.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 
         <script src="js/globales.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
+        <script src="modelo.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
         <script src="js/jquery.rut.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
         <script src="js/datatables/datatables.min.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
         <script src="js/datatables/FixedHeader-3.1.4/js/fixedHeader.bootstrap4.min.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
@@ -51,6 +52,7 @@
                 setTimeout(actualizaNuevosEventos, 300000);
             });
         </script>
+        <%@include file="modulos/includes.jsp" %>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">

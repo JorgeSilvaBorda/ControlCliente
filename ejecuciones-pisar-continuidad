@@ -1,0 +1,35 @@
+./lectura-circutor.sh 192.168.102.181 2 1
+./lectura-schneiderPM5300.sh 192.168.102.190 10 1
+./lectura-schneiderPM710.sh 192.168.94.2 38 10
+
+
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_CIRCUTOR('2021-04-06')" &
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_PM710('2021-04-06')" &
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_PM5300('2021-04-06')" &
+
+## Finalizados estos, se deben ejecutar estos otros dos:
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_MENSUAL()" &
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_DIARIO()" &
+
+
+DELETE FROM CONTINUIDAD WHERE FECHA >= '2021-04-01'
+
+
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_CIRCUTOR('2021-04-01')" &
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_PM710('2021-04-01')" &
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_PM5300('2021-04-01')" &
+
+
+
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_CIRCUTOR('2021-01-01', 151)" &
+
+
+LOAD DATA INFILE '/home/user/export/151.csv' IGNORE INTO TABLE CONTINUIDAD FIELDS TERMINATED BY ';' LINES TERMINATED BY '\n';
+
+## Pisar lecturas mensuales para un solo remarcador
+nohup mysql -u root -pBodenor848 bodenor -e "call SP_OPS_PISAR_CONTINUIDAD_MENSUAL(95)" &
+
+Fallan al descargar Dump: 92, 161, 171, 376
+
+
+mysql -u root -pBodenor848 -h 192.168.100.228 bodenor -e "DELETE FROM CONTINUIDAD WHERE NUMREMARCADOR = 95;LOAD DATA INFILE '/home/user/dumps/95.csv' IGNORE INTO TABLE CONTINUIDAD FIELDS TERMINATED BY ';' LINES TERMINATED BY '\n';"

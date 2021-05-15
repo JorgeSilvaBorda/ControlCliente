@@ -131,6 +131,14 @@ public class Util {
         String output = myFormatter.format(numero);
         return output;
     }
+    
+    public static String formatMiles(Double numero) {
+        String pattern = "###,###,###.###";
+        //Si no le paso ningun Locale, toma el del sistema, que en mi caso es Locale("es","MX");
+        DecimalFormat myFormatter = new DecimalFormat(pattern);
+        String output = myFormatter.format(numero);
+        return output;
+    }
 
     public static String armarBody(ResultSet rs, String[] arrCampos) throws SQLException {
         String salida = "<thead><tr>";
@@ -183,7 +191,7 @@ public class Util {
         String[] campos = fecha.split("-");
         return campos[2] + "-" + campos[1] + "-" + campos[0];
     }
-    
+
     public static String invertirDateTimeGetFecha(String datetime) {
         String fecha = datetime.substring(0, 10);
         String[] campos = fecha.split("-");
@@ -274,5 +282,61 @@ public class Util {
             return "";
         }
 
+    }
+
+    public static String getApiHttpURL() {
+        String rutaProperties = System.getenv("RUTA_PROPERTIES"); //Habilitar para lectura desde variable de entorno
+        if (rutaProperties == null) {
+            System.out.println("Error: No se puede leer desde la variable de entorno RUTA_PROPERTIES.");
+            System.out.println("    Asegúrese de que se encuentre correctamente ajustada en el sistema");
+            System.out.println("    como variable global y que la ruta que contenga sea la que corresponde");
+            System.out.println("    a la ubicación del archivo application.properties que contiene la ");
+            System.out.println("    configuración de la aplicación WebPanel");
+            return "";
+        } else {
+            try {
+                InputStream entrada = new FileInputStream(rutaProperties);
+                Properties prop = new Properties();
+                prop.load(entrada);
+
+                String apiHost = prop.getProperty("api.host");
+                String apiPort = prop.getProperty("api.port");
+                String apiUrlBase = prop.getProperty("api.url.base");
+
+                return "http://" + apiHost + ((apiPort.equals("") || apiPort == null) ? "" : ":" + apiPort) + apiUrlBase;
+            } catch (IOException | NumberFormatException ex) {
+                System.out.println("Ocurrió un problema al ajustar los parámetros del API.");
+                System.out.println(ex);
+                return "";
+            }
+        }
+    }
+    
+    public static String getApiHttpsURL() {
+        String rutaProperties = System.getenv("RUTA_PROPERTIES"); //Habilitar para lectura desde variable de entorno
+        if (rutaProperties == null) {
+            System.out.println("Error: No se puede leer desde la variable de entorno RUTA_PROPERTIES.");
+            System.out.println("    Asegúrese de que se encuentre correctamente ajustada en el sistema");
+            System.out.println("    como variable global y que la ruta que contenga sea la que corresponde");
+            System.out.println("    a la ubicación del archivo application.properties que contiene la ");
+            System.out.println("    configuración de la aplicación WebPanel");
+            return "";
+        } else {
+            try {
+                InputStream entrada = new FileInputStream(rutaProperties);
+                Properties prop = new Properties();
+                prop.load(entrada);
+
+                String apiHost = prop.getProperty("api.host");
+                String apiPort = prop.getProperty("api.port");
+                String apiUrlBase = prop.getProperty("api.url.base");
+
+                return "https://" + apiHost + ((apiPort.equals("") || apiPort == null) ? "" : ":" + apiPort) + apiUrlBase;
+            } catch (IOException | NumberFormatException ex) {
+                System.out.println("Ocurrió un problema al ajustar los parámetros del API.");
+                System.out.println(ex);
+                return "";
+            }
+        }
     }
 }

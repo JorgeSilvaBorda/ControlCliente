@@ -45,6 +45,9 @@ public class RemarcadorController extends HttpServlet {
             case "get-remarcadores-asignados":
                 out.print(getRemarcadoresAsignados());
                 break;
+            case "get-remarcadores-asignados-idempalme":
+                out.print(getRemarcadoresAsignadosIdempalme(entrada));
+                break;
             case "get-remarcadores-baja":
                 out.print(getRemarcadoresBaja());
                 break;
@@ -763,6 +766,64 @@ public class RemarcadorController extends HttpServlet {
             salida.put("estado", "ok");
         } catch (JSONException | SQLException ex) {
             System.out.println("Problemas en controlador.RemarcadorController.getRemarcadoresAsignados().");
+            System.out.println(ex);
+            ex.printStackTrace();
+            salida.put("estado", "error");
+            salida.put("error", ex);
+        }
+        c.cerrar();
+        return salida;
+    }
+    
+    private JSONObject getRemarcadoresAsignadosIdempalme(JSONObject entrada) {
+        JSONObject salida = new JSONObject();
+        JSONArray ides = new JSONArray();
+        String query = "CALL SP_GET_REMARCADORES_ASIGNADOS_IDEMPALME(" + entrada.getInt("idempalme") + ")";
+        System.out.println(query);
+        Conexion c = new Conexion();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(query);
+        String filas = "";
+
+        String tabla = "<table style='font-size: 12px;' id='tabla-remarcadores-empalme' class='table table-borderless table-condensed table-sm'>";
+        tabla += "<caption style='caption-side:top;'><h5>Remarcadores en el Empalme Nº: " + entrada.getString("numempalme") + "</h5></caption>";
+        tabla += "<thead><tr>";
+        tabla += "<th># Remarcador</th>";
+        tabla += "<th>Nº Serie</th>";
+        tabla += "<th>Bodega</th>";
+        tabla += "<th>Cliente</th>";
+        tabla += "<th>Módulos</th>";
+        tabla += "<th>Instalación</th>";
+        tabla += "</tr></thead><tbody>";
+        JSONObject remarcador;
+        JSONArray remarcadores = new JSONArray();
+        try {
+            while (rs.next()) {
+                String numserie = rs.getString("NUMSERIE");
+                filas += "<tr>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDREMARCADOR") + "' /><span>" + rs.getString("NUMREMARCADOR") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + numserie + "' /><span>" + numserie + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDPARQUE") + "' /><span>" + rs.getString("NOMPARQUE") + "</span></td>";
+                filas += "<td><span>" + rs.getString("NOMCLIENTE") + "</span></td>";
+                filas += "<td><span>" + rs.getString("MODULOS") + "</span></td>";
+                filas += "<td><input type='hidden' value='" + rs.getInt("IDINSTALACION") + "' /><span>" + rs.getString("NOMINSTALACION") + "</span></td>";
+                filas += "</tr>";
+                remarcador = new JSONObject();
+                remarcador.put("idremarcador", rs.getInt("IDREMARCADOR"));
+                remarcador.put("numremarcador", rs.getString("NUMREMARCADOR"));
+                remarcador.put("numserie", numserie);
+                remarcador.put("idparque", rs.getInt("IDPARQUE"));
+                remarcador.put("modulos", rs.getString("MODULOS"));
+                remarcador.put("idinstalacion", rs.getInt("IDINSTALACION"));
+                remarcadores.put(remarcador);
+            }
+            tabla += filas;
+            tabla += "</tbody></table>";
+            salida.put("tabla", tabla);
+            salida.put("remarcadores", remarcadores);
+            salida.put("estado", "ok");
+        } catch (JSONException | SQLException ex) {
+            System.out.println("Problemas en controlador.RemarcadorController.getRemarcadoresIdEmpalme().");
             System.out.println(ex);
             ex.printStackTrace();
             salida.put("estado", "error");

@@ -85,7 +85,7 @@ function getRemarcadoresIdEmpalme() {
     var idempalme = $('#select-empalme').val();
     var numempalme = $('#select-empalme option:selected').text();
     var datos = {
-        tipo: 'get-remarcadores-idempalme',
+        tipo: 'get-remarcadores-asignados-idempalme',
         idempalme: idempalme,
         numempalme: numempalme
     };

@@ -102,3 +102,12 @@
 
     </div>
 </div>
+
+
+
+<!-- MODELO EN JAVASCRIPT -->
+<script type="text/javascript">    
+    
+    
+</script>
+<!-- /MODELO EN JAVASCRIPT -->

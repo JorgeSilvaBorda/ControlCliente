@@ -52,6 +52,146 @@ function getSelectInstalacion() {
     });
 }
 
+function getSelectEmpalmesNumEmpalmesInstalacion() {
+    var idinstalacion = $('#select-instalacion').val();
+
+    var datos = {
+        tipo: 'get-select-empalmes-numempalmes-idinstalacion',
+        idinstalacion: idinstalacion
+    };
+    $.ajax({
+        url: 'EmpalmeController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-empalme').html(obj.options);
+                var idinstalacion = $('#select-instalacion').val();
+                getSelectTarifasIdInstalacion(idinstalacion);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+
+}
+
+function calcularDiferencia() {
+    var text = $('#consumo-facturado-empalme').val().replaceAll("\\.", "");
+    var num = text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    $('#consumo-facturado-empalme').val(num);
+    var kwtotal = KWTOTAL;
+    var facturadoempalme = $('#consumo-facturado-empalme').val().replaceAll("\\.", "");
+    var resta = kwtotal - facturadoempalme;
+    var porc = 100 - ((facturadoempalme * 100) / kwtotal);
+
+    resta = resta * -1;
+    porc = porc * -1;
+
+    $('#kw-diferencia').text(formatMiles(parseInt(resta)));
+    $('#porc-diferencia').text(porc.toFixed(2) + " %");
+}
+
+function buscar() {
+    if (validarCampos()) {
+        $('#btn-buscar').attr("disabled", "disabled");
+        $('.loader').fadeIn(500);
+        //$('.loader').fadeIn(500);
+        getRemarcadoresNumEmpalmeBoleta();
+    }
+}
+
+function getRemarcadoresNumEmpalmeBoleta_NEW() {
+    $('.loader').fadeIn(500);
+    var numempalme = $('#select-empalme').val();
+    var aniomes = $('#mes').val();
+    var request = new XMLHttpRequest();
+    //var request = APIHTTPURL + "/empalme/" + idempalme;
+
+    request.open('GET', APIHTTPURL + "/empalme/" + numempalme + "/remarcadores/lastasignacion", false);  // `false` makes the request synchronous
+    request.send(null);
+
+    if (request.status === 200) {
+        //console.log(request.responseText);
+
+        var empalme = JSON.parse(request.responseText);
+        var tablasalida = "<table style='font-size: 10px;' id='tabla-remarcadores-empalme' class='table table-bordered table-condensed table-sm'>";
+        tablasalida += "<caption style='caption-side:top;'><h5>Remarcadores en el Empalme Nº: " + empalme.numempalme + "</h5></caption>";
+        tablasalida += "<thead style='text-align: center;' ><tr class='table-info'>";
+        tablasalida += "<th># Remarcador</th>";
+        tablasalida += "<th>Nº Serie</th>";
+        tablasalida += "<th>Bodega</th>";
+        tablasalida += "<th>Cliente</th>";
+        tablasalida += "<th>Módulos</th>";
+        tablasalida += "<th>Instalación</th>";
+        tablasalida += "<th>Lectura<br />Anterior</th>";
+        tablasalida += "<th>Lectura<br />Final</th>";
+        tablasalida += "<th>Consumo (kWh)</th>";
+        tablasalida += "<th>Emitir</th>";
+        tablasalida += "<th>Última<br />Boleta</th>";
+        tablasalida += "</tr></thead><tbody>";
+        console.log(tablasalida);
+        //console.log(empalme);
+        for (var i = 0; i < empalme.remarcadores.length; i++) {
+            for (var x = 0; x < empalme.remarcadores[i].asignaciones; x++) {
+                if (empalme.remarcadores[i].asignaciones[x].fechaasignacion.indexOf(aniomes) !== -1) {
+                    tablasalida += "<tr>";
+                    tablasalida += "<td style='text-align: center;' ><input type='hidden' value='" + empalme.remarcadores[i].idremarcador + "' /><span>" + empalme.remarcadores[i].numremarcador + "</span></td>";
+                    tablasalida += "<td><input type='hidden' value='" + empalme.remarcadores[i].numserie + "' /><span>" + remarcador.numserie + "</span></td>";
+                    tablasalida += "<td><span>" + empalme.remarcadores[i].parque.nomparque + "</span></td>";
+                    tablasalida += "<td><span>" + empalme.remarcadores[i].asignaciones[x].cliente.nomcliente + "</span></td>";
+                    tablasalida += "<td style='text-align: center;' ><span>" + empalme.remarcadores[i].modulos + "</span></td>";
+                    tablasalida += "<td><span>" + empalme.remarcadores[i].instalacion.nominstalacion + "</span></td>";
+                    tablasalida += "<td style='text-align: right;'><span></span></td>";
+                    tablasalida += "<td style='text-align: right;'><span></span></td>";
+                    tablasalida += "<td style='text-align: right;'><span></span></td>";
+                    tablasalida += "<td></td>";
+                    tablasalida += "<td></td>";
+                    tablasalida += "</tr>";
+
+                }
+            }
+        }
+        tablasalida += "<tr class='table-info'>";
+        tablasalida += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>Consumo Total Remarcadores(KW): </td>";
+        tablasalida += "<td style='font-weight: bold; text-align:right;' ></td>";
+        //if (boletasnoemitidas > 2) {
+        tablasalida += "<tr><td colspan='2' style='border: 1px solid white; background-color: white; text-align: center;'>"
+                + "<button type='button' onclick='generarTodas();' style='padding: 0px 2px 0px 2px; height: 1.5em;' class='btn btn-sm btn-outline-primary'>Generar Todas</button></td>";
+        tablasalida += "</tr>";
+        //}
+
+        tablasalida += "<tr>";
+        tablasalida += "<td colspan='8' style='vertical-align: middle; text-align: right; padding-right:5px; font-weight: bold;'>Consumo Facturado del Empalme: " + empalme.numempalme + "</td>";
+        tablasalida += "<td><input type='text' onkeyup='calcularDiferencia();' class='form-control form-control-sm small' style='font-size: 0.9em; padding-top: 0px; padding-bottom: 0px; width: 12em; text-align: right;' id='consumo-facturado-empalme'/></td>";
+        tablasalida += "</tr>";
+
+        tablasalida += "<tr>";
+        tablasalida += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>KW Diferencia: </td>";
+        tablasalida += "<td style='text-align: right;' ><span id='kw-diferencia'></span></td>";
+        tablasalida += "</tr>";
+
+        tablasalida += "<tr>";
+        tablasalida += "<td colspan='8' style='text-align: right; padding-right:5px; font-weight: bold;'>% Diferencia: </td>";
+        tablasalida += "<td style='text-align: right;'><span id='porc-diferencia' ></span></td>";
+        tablasalida += "</tr>";
+
+        //tablasalida += filas;
+        tablasalida += "</tbody></table>";
+        $('.dataTable').DataTable().destroy();
+        $('#detalle-remarcadores').html(tablasalida);
+        $('.loader').fadeOut(500);
+        
+        console.log(empalme);
+    }
+}
+
 function getRemarcadoresNumEmpalmeBoleta() {
     REMARCADORES = null;
     //Función trabaja sólo con el número de empalme.
@@ -91,35 +231,6 @@ function getRemarcadoresNumEmpalmeBoleta() {
     });
 }
 
-function getSelectEmpalmesNumEmpalmesInstalacion() {
-    var idinstalacion = $('#select-instalacion').val();
-
-    var datos = {
-        tipo: 'get-select-empalmes-numempalmes-idinstalacion',
-        idinstalacion: idinstalacion
-    };
-    $.ajax({
-        url: 'EmpalmeController',
-        type: 'post',
-        data: {
-            datos: JSON.stringify(datos)
-        },
-        success: function (resp) {
-            var obj = JSON.parse(resp);
-            if (obj.estado === 'ok') {
-                $('#select-empalme').html(obj.options);
-                var idinstalacion = $('#select-instalacion').val();
-                getSelectTarifasIdInstalacion(idinstalacion);
-            }
-        },
-        error: function (a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-        }
-    });
-
-}
 
 function validarCampos() {
     var idinstalacion = $('#select-instalacion').val();
@@ -139,31 +250,6 @@ function validarCampos() {
         return false;
     }
     return true;
-}
-
-function calcularDiferencia() {
-    var text = $('#consumo-facturado-empalme').val().replaceAll("\\.", "");
-    var num = text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    $('#consumo-facturado-empalme').val(num);
-    var kwtotal = KWTOTAL;
-    var facturadoempalme = $('#consumo-facturado-empalme').val().replaceAll("\\.", "");
-    var resta = kwtotal - facturadoempalme;
-    var porc = 100 - ((facturadoempalme * 100) / kwtotal);
-
-    resta = resta * -1;
-    porc = porc * -1;
-
-    $('#kw-diferencia').text(formatMiles(parseInt(resta)));
-    $('#porc-diferencia').text(porc.toFixed(2) + " %");
-}
-
-function buscar() {
-    if (validarCampos()) {
-        $('#btn-buscar').attr("disabled", "disabled");
-        $('.loader').fadeIn(500);
-        //$('.loader').fadeIn(500);
-        getRemarcadoresNumEmpalmeBoleta();
-    }
 }
 
 function calcular(idremarcador, numremarcador, numserie, consumo, mes, lecturaanterior, lecturaactual, maxdemandaleida, maxdemandahorapunta, fechalecturaini, fechalecturafin) {

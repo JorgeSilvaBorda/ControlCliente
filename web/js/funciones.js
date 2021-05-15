@@ -46,6 +46,18 @@ function formatMiles(valor) {
 
 }
 
+function formatMilesConDecimales(numdecimal){
+    var numero = numdecimal.toString();
+    if(numero.indexOf(".") === -1){
+        return formatMiles(numero);
+    }
+    
+    var pt1 = numero.split(".")[0];
+    var pt2 = numero.split(".")[1];
+    
+    return formatMiles(pt1) + "," + pt2;
+}
+
 function fechaAMesPalabraCorto(fecha) {
     //return fecha;
     var mes = parseInt(fecha.split("-")[1]);

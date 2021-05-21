@@ -6,6 +6,7 @@ import clases.json.JSONObject;
 import etl.FilaNormal;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -333,7 +334,7 @@ public class RemarcadorController extends HttpServlet {
         JSONObject salida = new JSONObject();
         int anio = Integer.parseInt(entrada.getString("mes").split("-")[0]);
         int mes = Integer.parseInt(entrada.getString("mes").split("-")[1]);
-        int kwtotal = 0;
+        BigDecimal kwtotal = new BigDecimal(0);
         boolean haymanual = false;
         boolean haymanualini = false;
         String query = "CALL SP_GET_REMARCADORES_NUMEMPALME_BOLETA("
@@ -377,49 +378,39 @@ public class RemarcadorController extends HttpServlet {
         LinkedList<FilaNormal[]> tablas = new LinkedList();
         for (Remarcador remarcador : remarcadores) {
             //System.out.println(r.printCsv());
-            FilaNormal[] filas = etl.ETL.getDatasetRemarcador(remarcador.numremarcador, mes, anio);
-            int lecturaproyectadaini = (int) filas[0].lecturaproyectada;
-            int lecturaproyectadafin = (int) filas[filas.length - 1].lecturaproyectada;
-            double demmax = 0;
-            double demmaxhp = 0;
-            double consumo = 0;
-            String fechainilectura = filas[0].fecha;
-            String fechafinlectura = filas[filas.length - 1].fecha;
 
-            int lecturaanterior = (int) filas[0].lecturareal;
-            if (filas[0].esmanual) {
-                lecturaanterior = (int) filas[0].lecturamanual;
-            }
-            int lecturafinal = (int) filas[filas.length - 1].lecturareal;
-            if (filas[filas.length - 1].esmanual) {
-                lecturafinal = filas[filas.length - 1].lecturamanual;
+            JSONObject resumenRemarcador = modelo.LecturaController.getDatasetMesRemarcadorNumremarcador(remarcador.numremarcador, anio, mes).getJSONObject("resumen");
+            JSONObject resumenPotenciaRemarcador = modelo.LecturaController.getDatasetPotenciasMesRemarcadorNumremarcador(remarcador.numremarcador, anio, mes).getJSONObject("resumen");
+
+            //FilaNormal[] filas = etl.ETL.getDatasetRemarcador(remarcador.numremarcador, mes, anio);
+            //int lecturaproyectadaini = (int) filas[0].lecturaproyectada;
+            //int lecturaproyectadafin = (int) filas[filas.length - 1].lecturaproyectada;
+            //resumen.put("numremarcador", diasSalida.get(0).numremarcador);
+            BigDecimal lecturaini = resumenRemarcador.getBigDecimal("lecturaini");
+            boolean inimanual = resumenRemarcador.getBoolean("lecturainimanual");
+            BigDecimal lecturafin = resumenRemarcador.getBigDecimal("lecturafin");
+            boolean finmanual = resumenRemarcador.getBoolean("lecturafinmanual");
+            BigDecimal consumototal = resumenRemarcador.getBigDecimal("consumototalmes");
+
+            BigDecimal maxdemandaleida = resumenPotenciaRemarcador.getBigDecimal("maxdemandaleida");
+            BigDecimal maxdemandahorapunta = resumenPotenciaRemarcador.getBigDecimal("maxdemandahpunta");
+
+            //double demmax = 0;
+            //double demmaxhp = 0;
+            //double consumo = 0;
+            String fechainilectura = resumenRemarcador.getString("fechainilectura");
+            String fechafinlectura = resumenRemarcador.getString("fechafinlectura");
+            
+            if (inimanual || finmanual) {
+                
                 haymanual = true;
             }
-            if (filas[0].esmanual) {
+            if (inimanual) {
                 haymanualini = true;
             }
 
-            for (FilaNormal fila : filas) {
-                if (fila.lecturaproyectada != fila.delta) {
-                    consumo += fila.delta;
-                }
-                if (fila.potencia > demmax) {
-                    demmax = fila.potencia;
-                }
-                if (Integer.parseInt(fila.hora.substring(0, 2)) >= 18 && Integer.parseInt(fila.hora.substring(0, 2)) <= 23) {
-                    if (fila.potencia > demmaxhp) {
-                        demmaxhp = fila.potencia;
-                    }
-                }
-            }
-            //Si existe lectura manual, el consumo se calcula en base a lecturamanual - lecturaanterior.
-            if (haymanual || haymanualini) {
-                consumo = lecturafinal - lecturaanterior;
-            }
-            consumo = lecturaproyectadafin - lecturaproyectadaini;
-
-            String demmaxString = new DecimalFormat("#.##").format(demmax).replace(",", ".");
-            String demmaxhpString = new DecimalFormat("#.##").format(demmaxhp).replace(",", ".");
+            String demmaxString = new DecimalFormat("#.##").format(maxdemandaleida).replace(",", ".");
+            String demmaxhpString = new DecimalFormat("#.##").format(maxdemandahorapunta).replace(",", ".");
 
             tablasalida += "<tr>";
             tablasalida += "<td style='text-align: center;' ><input type='hidden' value='" + remarcador.idremarcador + "' /><span>" + remarcador.numremarcador + "</span></td>";
@@ -428,17 +419,17 @@ public class RemarcadorController extends HttpServlet {
             tablasalida += "<td><span>" + remarcador.nomcliente + "</span></td>";
             tablasalida += "<td style='text-align: center;' ><span>" + remarcador.modulos + "</span></td>";
             tablasalida += "<td><span>" + remarcador.nominstalacion + "</span></td>";
-            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturaanterior) + (filas[0].esmanual ? " *" : "") + "</span></td>";
-            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturafinal) + (filas[filas.length - 1].esmanual ? " *" : "") + "</span></td>";
-            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles((int) consumo) + "</span></td>";
+            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturaini) + (inimanual ? " *" : "") + "</span></td>";
+            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(lecturafin) + (finmanual ? " *" : "") + "</span></td>";
+            tablasalida += "<td style='text-align: right;'><span>" + Util.formatMiles(consumototal) + "</span></td>";
 
             if (remarcador.hayboleta == 0) {
                 boletasnoemitidas++; //Para ver si se anota al menos un candidato a generación masiva
-                tablasalida += "<td><button type='button' onclick='calcular(" + remarcador.idremarcador + ", " + remarcador.numremarcador + ", \"" + remarcador.numserie + "\", " + (int) consumo + ", \"" + entrada.getString("mes") + "\", " + lecturaanterior + ", " + lecturafinal + ", \"" + demmaxString + "\", \"" + demmaxhpString + "\", \"" + fechainilectura + "\", \"" + fechafinlectura + "\");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
+                tablasalida += "<td><button type='button' onclick='calcular(" + remarcador.idremarcador + ", " + remarcador.numremarcador + ", \"" + remarcador.numserie + "\", " + consumototal + ", \"" + entrada.getString("mes") + "\", " + lecturaini + ", " + lecturafin + ", \"" + demmaxString + "\", \"" + demmaxhpString + "\", \"" + fechainilectura + "\", \"" + fechafinlectura + "\");' class='btn btn-sm btn-outline-success' style='padding: 0px 2px 0px 2px;'>Calcular Boleta</button></td>";
             } else {
                 tablasalida += "<td>"
                         + "<div id='botones_" + remarcador.idremarcador + "' style='display:none;' class='btn-group' role='group' aria-label='Sobreescritura'>"
-                        + "<button type='button' onclick='calcular(" + remarcador.idremarcador + ", " + remarcador.numremarcador + ", \"" + remarcador.numserie + "\", " + (int) consumo + ", \"" + entrada.getString("mes") + "\", " + lecturaanterior + ", " + lecturafinal + ", \"" + demmaxString + "\", \"" + demmaxhpString + "\", \"" + fechainilectura + "\", \"" + fechafinlectura + "\");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Sobreescribir</button>"
+                        + "<button type='button' onclick='calcular(" + remarcador.idremarcador + ", " + remarcador.numremarcador + ", \"" + remarcador.numserie + "\", " + consumototal + ", \"" + entrada.getString("mes") + "\", " + lecturaini + ", " + lecturafin + ", \"" + demmaxString + "\", \"" + demmaxhpString + "\", \"" + fechainilectura + "\", \"" + fechafinlectura + "\");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Sobreescribir</button>"
                         + "<button type='button' onclick='deshabilitarSobreescritura(" + remarcador.idremarcador + ");' class='btn btn-sm btn-warning' style='padding: 0px 5px 0px 5px; vertical-align:middle;'>x</button>"
                         + "</div>"
                         + "<button id='btn_" + remarcador.idremarcador + "' type='button' onclick='habilitarSobreescritura(" + remarcador.idremarcador + ");' class='btn btn-sm btn-outline-warning' style='padding: 0px 2px 0px 2px;'>Habilitar</button>"
@@ -452,7 +443,7 @@ public class RemarcadorController extends HttpServlet {
             }
 
             tablasalida += "</tr>";
-            kwtotal += (int) consumo;
+            kwtotal.add(consumototal);
             idcomuna = remarcador.idcomuna;
             remarcadorJson = new JSONObject();
             remarcadorJson.put("idremarcador", remarcador.idremarcador);
@@ -461,9 +452,9 @@ public class RemarcadorController extends HttpServlet {
             remarcadorJson.put("idparque", remarcador.idparque);
             remarcadorJson.put("modulos", remarcador.modulos);
             remarcadorJson.put("idinstalacion", remarcador.idinstalacion);
-            remarcadorJson.put("consumo", (int) consumo);
-            remarcadorJson.put("lecturaanterior", lecturaanterior);
-            remarcadorJson.put("lecturaactual", lecturafinal);
+            remarcadorJson.put("consumo", consumototal);
+            remarcadorJson.put("lecturaanterior", lecturaini);
+            remarcadorJson.put("lecturaactual", lecturafin);
             remarcadorJson.put("fechainicial", fechainilectura);
             remarcadorJson.put("fechafinal", fechafinlectura);
             remarcadoresJson.put(remarcadorJson);
@@ -774,7 +765,7 @@ public class RemarcadorController extends HttpServlet {
         c.cerrar();
         return salida;
     }
-    
+
     private JSONObject getRemarcadoresAsignadosIdempalme(JSONObject entrada) {
         JSONObject salida = new JSONObject();
         JSONArray ides = new JSONArray();

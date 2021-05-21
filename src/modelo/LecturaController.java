@@ -2,10 +2,11 @@ package modelo;
 
 import clases.json.JSONArray;
 import clases.json.JSONObject;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.LinkedList;
 
-public class Lectura {
+public class LecturaController {
 
     public static JSONObject getDatasetMesRemarcadorNumremarcador(Integer numremarcador, Integer anio, Integer mes) {
         LinkedList<Registro> registros = new LinkedList<>();
@@ -50,11 +51,11 @@ public class Lectura {
             while (rs.next()) {
 
                 Registro r = new Registro();
-                double lec = rs.getDouble("LECTURA");
+                BigDecimal lec = rs.getBigDecimal("LECTURA");
                 if (rs.wasNull()) {
                     r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), null);
                 } else {
-                    r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), rs.getDouble("LECTURA"));
+                    r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), rs.getBigDecimal("LECTURA"));
                 }
                 registros.add(r);
             }
@@ -79,7 +80,7 @@ public class Lectura {
                     registros.set(1, reg);
                     //registros.get(0).lecturaManual = rs.getDouble("LECTURA");
                     for (Registro r : registros) {
-                        r.lecturaManual = rs.getDouble("LECTURA");
+                        r.lecturaManual = rs.getBigDecimal("LECTURA");
                     }
                 }
             }
@@ -104,7 +105,7 @@ public class Lectura {
                     if (rs.getString("FECHA").equals(registros.get(i).dia)) {
                         System.out.println("La fecha que viene con la manual: " + rs.getString("FECHA"));
 
-                        registros.get(i).lecturaManual = rs.getDouble("LECTURA");
+                        registros.get(i).lecturaManual = rs.getBigDecimal("LECTURA");
                         registros.get(i).esmanual = true;
                         encontrado = true;
                         break;
@@ -146,11 +147,11 @@ public class Lectura {
                         }
                     }
                     if (actual.lectura == null) {
-                        actual.lectura = 0.0D;
+                        actual.lectura = new BigDecimal(0.0);
                     }
                 } else {
                     if (actual.lecturaManual != null) {
-                        if (actual.lectura < actual.lecturaManual) {
+                        if (actual.lectura.compareTo(actual.lecturaManual) == -1) {
                             actual.lectura = actual.lecturaManual;
                         }
                     }
@@ -163,18 +164,18 @@ public class Lectura {
                         actual.lectura = registros.get(i - 2).lectura;
                     }
                     if (actual.lectura == null) {
-                        actual.lectura = 0.0D;
+                        actual.lectura = new BigDecimal(0.0);
                     }
                 }
             }
             if (i == 0) {
-                actual.delta = 0.0D;
+                actual.delta = new BigDecimal(0.0);
             } else {
-                Double lecanterior = registros.get(i - 1).lectura;
-                if (lecanterior > actual.lectura) {
-                    actual.delta = 0.0D;
+                BigDecimal lecanterior = registros.get(i - 1).lectura;
+                if (lecanterior.compareTo(actual.lectura) == 1) {
+                    actual.delta = new BigDecimal(0.0);
                 } else {
-                    actual.delta = actual.lectura - lecanterior;
+                    actual.delta = actual.lectura.subtract(lecanterior);
                 }
 
             }
@@ -184,10 +185,10 @@ public class Lectura {
 
         LinkedList<Dia> dias = new LinkedList<>();
         String fechaActual = "";
-        Double consumoDia = 0.0D;
+        BigDecimal consumoDia = new BigDecimal(0.0);
         int last = 0;
-        Double lecturaini = 0.0D;
-        Double lecturafin = 0.0D;
+        BigDecimal lecturaini = new BigDecimal(0.0);
+        BigDecimal lecturafin = new BigDecimal(0.0);
         boolean inidia = false;
         for (int i = 0; i < registros.size(); i++) {
 
@@ -203,13 +204,13 @@ public class Lectura {
                     d.lecturainicial = lecturaini;
                     dias.add(d);
                 }
-                consumoDia = 0.0D;
+                consumoDia = new BigDecimal(0.0);
                 fechaActual = registros.get(i).timestamp.substring(0, 10);
-                consumoDia += registros.get(i).delta;
+                consumoDia = consumoDia.add(registros.get(i).delta);
 
                 lecturaini = registros.get(i).lectura;
             } else {
-                consumoDia += registros.get(i).delta;
+                consumoDia = consumoDia.add(registros.get(i).delta);
             }
             //System.out.println(registros.get(i).numremarcador + ";" + registros.get(i).timestamp + ";" + registros.get(i).lectura + ";" + registros.get(i).lecturaManual + ";" + registros.get(i).delta + ";" + registros.get(i).esmanual);
             last = i;
@@ -229,6 +230,7 @@ public class Lectura {
         for (Dia dia : dias) {
             if (Integer.parseInt(dia.fecha.substring(5, 7)) == mes) {
                 diasSalida.add(dia);
+                System.out.println(dia.numremarcador + ";" + dia.fecha + ";" + dia.consumo + ";" + dia.esmanual);
 
             }
         }
@@ -245,21 +247,27 @@ public class Lectura {
         }
 
         for (Dia ds : diasSalida) {
-            System.out.println(ds.numremarcador + ";" + ds.fecha + ";" + ds.lecturainicial + ";" + ds.lecturafinal + ";" + ds.consumo + ";" + ds.esmanual);
+            //System.out.println(ds.numremarcador + ";" + ds.fecha + ";" + ds.lecturainicial + ";" + ds.lecturafinal + ";" + ds.consumo + ";" + ds.esmanual);
+            //System.out.println(ds.numremarcador + ";" + ds.fecha + ";" + ds.lecturainicial + ";" + ds.lecturafinal + ";" + (ds.lecturafinal - ds.lecturainicial) + ";" + ds.esmanual);
         }
 
         JSONArray labels = new JSONArray();
         JSONArray data = new JSONArray();
         //JSONObject dataset = new JSONObject();
-        Double consumoTotal = 0.0D;
+        BigDecimal consumoTotal = new BigDecimal(0.0);
         for (Dia dia : diasSalida) {
             labels.put(dia.fecha);
+            //data.put((dia.lecturafinal - dia.lecturainicial));
             data.put(dia.consumo);
-            consumoTotal += dia.consumo;
+            consumoTotal = consumoTotal.add(dia.consumo);
+            //System.out.println("Consumo total: " + consumoTotal);
+            //System.out.println(dia.numremarcador + ";" + dia.fecha + ";" + dia.lecturainicial + ";" + dia.lecturafinal + ";" + dia.consumo + ";" + dia.esmanual);
         }
         JSONObject resumen = new JSONObject();
 
         resumen.put("numremarcador", diasSalida.get(0).numremarcador);
+        resumen.put("fechainilectura", labels.get(0));
+        resumen.put("fechafinlectura", labels.get(labels.length() - 1));
         resumen.put("lecturaini", diasSalida.get(0).lecturainicial);
         resumen.put("lecturainimanual", diasSalida.get(0).esmanual);
         resumen.put("lecturafin", diasSalida.get(diasSalida.size() - 1).lecturafinal);
@@ -272,7 +280,7 @@ public class Lectura {
 
         dataset.put("borderWidth", "2");
         dataset.put("label", "Remarcador ID: " + numremarcador);
-        //System.out.println(dataset);
+        System.out.println(dataset);
         return dataset;
     }
 
@@ -323,7 +331,7 @@ public class Lectura {
                 if (rs.wasNull()) {
                     rp = new RegistroPotencia(rs.getString("FECHA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), null, rs.getInt("ANIO"), rs.getInt("MES"), rs.getInt("DIA"), rs.getInt("HH"), rs.getInt("MM"), rs.getInt("SS"));
                 } else {
-                    rp = new RegistroPotencia(rs.getString("FECHA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), rs.getDouble("POTENCIA"), rs.getInt("ANIO"), rs.getInt("MES"), rs.getInt("DIA"), rs.getInt("HH"), rs.getInt("MM"), rs.getInt("SS"));
+                    rp = new RegistroPotencia(rs.getString("FECHA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), rs.getBigDecimal("POTENCIA"), rs.getInt("ANIO"), rs.getInt("MES"), rs.getInt("DIA"), rs.getInt("HH"), rs.getInt("MM"), rs.getInt("SS"));
                 }
                 registros.add(rp);
             }
@@ -337,10 +345,10 @@ public class Lectura {
 
         LinkedList<DiaPotencia> dias = new LinkedList<>();
         String fechaActual = "";
-        Double consumoDia = 0.0D;
+        BigDecimal consumoDia = new BigDecimal(0);
 
-        Double demmax = 0.0D;
-        Double demmaxhp = 0.0D;
+        BigDecimal demmax = new BigDecimal(0);
+        BigDecimal demmaxhp = new BigDecimal(0);
         int last = 0;
         for (int i = 0; i < registros.size(); i++) {
             //if (registros.get(i).potencia != null) {
@@ -353,19 +361,19 @@ public class Lectura {
                     d.numremarcador = registros.get(i).numremarcador;
                     dias.add(d);
                 }
-                demmax = 0.0D;
-                demmaxhp = 0.0D;
+                demmax = new BigDecimal(0);
+                demmaxhp = new BigDecimal(0);
                 fechaActual = registros.get(i).timestamp.substring(0, 10);
                 if (registros.get(i).hh == null) {
-                    demmax = 0.0D;
-                    demmaxhp = 0.0D;
+                    demmax = new BigDecimal(0);
+                    demmaxhp = new BigDecimal(0);
                 } else {
                     if (registros.get(i).hh >= 18 && registros.get(i).hh <= 23) {
-                        if (demmaxhp <= registros.get(i).potencia) {
+                        if (demmaxhp.compareTo(registros.get(i).potencia) <= 0) {
                             demmaxhp = registros.get(i).potencia;
                         }
                     } else {
-                        if (demmax <= registros.get(i).potencia) {
+                        if (demmax.compareTo(registros.get(i).potencia) <= 0) {
                             demmax = registros.get(i).potencia;
                         }
                     }
@@ -373,15 +381,15 @@ public class Lectura {
 
             } else {
                 if (registros.get(i).hh == null) {
-                    demmax = 0.0D;
-                    demmaxhp = 0.0D;
+                    demmax = new BigDecimal(0);
+                    demmaxhp = new BigDecimal(0);
                 } else {
                     if (registros.get(i).hh >= 18 && registros.get(i).hh <= 23) {
-                        if (demmaxhp <= registros.get(i).potencia) {
+                        if (demmaxhp.compareTo(registros.get(i).potencia) <= 0) {
                             demmaxhp = registros.get(i).potencia;
                         }
                     } else {
-                        if (demmax <= registros.get(i).potencia) {
+                        if (demmax.compareTo(registros.get(i).potencia) <= 0) {
                             demmax = registros.get(i).potencia;
                         }
                     }
@@ -416,17 +424,17 @@ public class Lectura {
         JSONObject datasetdemanda = new JSONObject();
         JSONObject datasethpunta = new JSONObject();
 
-        Double maxdemandaleida = 0.0D;
-        Double maxdemandahp = 0.0D;
+        BigDecimal maxdemandaleida = new BigDecimal(0);
+        BigDecimal maxdemandahp = new BigDecimal(0);
 
         for (DiaPotencia dia : diasSalida) {
             labels.put(dia.fecha);
             datademanda.put(dia.demmax);
-            if (maxdemandaleida < dia.demmax) {
+            if (maxdemandaleida.compareTo(dia.demmax) == -1) {
                 maxdemandaleida = dia.demmax;
             }
             datademandahp.put(dia.demmaxhpunta);
-            if(maxdemandahp < dia.demmaxhpunta){
+            if(maxdemandahp.compareTo(dia.demmaxhpunta) == -1){
                 maxdemandahp = dia.demmaxhpunta;
             }
         }
@@ -499,7 +507,7 @@ public class Lectura {
                 if (rs.wasNull()) {
                     rp = new RegistroPotencia(rs.getString("FECHA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), null, rs.getInt("ANIO"), rs.getInt("MES"), rs.getInt("DIA"), rs.getInt("HH"), rs.getInt("MM"), rs.getInt("SS"));
                 } else {
-                    rp = new RegistroPotencia(rs.getString("FECHA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), rs.getDouble("POTENCIA"), rs.getInt("ANIO"), rs.getInt("MES"), rs.getInt("DIA"), rs.getInt("HH"), rs.getInt("MM"), rs.getInt("SS"));
+                    rp = new RegistroPotencia(rs.getString("FECHA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), rs.getBigDecimal("POTENCIA"), rs.getInt("ANIO"), rs.getInt("MES"), rs.getInt("DIA"), rs.getInt("HH"), rs.getInt("MM"), rs.getInt("SS"));
                 }
                 registros.add(rp);
             }
@@ -513,10 +521,10 @@ public class Lectura {
 
         LinkedList<DiaPotencia> dias = new LinkedList<>();
         String fechaActual = "";
-        Double consumoDia = 0.0D;
+        BigDecimal consumoDia = new BigDecimal(0);
 
-        Double demmax = 0.0D;
-        Double demmaxhp = 0.0D;
+        BigDecimal demmax = new BigDecimal(0);
+        BigDecimal demmaxhp = new BigDecimal(0);
         int last = 0;
         for (int i = 0; i < registros.size(); i++) {
             //if (registros.get(i).potencia != null) {
@@ -529,19 +537,19 @@ public class Lectura {
                     d.numremarcador = registros.get(i).numremarcador;
                     dias.add(d);
                 }
-                demmax = 0.0D;
-                demmaxhp = 0.0D;
+                demmax = new BigDecimal(0);
+                demmaxhp = new BigDecimal(0);
                 fechaActual = registros.get(i).timestamp.substring(0, 10);
                 if (registros.get(i).hh == null) {
-                    demmax = 0.0D;
-                    demmaxhp = 0.0D;
+                    demmax = new BigDecimal(0);
+                    demmaxhp = new BigDecimal(0);
                 } else {
                     if (registros.get(i).hh >= 18 && registros.get(i).hh <= 23) {
-                        if (demmaxhp <= registros.get(i).potencia) {
+                        if (demmaxhp.compareTo(registros.get(i).potencia) <= 0) {
                             demmaxhp = registros.get(i).potencia;
                         }
                     } else {
-                        if (demmax <= registros.get(i).potencia) {
+                        if (demmax.compareTo(registros.get(i).potencia) <= 0) {
                             demmax = registros.get(i).potencia;
                         }
                     }
@@ -549,15 +557,15 @@ public class Lectura {
 
             } else {
                 if (registros.get(i).hh == null) {
-                    demmax = 0.0D;
-                    demmaxhp = 0.0D;
+                    demmax = new BigDecimal(0);
+                    demmaxhp = new BigDecimal(0);
                 } else {
                     if (registros.get(i).hh >= 18 && registros.get(i).hh <= 23) {
-                        if (demmaxhp <= registros.get(i).potencia) {
+                        if (demmaxhp.compareTo(registros.get(i).potencia) <= 0) {
                             demmaxhp = registros.get(i).potencia;
                         }
                     } else {
-                        if (demmax <= registros.get(i).potencia) {
+                        if (demmax.compareTo(registros.get(i).potencia) <= 0) {
                             demmax = registros.get(i).potencia;
                         }
                     }
@@ -593,13 +601,13 @@ public class Lectura {
         public String dia;
         public Integer numremarcador;
         public String timestamp;
-        public Double lectura;
-        public Double lecturaManual;
-        public Double delta;
-        public Double proyeccion;
+        public BigDecimal lectura;
+        public BigDecimal lecturaManual;
+        public BigDecimal delta;
+        public BigDecimal proyeccion;
         public boolean esmanual = false;
 
-        public Registro(String dia, Integer numremarcador, String timestamp, Double lectura) {
+        public Registro(String dia, Integer numremarcador, String timestamp, BigDecimal lectura) {
             this.dia = dia;
             this.numremarcador = numremarcador;
             this.timestamp = timestamp;
@@ -616,11 +624,11 @@ public class Lectura {
         public String fecha;
         public Integer numremarcador;
         public String timestamp;
-        public Double potencia;
+        public BigDecimal potencia;
 
         public Integer anio, mes, dia, hh, mm, ss;
 
-        public RegistroPotencia(String fecha, Integer numremarcador, String timestamp, Double potencia, Integer anio, Integer mes, Integer dia, Integer hh, Integer mm, Integer ss) {
+        public RegistroPotencia(String fecha, Integer numremarcador, String timestamp, BigDecimal potencia, Integer anio, Integer mes, Integer dia, Integer hh, Integer mm, Integer ss) {
             this.fecha = fecha;
             this.numremarcador = numremarcador;
             this.timestamp = timestamp;
@@ -643,9 +651,9 @@ public class Lectura {
 
         public String fecha;
         public Integer numremarcador;
-        public Double consumo;
-        public Double lecturainicial;
-        public Double lecturafinal;
+        public BigDecimal consumo;
+        public BigDecimal lecturainicial;
+        public BigDecimal lecturafinal;
         public boolean esmanual = false;
     }
 
@@ -653,8 +661,8 @@ public class Lectura {
 
         public String fecha;
         public Integer numremarcador;
-        public Double demmax;
-        public Double demmaxhpunta;
+        public BigDecimal demmax;
+        public BigDecimal demmaxhpunta;
     }
 
 }

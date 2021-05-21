@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.Conexion;
-import modelo.Lectura;
+import modelo.LecturaController;
 import modelo.Util;
 
 public class ReportesController extends HttpServlet {
@@ -275,9 +275,9 @@ public class ReportesController extends HttpServlet {
             //Por cada remarcador ir a buscar el dataset
             while (rs.next()) {
                 //JSONObject dataset = getDatasetRemarcadorMes(rs.getInt("NUMREMARCADOR"), entrada.getInt("mes"), entrada.getInt("anio"));
-                JSONObject dataset = modelo.Lectura.getDatasetMesRemarcadorNumremarcador(rs.getInt("NUMREMARCADOR"), entrada.getInt("anio"), entrada.getInt("mes"));
+                JSONObject dataset = modelo.LecturaController.getDatasetMesRemarcadorNumremarcador(rs.getInt("NUMREMARCADOR"), entrada.getInt("anio"), entrada.getInt("mes"));
                 resumenesConsumo.put(dataset.getJSONObject("resumen"));
-                JSONObject datasetdemandas = modelo.Lectura.getDatasetPotenciasMesRemarcadorNumremarcador(rs.getInt("NUMREMARCADOR"), entrada.getInt("anio"), entrada.getInt("mes"));
+                JSONObject datasetdemandas = modelo.LecturaController.getDatasetPotenciasMesRemarcadorNumremarcador(rs.getInt("NUMREMARCADOR"), entrada.getInt("anio"), entrada.getInt("mes"));
                 resumenesPotencia.put(datasetdemandas.getJSONObject("resumen"));
                 labels = dataset.getJSONArray("labels");
                 datasets.put(dataset);
@@ -325,7 +325,7 @@ public class ReportesController extends HttpServlet {
             JSONObject remarcador = (JSONObject) i.next();
             int numremarcador = remarcador.getInt("numremarcador");
             //JSONObject d = getDatasetRemarcadorMes(numremarcador, entrada.getInt("mes"), entrada.getInt("anio"));
-            JSONObject dataset = modelo.Lectura.getDatasetMesRemarcadorNumremarcador(numremarcador, entrada.getInt("anio"), entrada.getInt("mes"));
+            JSONObject dataset = modelo.LecturaController.getDatasetMesRemarcadorNumremarcador(numremarcador, entrada.getInt("anio"), entrada.getInt("mes"));
             //JSONObject dataset = d.getJSONObject("dataset");
             labels = dataset.getJSONArray("labels");
             //dataset.put("label", "Remarcador ID: " + numremarcador);

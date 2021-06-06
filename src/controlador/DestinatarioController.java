@@ -53,6 +53,7 @@ public class DestinatarioController extends HttpServlet {
                 filas += "<tr>";
                 filas += "<td>" + rs.getString("NOMDESTINATARIO") + "</td>";
                 filas += "<td>" + rs.getString("EMAILDESTINATARIO") + "</td>";
+                filas += "<td>" + rs.getString("NOMINSTALACION") + "</td>";
                 filas += "<td style='width: 10%;'>"
                         + "<button style='font-size:10px; padding: 0.1 rem 0.1 rem;' type='button' class='btn btn-sm btn-danger' onclick='eliminar(" + rs.getString("IDDESTINATARIO") + ")'>Eliminar</button>"
                         + "</td>";
@@ -75,7 +76,8 @@ public class DestinatarioController extends HttpServlet {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_INS_DESTINATARIO_NOTIFICACIONES("
                 + "'" + entrada.getString("nombres") + "',"
-                + "'" + entrada.getString("email") + "')";
+                + "'" + entrada.getString("email") + "',"
+                + entrada.getInt("idinstalacion") + ")";
 
         Conexion c = new Conexion();
         c.abrir();

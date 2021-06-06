@@ -38,6 +38,30 @@ function getDestinatarios() {
     });
 }
 
+function getSelectInstalacion() {
+    var datos = {
+        tipo: 'get-select-instalacion'
+    };
+    $.ajax({
+        url: 'InstalacionController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (resp) {
+            var obj = JSON.parse(resp);
+            if (obj.estado === 'ok') {
+                $('#select-instalacion').html(obj.options);
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
 function validarCampos() {
     var nombres = $('#nombres').val();
     var email = $('#email').val();
@@ -57,13 +81,15 @@ function validarCampos() {
 function insDestinatario() {
 
     if (validarCampos()) {
+        var idinstalacion = $('#select-instalacion').val();
         var nombres = $('#nombres').val();
         var email = $('#email').val();
 
         var datos = {
             tipo: 'ins-destinatario',
             nombres: nombres,
-            email: email
+            email: email,
+            idinstalacion: idinstalacion
         };
 
         $.ajax({

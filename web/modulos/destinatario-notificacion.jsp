@@ -2,6 +2,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         getDestinatarios();
+        getSelectInstalacion();
     });
 
 </script>
@@ -27,6 +28,12 @@
                     <input type="text" class="form-control form-control-sm small" maxlength="200" id="email" />
                 </div>
             </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="select-instalacion">Instalación</label>
+                    <select class="form-control form-control-sm small" id="select-instalacion" ></select>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-sm-2">
@@ -45,6 +52,7 @@
                     <tr>
                         <th>Nombres</th>
                         <th>Email</th>
+                        <th>Instalación</th>
                         <th>Acción</th>
                     </tr>
                 </thead>

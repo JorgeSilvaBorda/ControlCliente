@@ -4,24 +4,39 @@ import clases.json.JSONArray;
 import clases.json.JSONObject;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
+import modelo.lectura.Dia;
+import modelo.lectura.DiaPotencia;
+import modelo.lectura.Registro;
+import modelo.lectura.RegistroPotencia;
 
 public class LecturaController {
 
-    public static JSONObject getDatasetMesRemarcadorNumremarcador(Integer numremarcador, Integer anio, Integer mes) {
+    public static JSONObject getDatasetMesRemarcadorNumremarcador(int numremarcador, int anio, int mes) {
         LinkedList<Registro> registros = new LinkedList<>();
+        LinkedList<Dia> dias = new LinkedList<>();
+        DateTimeFormatter formattertimestamp = DateTimeFormatter.ISO_DATE_TIME.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatterdate = DateTimeFormatter.ISO_DATE.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formattertime = DateTimeFormatter.ISO_TIME.ofPattern("HH:mm:ss");
+
         JSONObject dataset = new JSONObject();
+        JSONArray labels = new JSONArray();
+        JSONArray data = new JSONArray();
 
         System.out.println("Buscando dataset remarcador num: " + numremarcador + " Año: " + anio + " Mes: " + mes);
+
+        Conexion c;
 
         //Obtener orígen del remarcador que viene con su número
         String queryOrigen = "SELECT FN_GET_ORIGEN_NUMREMARCADOR(" + numremarcador + ") ORIGEN";
         System.out.println(queryOrigen);
-        Conexion c = new Conexion();
+        c = new Conexion();
+        c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(queryOrigen);
         String origen = "";
-
         try {
             while (rs.next()) {
                 origen = rs.getString("ORIGEN");
@@ -30,7 +45,6 @@ public class LecturaController {
             System.out.println("No se pudo obtener el origen del remarcador NUM: " + numremarcador);
             System.out.println(ex);
             c.cerrar();
-            //return new JSONObject();
         }
         c.cerrar();
         String query = "";
@@ -44,235 +58,144 @@ public class LecturaController {
             query = "CALL SP_GET_LECTURAS_MES_PM5300(" + numremarcador + ", " + anio + ", " + mes + ")";
         }
         c = new Conexion();
+        c.setReplica();
         c.abrir();
         System.out.println(query);
         rs = c.ejecutarQuery(query);
+        Registro anterior = new Registro();
+        String fechaanterior = "";
+        float consumodiario = 0f;
+        float consumototal = 0f;
+        Dia d = new Dia();
+        Registro r = new Registro();
         try {
             while (rs.next()) {
 
-                Registro r = new Registro();
-                BigDecimal lec = rs.getBigDecimal("LECTURA");
-                if (rs.wasNull()) {
-                    r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), null);
-                } else {
-                    r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), rs.getBigDecimal("LECTURA"));
+                r = new Registro();
+
+                float lecactual = rs.getFloat("LECTURA");
+                if (rs.wasNull()) {//Si viene una lectura nula-------------------------------------------------------------------------------------------
+
+                    float lecactualmanual = rs.getFloat("LECTURAMANUAL");
+                    if (rs.wasNull()) { //Si la lectura manual también es nula --------------------------------------------------------------------------
+                        if (anterior.dia != null) { //Cuando existe un registro anterior, es decir, es el primero
+                            r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), anterior.lectura);
+                            r.esmanual = true;
+                            r.delta = 0f;
+                        } else { //Cuando no existe un registro anterior, no se puede obtener lectura hacia atrás.
+                            //Se deja la lectura y delta en cero.
+                            r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), 0f);
+                            r.delta = 0f;
+                        }
+                        r.delta = 0f; //Se deja el delta en cero.
+                    } else { //Si la lectura manual no es nula.
+                        r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), rs.getFloat("LECTURAMANUAL"));
+                        r.esmanual = true;
+                        if (anterior.dia != null) { //Cuando existe un registro anterior, es decir, es el primero
+                            r.delta = anterior.lectura - r.lectura;
+                        } else { //Cuando no existe un registro anterior, no se puede obtener lectura hacia atrás.
+                            //Se deja el delta en cero
+                            r.delta = 0f;
+                        }
+                    }
+                } else { //La lectura que viene no es nula----------------------------------------------------------------------------------------------
+                    r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), rs.getFloat("LECTURA"));
+                    float lecactualmanual = rs.getFloat("LECTURAMANUAL");
+                    if (!rs.wasNull()) {//Si la lectura es manual, manda ésta. Se cambia.
+                        r.esmanual = true;
+                        r.lectura = rs.getFloat("LECTURAMANUAL");
+                    }
+                    if (anterior.dia == null) { //Si no existe anterior. es decir, ésta es la primera
+                        r.delta = 0;
+                    } else {
+                        r.delta = r.lectura - anterior.lectura;
+                    }
                 }
+
+                //Preparar los días----------------------------------------------------------------------------------------------------------------------
+                if (!rs.getString("DIA").equals(fechaanterior)) {//Si la fecha del día que viene es distinta de la almacenada anterior
+                    if (fechaanterior.equals("")) {//Cuando el que viene es el primer registro
+                        consumodiario = consumodiario + r.delta;
+                        consumototal = consumototal + r.delta;
+                        d = new Dia();
+                        d.consumo = consumodiario;
+                        if (r.esmanual) {
+                            d.esmanual = true;
+                        }
+                        d.fecha = r.dia;
+                        //labels.put(r.dia);
+                        d.lecturainicial = r.lectura;
+                        d.numremarcador = r.numremarcador;
+                    } else {//Cuando es un cambio de día
+                        d.lecturafinal = anterior.lectura;
+                        if (anterior.esmanual) {
+                            d.esmanual = true;
+                        }
+                        dias.add(d);
+                        //data.put(d.consumo);
+                        d = new Dia();
+                        d.consumo = 0f + r.delta;
+                        consumototal = consumototal + r.delta;
+                        d.fecha = r.dia;
+                        //labels.put(r.dia);
+                        d.lecturainicial = r.lectura;
+                        if (r.esmanual) {
+                            d.esmanual = true;
+                        }
+                        d.numremarcador = r.numremarcador;
+
+                    }
+                } else {//El dia que viene es igual al anterior
+                    d.consumo = d.consumo + r.delta;
+                    consumototal = consumototal + r.delta;
+                    if (r.esmanual) {
+                        d.esmanual = true;
+                    }
+                }
+
+                anterior = r;
                 registros.add(r);
+                fechaanterior = rs.getString("DIA");
+                //System.out.println(r.numremarcador + ";" + r.timestamp + ";" + r.lectura + ";" + r.lecturaManual + ";" + r.delta + ";" + r.esmanual);
             }
         } catch (Exception ex) {
             System.out.println("No se pudo obtener los registros del remarcador.");
             System.out.println(ex);
             c.cerrar();
-            //return new JSONObject();
-        }
-        c.cerrar();
-
-        //Validar si hay lectura manual para el primer registro
-        String queryLecturaManual = "SELECT * FROM LECTURAMANUAL WHERE NUMREMARCADOR = " + numremarcador + " AND ANIO = " + anio + " AND MES = " + mes + " ORDER BY TIMESTAMP ASC";
-        c = new Conexion();
-        c.abrir();
-        rs = c.ejecutarQuery(queryLecturaManual);
-        try {
-            while (rs.next()) {
-                if (rs.getString("FECHA").equals(registros.get(1).dia)) {
-                    Registro reg = registros.get(1);
-                    reg.esmanual = true;
-                    registros.set(1, reg);
-                    //registros.get(0).lecturaManual = rs.getDouble("LECTURA");
-                    for (Registro r : registros) {
-                        r.lecturaManual = rs.getBigDecimal("LECTURA");
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            System.out.println("No se pudo obtener la lectura manual inicial para el remarcador");
-            System.out.println(ex);
-            c.cerrar();
-            //return new JSONObject();
-        }
-        c.cerrar();
-
-        //Validar si hay lectura manual para el último registro
-        queryLecturaManual = "SELECT * FROM LECTURAMANUAL WHERE NUMREMARCADOR = " + numremarcador + " AND ANIO = " + anio + " AND MES = " + mes + " ORDER BY TIMESTAMP ASC";
-        c = new Conexion();
-        c.abrir();
-        rs = c.ejecutarQuery(queryLecturaManual);
-        boolean encontrado = false;
-        try {
-            while (rs.next() && !encontrado) {
-
-                for (int i = registros.size() - 1; i >= 0 || !encontrado; i--) {
-                    if (rs.getString("FECHA").equals(registros.get(i).dia)) {
-                        System.out.println("La fecha que viene con la manual: " + rs.getString("FECHA"));
-
-                        registros.get(i).lecturaManual = rs.getBigDecimal("LECTURA");
-                        registros.get(i).esmanual = true;
-                        encontrado = true;
-                        break;
-                    }
-                }
-
-            }
-        } catch (Exception ex) {
-            System.out.println("No se pudo obtener la lectura manual final para el remarcador");
-            System.out.println(ex);
-            c.cerrar();
-            //return new JSONObject();
-        }
-        c.cerrar();
-
-        //Procesar 
-        for (int i = 0; i < registros.size(); i++) {
-            Registro actual = registros.get(i);
-            if (i >= 0 && i < registros.size()) {
-                if (actual.lectura == null) {
-                    if (actual.lecturaManual != null) {
-                        actual.lectura = actual.lecturaManual;
-                    } else {
-                        boolean encontrado2 = false;
-                        for (int x = i + 1; x < registros.size(); x++) {
-                            if (registros.get(x).lectura != null) {
-                                actual.lectura = registros.get(x).lectura;
-                                encontrado2 = true;
-                                break;
-                            }
-                        }
-                        if (!encontrado2) {
-                            for (int x = i - 1; x >= 0; x--) {
-                                if (registros.get(x).lectura != null) {
-                                    actual.lectura = registros.get(x).lectura;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (actual.lectura == null) {
-                        actual.lectura = new BigDecimal(0.0);
-                    }
-                } else {
-                    if (actual.lecturaManual != null) {
-                        if (actual.lectura.compareTo(actual.lecturaManual) == -1) {
-                            actual.lectura = actual.lecturaManual;
-                        }
-                    }
-                }
-            } else {
-                if (actual.lectura == null) {
-                    if (actual.lecturaManual != null) {
-                        actual.lectura = actual.lecturaManual;
-                    } else {
-                        actual.lectura = registros.get(i - 2).lectura;
-                    }
-                    if (actual.lectura == null) {
-                        actual.lectura = new BigDecimal(0.0);
-                    }
-                }
-            }
-            if (i == 0) {
-                actual.delta = new BigDecimal(0.0);
-            } else {
-                BigDecimal lecanterior = registros.get(i - 1).lectura;
-                if (lecanterior.compareTo(actual.lectura) == 1) {
-                    actual.delta = new BigDecimal(0.0);
-                } else {
-                    actual.delta = actual.lectura.subtract(lecanterior);
-                }
-
-            }
-
-            registros.set(i, actual);
         }
 
-        LinkedList<Dia> dias = new LinkedList<>();
-        String fechaActual = "";
-        BigDecimal consumoDia = new BigDecimal(0.0);
-        int last = 0;
-        BigDecimal lecturaini = new BigDecimal(0.0);
-        BigDecimal lecturafin = new BigDecimal(0.0);
-        boolean inidia = false;
-        for (int i = 0; i < registros.size(); i++) {
-
-            if (!registros.get(i).timestamp.substring(0, 10).equals(fechaActual)) {
-
-                if (!fechaActual.equals("")) {
-                    Dia d = new Dia();
-                    d.consumo = consumoDia;
-                    d.fecha = fechaActual;
-                    d.numremarcador = registros.get(i - 1).numremarcador;
-                    d.esmanual = registros.get(i - 1).esmanual;
-                    d.lecturafinal = registros.get(i - 1).lectura;
-                    d.lecturainicial = lecturaini;
-                    dias.add(d);
-                }
-                consumoDia = new BigDecimal(0.0);
-                fechaActual = registros.get(i).timestamp.substring(0, 10);
-                consumoDia = consumoDia.add(registros.get(i).delta);
-
-                lecturaini = registros.get(i).lectura;
-            } else {
-                consumoDia = consumoDia.add(registros.get(i).delta);
-            }
-            //System.out.println(registros.get(i).numremarcador + ";" + registros.get(i).timestamp + ";" + registros.get(i).lectura + ";" + registros.get(i).lecturaManual + ";" + registros.get(i).delta + ";" + registros.get(i).esmanual);
-            last = i;
+        consumodiario = consumodiario + r.delta;
+        consumototal = consumototal + r.delta;
+        if (r.esmanual) {
+            d.esmanual = true;
         }
-        Dia d = new Dia();
-        d.consumo = consumoDia;
-        d.fecha = fechaActual;
-        d.numremarcador = registros.get(last).numremarcador;
-        d.esmanual = registros.get(last).esmanual;
-        d.lecturainicial = lecturaini;
-        d.lecturafinal = registros.get(last).lectura;
+        d.lecturafinal = r.lectura;
         dias.add(d);
-
-        //QUITAR LOS ANTERIORES Y POSTERIORES AL MES QUE SE CONSULTA
-        LinkedList<Dia> diasSalida = new LinkedList<>();
-
-        for (Dia dia : dias) {
-            if (Integer.parseInt(dia.fecha.substring(5, 7)) == mes) {
-                diasSalida.add(dia);
-                System.out.println(dia.numremarcador + ";" + dia.fecha + ";" + dia.consumo + ";" + dia.esmanual);
-
-            }
-        }
-
-        for (Registro r : registros) {
-            for (Dia ds : diasSalida) {
-                if (r.dia.equals(ds.fecha)) {
-                    if (r.esmanual) {
-                        ds.esmanual = true;
-                    }
-                }
-                //System.out.println(dia.numremarcador + ";" + dia.fecha + ";" + dia.consumo + ";" + dia.esmanual);
-            }
-        }
-
-        for (Dia ds : diasSalida) {
-            //System.out.println(ds.numremarcador + ";" + ds.fecha + ";" + ds.lecturainicial + ";" + ds.lecturafinal + ";" + ds.consumo + ";" + ds.esmanual);
-            //System.out.println(ds.numremarcador + ";" + ds.fecha + ";" + ds.lecturainicial + ";" + ds.lecturafinal + ";" + (ds.lecturafinal - ds.lecturainicial) + ";" + ds.esmanual);
-        }
-
-        JSONArray labels = new JSONArray();
-        JSONArray data = new JSONArray();
-        //JSONObject dataset = new JSONObject();
-        BigDecimal consumoTotal = new BigDecimal(0.0);
-        for (Dia dia : diasSalida) {
+        //data.put(d.consumo);
+        c.cerrar();
+        
+        //dias.remove(0);
+        for(Dia dia : dias){
+            System.out.println(dia.numremarcador + ";" + dia.fecha + ";" + dia.lecturainicial + ";" + dia.lecturafinal + ";" + dia.consumo + ";" + dia.esmanual);
             labels.put(dia.fecha);
-            //data.put((dia.lecturafinal - dia.lecturainicial));
             data.put(dia.consumo);
-            consumoTotal = consumoTotal.add(dia.consumo);
-            //System.out.println("Consumo total: " + consumoTotal);
-            //System.out.println(dia.numremarcador + ";" + dia.fecha + ";" + dia.lecturainicial + ";" + dia.lecturafinal + ";" + dia.consumo + ";" + dia.esmanual);
         }
         JSONObject resumen = new JSONObject();
 
-        resumen.put("numremarcador", diasSalida.get(0).numremarcador);
+        LocalDateTime timelastlectura = LocalDateTime.parse(registros.get(registros.size() - 1).timestamp, formattertimestamp);
+
+        //System.out.println("TimeLastLectura : " + formattertimestamp.format(timelastlectura).toString());
+        
+        resumen.put("numremarcador", dias.get(0).numremarcador);
         resumen.put("fechainilectura", labels.get(0));
         resumen.put("fechafinlectura", labels.get(labels.length() - 1));
-        resumen.put("lecturaini", diasSalida.get(0).lecturainicial);
-        resumen.put("lecturainimanual", diasSalida.get(0).esmanual);
-        resumen.put("lecturafin", diasSalida.get(diasSalida.size() - 1).lecturafinal);
-        resumen.put("lecturafinmanual", diasSalida.get(diasSalida.size() - 1).esmanual);
-        resumen.put("consumototalmes", consumoTotal);
+        resumen.put("lecturaini", dias.get(0).lecturainicial);
+        resumen.put("lecturainimanual", dias.get(0).esmanual);
+        resumen.put("lecturafin", dias.get(dias.size() - 1).lecturafinal);
+        resumen.put("lecturafinmanual", dias.get(dias.size() - 1).esmanual);
+        resumen.put("consumototalmes", consumototal);
+        resumen.put("timstampfin", formattertimestamp.format(timelastlectura).toString());
+        resumen.put("horafin", formattertime.format(timelastlectura).toString());
         dataset.put("resumen", resumen);
 
         dataset.put("data", data);
@@ -281,6 +204,7 @@ public class LecturaController {
         dataset.put("borderWidth", "2");
         dataset.put("label", "Remarcador ID: " + numremarcador);
         System.out.println(dataset);
+        
         return dataset;
     }
 
@@ -294,6 +218,7 @@ public class LecturaController {
         String queryOrigen = "SELECT FN_GET_ORIGEN_NUMREMARCADOR(" + numremarcador + ") ORIGEN";
         System.out.println(queryOrigen);
         Conexion c = new Conexion();
+        c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(queryOrigen);
         String origen = "";
@@ -320,6 +245,7 @@ public class LecturaController {
             query = "CALL SP_GET_POTENCIAS_MES_PM5300(" + numremarcador + ", " + anio + ", " + mes + ")";
         }
         c = new Conexion();
+        c.setReplica();
         c.abrir();
         System.out.println(query);
         rs = c.ejecutarQuery(query);
@@ -434,7 +360,7 @@ public class LecturaController {
                 maxdemandaleida = dia.demmax;
             }
             datademandahp.put(dia.demmaxhpunta);
-            if(maxdemandahp.compareTo(dia.demmaxhpunta) == -1){
+            if (maxdemandahp.compareTo(dia.demmaxhpunta) == -1) {
                 maxdemandahp = dia.demmaxhpunta;
             }
         }
@@ -594,75 +520,6 @@ public class LecturaController {
         }
 
         return diasSalida;
-    }
-
-    static class Registro {
-
-        public String dia;
-        public Integer numremarcador;
-        public String timestamp;
-        public BigDecimal lectura;
-        public BigDecimal lecturaManual;
-        public BigDecimal delta;
-        public BigDecimal proyeccion;
-        public boolean esmanual = false;
-
-        public Registro(String dia, Integer numremarcador, String timestamp, BigDecimal lectura) {
-            this.dia = dia;
-            this.numremarcador = numremarcador;
-            this.timestamp = timestamp;
-            this.lectura = lectura;
-        }
-
-        public Registro() {
-
-        }
-    }
-
-    static class RegistroPotencia {
-
-        public String fecha;
-        public Integer numremarcador;
-        public String timestamp;
-        public BigDecimal potencia;
-
-        public Integer anio, mes, dia, hh, mm, ss;
-
-        public RegistroPotencia(String fecha, Integer numremarcador, String timestamp, BigDecimal potencia, Integer anio, Integer mes, Integer dia, Integer hh, Integer mm, Integer ss) {
-            this.fecha = fecha;
-            this.numremarcador = numremarcador;
-            this.timestamp = timestamp;
-            this.potencia = potencia;
-
-            this.anio = anio;
-            this.mes = mes;
-            this.dia = dia;
-            this.hh = hh;
-            this.mm = mm;
-            this.ss = ss;
-        }
-
-        public RegistroPotencia() {
-
-        }
-    }
-
-    static class Dia {
-
-        public String fecha;
-        public Integer numremarcador;
-        public BigDecimal consumo;
-        public BigDecimal lecturainicial;
-        public BigDecimal lecturafinal;
-        public boolean esmanual = false;
-    }
-
-    static class DiaPotencia {
-
-        public String fecha;
-        public Integer numremarcador;
-        public BigDecimal demmax;
-        public BigDecimal demmaxhpunta;
     }
 
 }

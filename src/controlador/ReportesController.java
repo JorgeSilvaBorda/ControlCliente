@@ -48,6 +48,7 @@ public class ReportesController extends HttpServlet {
         String query = "CALL SP_GET_FECHAS_ATRAS_DESDE_HOY(13);";
         System.out.println(query);
         Conexion c = new Conexion();
+        c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         JSONArray labels = new JSONArray();
@@ -154,6 +155,7 @@ public class ReportesController extends HttpServlet {
                 + ");";
         System.out.println(query);
         Conexion c = new Conexion();
+        c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         JSONArray labels = new JSONArray();
@@ -257,6 +259,7 @@ public class ReportesController extends HttpServlet {
         JSONObject datademandas = new JSONObject();
         String query = "";
         Conexion c = new Conexion();
+        c.setReplica();
         LinkedList<Integer> ides = new LinkedList();
 
         //Obtener Remarcadores asociados al cliente ----------------------------
@@ -266,6 +269,7 @@ public class ReportesController extends HttpServlet {
                 + ")";
         System.out.println(query);
         c = new Conexion();
+        c.setReplica();
         c.abrir();
 
         ResultSet rs = c.ejecutarQuery(query);
@@ -379,6 +383,7 @@ public class ReportesController extends HttpServlet {
             Double demmaxhp = resumenesPotencia.getJSONObject(arrcont).getDouble("maxdemandahpunta");
             
             Conexion conn = new Conexion();
+            conn.setReplica();
             String querydem = "CALL SP_GET_MAXDEM_6_12_MESES(" + idrem + ", " + mes + ", " + anio + ")";
             System.out.println("Query demandas 6 y 12 meses: " + querydem);
             conn.abrir();
@@ -473,6 +478,7 @@ public class ReportesController extends HttpServlet {
             }
 
             Conexion conn = new Conexion();
+            conn.setReplica();
             String querydem = "CALL SP_GET_MAXDEM_6_12_MESES(" + idrem + ", " + mes + ", " + anio + ")";
             System.out.println("Query demandas 6 y 12 meses: " + querydem);
             conn.abrir();

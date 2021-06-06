@@ -21,6 +21,7 @@ public class ETL {
     private static String[][] getOrigenesRemarcador() {
         String query = "CALL SP_GET_ORIGEN_REMARCADORES()";
         Conexion c = new Conexion();
+        c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         System.out.println(query);
@@ -89,6 +90,7 @@ public class ETL {
         LinkedList<String[]> filas = new LinkedList();
         int cont = 0;
         Conexion c = new Conexion();
+        c.setReplica();
         c.abrir();
         System.out.println(query);
         ResultSet rs = c.ejecutarQuery(query);
@@ -164,6 +166,7 @@ public class ETL {
         LinkedList<String[]> filas = new LinkedList();
         int cont = 0;
         Conexion c = new Conexion();
+        c.setReplica();
         c.abrir();
         System.out.println(query);
         ResultSet rs = c.ejecutarQuery(query);

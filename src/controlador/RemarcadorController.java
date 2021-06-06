@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -26,6 +27,7 @@ public class RemarcadorController extends HttpServlet {
         PrintWriter out = response.getWriter();
         response.setContentType("text/html; charset=UTF-8");
         HttpSession session = request.getSession();
+        System.out.println("Request" + request.getParameter("datos"));
         JSONObject entrada = new JSONObject(request.getParameter("datos"));
         switch (entrada.getString("tipo")) {
             case "get-remarcadores":
@@ -344,6 +346,7 @@ public class RemarcadorController extends HttpServlet {
         System.out.println(query);
         LinkedList<Remarcador> remarcadores = new LinkedList();
         Conexion c = new Conexion();
+        c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         try {
@@ -400,9 +403,9 @@ public class RemarcadorController extends HttpServlet {
             //double consumo = 0;
             String fechainilectura = resumenRemarcador.getString("fechainilectura");
             String fechafinlectura = resumenRemarcador.getString("fechafinlectura");
-            
+
             if (inimanual || finmanual) {
-                
+
                 haymanual = true;
             }
             if (inimanual) {
@@ -557,6 +560,7 @@ public class RemarcadorController extends HttpServlet {
         JSONArray remarcadores = new JSONArray();
 
         Conexion con = new Conexion();
+        con.setReplica();
         String querybol = "CALL SP_GET_LAST_BOLETA_IDREM_MESANIO("
                 + remcli.getInt("idremarcador") + ", "
                 + mes + ", "
@@ -660,6 +664,7 @@ public class RemarcadorController extends HttpServlet {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_REMARCADORES_IDEMPALME(" + entrada.getInt("idempalme") + ")";
         Conexion c = new Conexion();
+        c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDREMARCADOR", "NUMREMARCADOR");
@@ -673,6 +678,7 @@ public class RemarcadorController extends HttpServlet {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_SELECT_REMARCADOR_IDCLIENTE(" + entrada.getInt("idcliente") + ")";
         Conexion c = new Conexion();
+        c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         String options = modelo.Util.armarSelect(rs, "0", "Seleccione", "IDREMARCADOR", "NUMREMARCADOR");
@@ -686,6 +692,7 @@ public class RemarcadorController extends HttpServlet {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_REMARCADORES_LIBRES()";
         Conexion c = new Conexion();
+        c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         String filas = "";
@@ -718,6 +725,7 @@ public class RemarcadorController extends HttpServlet {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_REMARCADORES_ASIGNADOS()";
         Conexion c = new Conexion();
+        c.setReplica();
         System.out.println(query);
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -772,6 +780,7 @@ public class RemarcadorController extends HttpServlet {
         String query = "CALL SP_GET_REMARCADORES_ASIGNADOS_IDEMPALME(" + entrada.getInt("idempalme") + ")";
         System.out.println(query);
         Conexion c = new Conexion();
+        c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         String filas = "";
@@ -828,6 +837,7 @@ public class RemarcadorController extends HttpServlet {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_HIST_BAJA_REMARCADORES()";
         Conexion c = new Conexion();
+        c.setReplica();
         System.out.println(query);
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -868,6 +878,7 @@ public class RemarcadorController extends HttpServlet {
         JSONObject salida = new JSONObject();
         String query = "CALL SP_GET_HIST_ASIGNACION_REMARCADORES()";
         Conexion c = new Conexion();
+        c.setReplica();
         System.out.println(query);
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -931,6 +942,7 @@ public class RemarcadorController extends HttpServlet {
         String query = "CALL SP_GET_REMARCADOR_IDREMARCADOR(" + idremarcador + ")";
         System.out.println(query);
         Conexion c = new Conexion();
+        c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         try {
@@ -972,6 +984,7 @@ public class RemarcadorController extends HttpServlet {
         String query = "CALL SP_GET_REMARCADOR_CLIENTE_IDREMARCADOR(" + idremarcador + ", '" + mesanio + "')";
         System.out.println(query);
         Conexion c = new Conexion();
+        c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         try {
@@ -1027,6 +1040,7 @@ public class RemarcadorController extends HttpServlet {
                 + entrada.getInt("aniosolo")
                 + ")";
         Conexion c = new Conexion();
+        c.setReplica();
         System.out.println(query);
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
@@ -1149,8 +1163,8 @@ public class RemarcadorController extends HttpServlet {
         int mes = entrada.getInt("mes");
         int idcliente = entrada.getInt("idcliente");
 
-        FilaNormal[] registros = etl.ETL.getDatasetRemarcador(numremarcador, mes, anio);
-        FilaNormal ultregistro = registros[registros.length - 1];
+        JSONObject dataset = modelo.LecturaController.getDatasetMesRemarcadorNumremarcador(numremarcador, anio, mes);
+        JSONObject datasetpotencias = modelo.LecturaController.getDatasetPotenciasMesRemarcadorNumremarcador(numremarcador, anio, mes);
 
         //Obtener datos del remarcador
         String query = "CALL SP_GET_DATOS_UN_REMARCADOR_ASIGNADO(" + idremarcador + ", " + idcliente + ")";
@@ -1183,22 +1197,25 @@ public class RemarcadorController extends HttpServlet {
                 + "<tbody>\n";
         String filas = "";
         DecimalFormat df = new DecimalFormat("#.##");
+
         filas += "<tr>";
-        filas += "<td>" + ultregistro.idremarcador + "</td>";
+        filas += "<td>" + dataset.getJSONObject("resumen").getInt("numremarcador") + "</td>";
         filas += "<td>" + nomcliente + "</td>";
-        filas += "<td>" + (int) ultregistro.lecturareal + "</td>";
-        filas += "<td>" + df.format(ultregistro.potencia).replace(",", ".") + "</td>";
-        filas += "<td>" + Util.invertirFecha(ultregistro.fecha) + "</td>";
-        filas += "<td>" + ultregistro.hora + "</td>";
+        filas += "<td>" + dataset.getJSONObject("resumen").getBigDecimal("lecturafin").intValue() + "</td>";
+        filas += "<td>" + df.format(datasetpotencias.getJSONObject("resumen").getBigDecimal("maxdemandaleida")).replace(",", ".") + "</td>";
+        filas += "<td>" + Util.invertirFecha(dataset.getJSONObject("resumen").getString("fechafinlectura")) + "</td>";
+        filas += "<td>" + dataset.getJSONObject("resumen").getString("horafin") + "</td>";
         filas += "</tr>";
 
-        salida.put("numremarcador", ultregistro.idremarcador);
-        salida.put("energia", (int) ultregistro.lecturareal);
-        salida.put("potencia", df.format(ultregistro.potencia).replace(",", "."));
-        salida.put("fechaformat", Util.invertirFecha(ultregistro.fecha));
-        salida.put("fecha", ultregistro.fecha);
-        salida.put("hora", ultregistro.hora);
+        
+        salida.put("numremarcador", dataset.getJSONObject("resumen").getInt("numremarcador"));
+        salida.put("energia", dataset.getJSONObject("resumen").getBigDecimal("lecturafin").intValue());
+        salida.put("potencia", df.format(datasetpotencias.getJSONObject("resumen").getBigDecimal("maxdemandaleida")).replace(",", "."));
+        salida.put("fechaformat", Util.invertirFecha(dataset.getJSONObject("resumen").getString("fechafinlectura")));
+        salida.put("fecha", dataset.getJSONObject("resumen").getString("fechafinlectura"));
+        salida.put("hora", dataset.getJSONObject("resumen").getString("horafin"));
 
+        
         tabla += (filas + "</tbody></table>");
         salida.put("tabla", tabla);
         String botonInsert = "<table style='border: none; border-collapse: collapse'>\n"

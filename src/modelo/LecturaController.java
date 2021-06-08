@@ -78,9 +78,9 @@ public class LecturaController {
 
                     float lecactualmanual = rs.getFloat("LECTURAMANUAL");
                     if (rs.wasNull()) { //Si la lectura manual también es nula --------------------------------------------------------------------------
-                        if (anterior.dia != null) { //Cuando existe un registro anterior, es decir, es el primero
+                        if (anterior.dia != null) { //Cuando existe un registro anterior
                             r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), anterior.lectura);
-                            r.esmanual = true;
+                            //r.esmanual = true;
                             r.delta = 0f;
                         } else { //Cuando no existe un registro anterior, no se puede obtener lectura hacia atrás.
                             //Se deja la lectura y delta en cero.
@@ -107,8 +107,14 @@ public class LecturaController {
                     }
                     if (anterior.dia == null) { //Si no existe anterior. es decir, ésta es la primera
                         r.delta = 0;
-                    } else {
-                        r.delta = r.lectura - anterior.lectura;
+                    } else {//No es la primera
+                        if(r.lectura >= anterior.lectura){
+                            r.delta = r.lectura - anterior.lectura;
+                        }else{
+                            //r.lectura = anterior.lectura;
+                            r.delta = 0f;
+                        }
+                        
                     }
                 }
 
@@ -176,7 +182,7 @@ public class LecturaController {
         
         //dias.remove(0);
         for(Dia dia : dias){
-            System.out.println(dia.numremarcador + ";" + dia.fecha + ";" + dia.lecturainicial + ";" + dia.lecturafinal + ";" + dia.consumo + ";" + dia.esmanual);
+            //System.out.println(dia.numremarcador + ";" + dia.fecha + ";" + dia.lecturainicial + ";" + dia.lecturafinal + ";" + dia.consumo + ";" + dia.esmanual);
             labels.put(dia.fecha);
             data.put(dia.consumo);
         }
@@ -206,6 +212,109 @@ public class LecturaController {
         System.out.println(dataset);
         
         return dataset;
+    }
+    
+    public static LinkedList<Registro> getRegistrosMesRemarcadorNumremarcador(int numremarcador, int anio, int mes) {
+        LinkedList<Registro> registros = new LinkedList<>();
+        System.out.println("Buscando dataset remarcador num: " + numremarcador + " Año: " + anio + " Mes: " + mes);
+
+        Conexion c;
+
+        //Obtener orígen del remarcador que viene con su número
+        String queryOrigen = "SELECT FN_GET_ORIGEN_NUMREMARCADOR(" + numremarcador + ") ORIGEN";
+        System.out.println(queryOrigen);
+        c = new Conexion();
+        c.setReplica();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(queryOrigen);
+        String origen = "";
+        try {
+            while (rs.next()) {
+                origen = rs.getString("ORIGEN");
+            }
+        } catch (Exception ex) {
+            System.out.println("No se pudo obtener el origen del remarcador NUM: " + numremarcador);
+            System.out.println(ex);
+            c.cerrar();
+        }
+        c.cerrar();
+        String query = "";
+
+        //Ir a traer todas las lecturas del mes
+        if (origen.equals("circutorcvmC10")) {
+            query = "CALL SP_GET_LECTURAS_MES_CIRCUTOR(" + numremarcador + ", " + anio + ", " + mes + ")";
+        } else if (origen.equals("schneiderPM710")) {
+            query = "CALL SP_GET_LECTURAS_MES_PM710(" + numremarcador + ", " + anio + ", " + mes + ")";
+        } else if (origen.equals("schneiderPM5300")) {
+            query = "CALL SP_GET_LECTURAS_MES_PM5300(" + numremarcador + ", " + anio + ", " + mes + ")";
+        }
+        c = new Conexion();
+        c.setReplica();
+        c.abrir();
+        System.out.println(query);
+        rs = c.ejecutarQuery(query);
+        Registro anterior = new Registro();
+        Dia d = new Dia();
+        Registro r = new Registro();
+        try {
+            while (rs.next()) {
+
+                r = new Registro();
+
+                float lecactual = rs.getFloat("LECTURA");
+                if (rs.wasNull()) {//Si viene una lectura nula-------------------------------------------------------------------------------------------
+
+                    float lecactualmanual = rs.getFloat("LECTURAMANUAL");
+                    if (rs.wasNull()) { //Si la lectura manual también es nula --------------------------------------------------------------------------
+                        if (anterior.dia != null) { //Cuando existe un registro anterior
+                            r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), anterior.lectura);
+                            //r.esmanual = true;
+                            r.delta = 0f;
+                        } else { //Cuando no existe un registro anterior, no se puede obtener lectura hacia atrás.
+                            //Se deja la lectura y delta en cero.
+                            r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), 0f);
+                            r.delta = 0f;
+                        }
+                        r.delta = 0f; //Se deja el delta en cero.
+                    } else { //Si la lectura manual no es nula.
+                        r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), rs.getFloat("LECTURAMANUAL"));
+                        r.esmanual = true;
+                        if (anterior.dia != null) { //Cuando existe un registro anterior, es decir, es el primero
+                            r.delta = anterior.lectura - r.lectura;
+                        } else { //Cuando no existe un registro anterior, no se puede obtener lectura hacia atrás.
+                            //Se deja el delta en cero
+                            r.delta = 0f;
+                        }
+                    }
+                } else { //La lectura que viene no es nula----------------------------------------------------------------------------------------------
+                    r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), rs.getFloat("LECTURA"));
+                    float lecactualmanual = rs.getFloat("LECTURAMANUAL");
+                    if (!rs.wasNull()) {//Si la lectura es manual, manda ésta. Se cambia.
+                        r.esmanual = true;
+                        r.lectura = rs.getFloat("LECTURAMANUAL");
+                    }
+                    if (anterior.dia == null) { //Si no existe anterior. es decir, ésta es la primera
+                        r.delta = 0;
+                    } else {//No es la primera
+                        if(r.lectura >= anterior.lectura){
+                            r.delta = r.lectura - anterior.lectura;
+                        }else{
+                            //r.lectura = anterior.lectura;
+                            r.delta = 0f;
+                        }
+                        
+                    }
+                }
+
+                anterior = r;
+                registros.add(r);
+            }
+        } catch (Exception ex) {
+            System.out.println("No se pudo obtener los registros del remarcador.");
+            System.out.println(ex);
+            c.cerrar();
+        }
+        return registros;
     }
 
     public static JSONObject getDatasetPotenciasMesRemarcadorNumremarcador(Integer numremarcador, Integer anio, Integer mes) {
@@ -385,6 +494,69 @@ public class LecturaController {
 
         //System.out.println(dataset);
         return dataset;
+    }
+    
+    public static LinkedList<RegistroPotencia> getRegistrosPotenciaMesRemarcadorNumremarcador(Integer numremarcador, Integer anio, Integer mes) {
+        LinkedList<RegistroPotencia> registros = new LinkedList<>();
+
+        System.out.println("Buscando dataset remarcador num: " + numremarcador + " Año: " + anio + " Mes: " + mes);
+
+        //Obtener orígen del remarcador que viene con su número
+        String queryOrigen = "SELECT FN_GET_ORIGEN_NUMREMARCADOR(" + numremarcador + ") ORIGEN";
+        System.out.println(queryOrigen);
+        Conexion c = new Conexion();
+        c.setReplica();
+        c.abrir();
+        ResultSet rs = c.ejecutarQuery(queryOrigen);
+        String origen = "";
+
+        try {
+            while (rs.next()) {
+                origen = rs.getString("ORIGEN");
+            }
+        } catch (Exception ex) {
+            System.out.println("No se pudo obtener el origen del remarcador NUM: " + numremarcador);
+            System.out.println(ex);
+            c.cerrar();
+            //return new JSONObject();
+        }
+        c.cerrar();
+        String query = "";
+
+        //Ir a traer todas las lecturas del mes
+        if (origen.equals("circutorcvmC10")) {
+            query = "CALL SP_GET_POTENCIAS_MES_CIRCUTOR(" + numremarcador + ", " + anio + ", " + mes + ")";
+        } else if (origen.equals("schneiderPM710")) {
+            query = "CALL SP_GET_POTENCIAS_MES_PM710(" + numremarcador + ", " + anio + ", " + mes + ")";
+        } else if (origen.equals("schneiderPM5300")) {
+            query = "CALL SP_GET_POTENCIAS_MES_PM5300(" + numremarcador + ", " + anio + ", " + mes + ")";
+        }
+        c = new Conexion();
+        c.setReplica();
+        c.abrir();
+        System.out.println(query);
+        rs = c.ejecutarQuery(query);
+        try {
+            while (rs.next()) {
+
+                RegistroPotencia rp = new RegistroPotencia();
+                double lec = rs.getDouble("POTENCIA");
+                if (rs.wasNull()) {
+                    rp = new RegistroPotencia(rs.getString("FECHA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), null, rs.getInt("ANIO"), rs.getInt("MES"), rs.getInt("DIA"), rs.getInt("HH"), rs.getInt("MM"), rs.getInt("SS"));
+                } else {
+                    rp = new RegistroPotencia(rs.getString("FECHA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), rs.getBigDecimal("POTENCIA"), rs.getInt("ANIO"), rs.getInt("MES"), rs.getInt("DIA"), rs.getInt("HH"), rs.getInt("MM"), rs.getInt("SS"));
+                }
+                registros.add(rp);
+            }
+        } catch (Exception ex) {
+            System.out.println("No se pudo obtener los registros de potencia del remarcador.");
+            System.out.println(ex);
+            c.cerrar();
+            //return new JSONObject();
+        }
+        c.cerrar();
+
+        return registros;
     }
 
     public static LinkedList<DiaPotencia> getPotenciaPorAnioMes(Integer numremarcador, Integer anio, Integer mes) {

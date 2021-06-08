@@ -1,15 +1,16 @@
 package controlador;
 
-import etl.FilaNormal;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.Properties;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -17,7 +18,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.Conexion;
-import modelo.Util;
+import modelo.lectura.Registro;
+import modelo.lectura.RegistroPotencia;
 
 public class FileController extends HttpServlet {
 
@@ -94,7 +96,8 @@ public class FileController extends HttpServlet {
             System.out.println(ex);
         }
         c.cerrar();
-        FilaNormal[] filas = etl.ETL.getDatasetRemarcador(id, fechaini, fechafin);
+        LinkedList<Registro> registros = modelo.LecturaController.getRegistrosMesRemarcadorNumremarcador(id, anio, mes);
+        LinkedList<RegistroPotencia> registrosPotencia = modelo.LecturaController.getRegistrosPotenciaMesRemarcadorNumremarcador(id, anio, mes);
         try {
             File salida = new File(nomarchivo);
             FileWriter fr = new FileWriter(salida, true);
@@ -102,8 +105,47 @@ public class FileController extends HttpServlet {
 
             String cabecera = "TIMESTAMP" + sep + "FECHA" + sep + "HORA" + sep + "ID REMARCADOR" + sep + "ENERGIA CONSUMIDA PROYECTADA" + sep + "POTENCIA ACTIVA" + sep + "LECTURA REAL" + sep + "LECTURA MANUAL" + System.getProperty("line.separator");
             fr.write(cabecera);
-            for (FilaNormal fila : filas) {
-                String registro = fila.fechahora + sep + Util.invertirFecha(fila.fecha) + sep + fila.hora + sep + fila.idremarcador + sep + (int) fila.lecturaproyectada + sep + formato.format(fila.potencia).replace(",", ".") + sep + (int) fila.lecturareal + sep + fila.lecturamanual + System.getProperty("line.separator");
+            float proyectada = 0f;
+            BigDecimal potencia = new BigDecimal(0.0);;
+            for (Registro reg : registros) {
+                //System.out.println("PROYECTADA: [" + proyectada + " + " + reg.delta + "] = " + (proyectada + reg.delta));
+                proyectada = proyectada + reg.delta;
+               
+                String fechahoracortaregistro = reg.timestamp.substring(0, 16);
+                //System.out.println(fechahoracortaregistro);
+                for (RegistroPotencia regpo : registrosPotencia) {
+                    potencia = new BigDecimal(0.0);
+                    String fechahoracortaregistropotencia = regpo.timestamp.substring(0, 16);
+                    //if(fechahoracortaregistro.equals(fechahoracortaregistropotencia)){
+                    if (reg.timestamp.equals(regpo.timestamp)) {
+                        //System.out.println("coincide");
+                        potencia = regpo.potencia;
+                        break;
+                    }
+                }
+                
+                String fecha = reg.timestamp.split(" ")[0];
+                String hora = reg.timestamp.split(" ")[1];
+                String fechaLocal = fecha.split("-")[2] + "-" + fecha.split("-")[1] + "-" + fecha.split("-")[0];
+
+                String registro
+                        = reg.timestamp
+                        + sep
+                        + fechaLocal
+                        + sep
+                        + hora
+                        + sep
+                        + reg.numremarcador
+                        + sep
+                        + proyectada
+                        + sep
+                        + formato.format(potencia).replace(",", ".")
+                        + sep
+                        + reg.lectura
+                        + sep
+                        + reg.lecturaManual
+                        + System.getProperty("line.separator");
+                //System.out.print(registro);
                 fr.write(registro);
             }
             fr.close();

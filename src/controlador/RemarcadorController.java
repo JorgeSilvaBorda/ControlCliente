@@ -336,7 +336,7 @@ public class RemarcadorController extends HttpServlet {
         JSONObject salida = new JSONObject();
         int anio = Integer.parseInt(entrada.getString("mes").split("-")[0]);
         int mes = Integer.parseInt(entrada.getString("mes").split("-")[1]);
-        BigDecimal kwtotal = new BigDecimal(0);
+        int kwtotal = 0;
         boolean haymanual = false;
         boolean haymanualini = false;
         String query = "CALL SP_GET_REMARCADORES_NUMEMPALME_BOLETA("
@@ -393,7 +393,7 @@ public class RemarcadorController extends HttpServlet {
             boolean inimanual = resumenRemarcador.getBoolean("lecturainimanual");
             BigDecimal lecturafin = resumenRemarcador.getBigDecimal("lecturafin");
             boolean finmanual = resumenRemarcador.getBoolean("lecturafinmanual");
-            BigDecimal consumototal = resumenRemarcador.getBigDecimal("consumototalmes");
+            double consumototal = resumenRemarcador.getDouble("consumototalmes");
 
             BigDecimal maxdemandaleida = resumenPotenciaRemarcador.getBigDecimal("maxdemandaleida");
             BigDecimal maxdemandahorapunta = resumenPotenciaRemarcador.getBigDecimal("maxdemandahpunta");
@@ -405,7 +405,6 @@ public class RemarcadorController extends HttpServlet {
             String fechafinlectura = resumenRemarcador.getString("fechafinlectura");
 
             if (inimanual || finmanual) {
-
                 haymanual = true;
             }
             if (inimanual) {
@@ -446,7 +445,7 @@ public class RemarcadorController extends HttpServlet {
             }
 
             tablasalida += "</tr>";
-            kwtotal.add(consumototal);
+            kwtotal = kwtotal + (int)consumototal;
             idcomuna = remarcador.idcomuna;
             remarcadorJson = new JSONObject();
             remarcadorJson.put("idremarcador", remarcador.idremarcador);

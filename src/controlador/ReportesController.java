@@ -16,8 +16,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.Conexion;
-import modelo.LecturaController;
+import modelo.ConsumoMes;
 import modelo.Util;
+import modelo.lectura.Dia;
 
 public class ReportesController extends HttpServlet {
 
@@ -76,59 +77,56 @@ public class ReportesController extends HttpServlet {
 
         mesini = fechas.get(0)[1].toString();
         mesfin = fechas.get(fechas.size() - 1)[2].toString();
-        FilaNormal[] filas = etl.ETL.getDatasetRemarcador(entrada.getInt("numremarcador"), mesini, mesfin);
-
-        String mesanioActual = "";
-        String iniMes = "";
-        String finMes = "";
-        double lecturaIniMes = 0.0d;
-        double lecturaFinMes = 0.0d;
-        LinkedList<Object[]> fechasLecturas = new LinkedList();
-
-        for (int i = 0; i < filas.length; i++) {
-            if (!filas[i].fecha.substring(0, 7).equals(mesanioActual) && i == 0) {
-                lecturaIniMes = filas[i].lecturaproyectada;
-                iniMes = filas[i].fecha;
-                mesanioActual = filas[i].fecha.substring(0, 7);
-            }
-            if ((!filas[i].fecha.substring(0, 7).equals(mesanioActual)) && i > 0 && i < filas.length - 1) {
-                finMes = filas[i - 1].fecha;
-                lecturaFinMes = filas[i - 1].lecturaproyectada;
-                Object[] fecha = new Object[4];
-                fecha[0] = mesanioActual;
-                fecha[1] = iniMes;
-                fecha[2] = finMes;
-                fecha[3] = (lecturaFinMes - lecturaIniMes);
-                fechasLecturas.add(fecha);
-                mesanioActual = filas[i].fecha.substring(0, 7);
-
-                iniMes = filas[i].fecha;
-                lecturaIniMes = filas[i].lecturaproyectada;
-            }
-            if (i == filas.length - 1) {
-                finMes = filas[i].fecha;
-                lecturaFinMes = filas[i].lecturaproyectada;
-                Object[] fecha = new Object[4];
-                fecha[0] = mesanioActual;
-                fecha[1] = iniMes;
-                fecha[2] = finMes;
-                fecha[3] = (lecturaFinMes - lecturaIniMes);
-                fechasLecturas.add(fecha);
-            }
-        }
-        for (int i = 0; i < fechas.size(); i++) {
-            for (int x = 0; x < fechasLecturas.size(); x++) {
-                if (fechas.get(i)[0].equals(fechasLecturas.get(x)[0])) {
-                    fechas.get(i)[3] = fechasLecturas.get(x)[3];
+        String fechadesde = fechas.get(0)[1].toString();
+        String fechahasta = fechas.get(fechas.size() - 1)[2].toString();
+        LinkedList<Dia> dias = modelo.LecturaController.getDiasDesdeHastaRemarcadorNumremarcador(entrada.getInt("numremarcador"), fechadesde, fechahasta);
+        
+        LinkedList<ConsumoMes> meses = new LinkedList();
+        String mesanterior = "";
+        
+        ConsumoMes cm = new ConsumoMes();
+        Dia anterior = new Dia();
+        for(Dia d : dias){
+            //System.out.println(d.fecha + ";" + d.lecturainicial + ";" + d.lecturafinal + ";" + d.consumo);
+            
+            //System.out.println(d.fecha.substring(0, 7));
+            if(!d.fecha.substring(0, 7).equals(mesanterior)){//Es un nuevo mes
+                if(mesanterior.equals("")){//Es el primer mes
+                    cm = new ConsumoMes();
+                    cm.anio = Integer.parseInt(d.fecha.substring(0, 4));
+                    cm.mes = Integer.parseInt(d.fecha.substring(5, 7));
+                    cm.consumo = 0;
+                    cm.consumo = cm.consumo + d.consumo;
+                    cm.lecturaini = d.lecturainicial;
+                }else{//Es un cambio de mes
+                    cm.lecturafin = anterior.lecturafinal;
+                    cm.consumo = cm.consumo + anterior.consumo;
+                    meses.add(cm);
+                    
+                    cm = new ConsumoMes();
+                    cm.anio = Integer.parseInt(d.fecha.substring(0, 4));
+                    cm.mes = Integer.parseInt(d.fecha.substring(5, 7));
+                    cm.consumo = 0;
+                    cm.consumo = cm.consumo + d.consumo;
+                    cm.lecturaini = d.lecturainicial;
                 }
+            }else{//Es el mismo mes
+                cm.consumo = cm.consumo + d.consumo;
             }
+            anterior = d;
+            mesanterior = d.fecha.substring(0, 7);
+        }
+        
+        cm.lecturafin = anterior.lecturafinal;
+        meses.add(cm);
+        LinkedList<Object[]> fechasLecturas = new LinkedList();
+        
+        for(ConsumoMes ccmm : meses){
+            String aniomes = (ccmm.mes < 10 ? ccmm.anio + "-0" + ccmm.mes : ccmm.anio + "-" + ccmm.mes);
+            labels.put(aniomes);
+            datasetData.put(ccmm.consumo);
         }
 
-        for (Object[] fecs : fechas) {
-            System.out.println(fecs[1] + " - " + fecs[2] + ": " + fecs[3]);
-            labels.put(Util.invertirFecha(fecs[2].toString()));
-            datasetData.put(Double.parseDouble(fecs[3].toString()));
-        }
         JSONObject dataset = new JSONObject();
         dataset.put("data", datasetData);
         dataset.put("label", "Remarcador ID: " + entrada.getInt("numremarcador"));
@@ -139,6 +137,7 @@ public class ReportesController extends HttpServlet {
         data.put("datasets", datasets);
         salida.put("data", data);
         salida.put("estado", "ok");
+        System.out.println(salida);
         return salida;
     }
 
@@ -183,57 +182,55 @@ public class ReportesController extends HttpServlet {
 
         mesini = fechas.get(0)[1].toString();
         mesfin = fechas.get(fechas.size() - 1)[2].toString();
-        FilaNormal[] filas = etl.ETL.getDatasetRemarcador(entrada.getInt("numremarcador"), mesini, mesfin);
-        String mesanioActual = "";
-        String iniMes = "";
-        String finMes = "";
-        double lecturaIniMes = 0.0d;
-        double lecturaFinMes = 0.0d;
-        LinkedList<Object[]> fechasLecturas = new LinkedList();
-
-        for (int i = 0; i < filas.length; i++) {
-            if (!filas[i].fecha.substring(0, 7).equals(mesanioActual) && i == 0) {
-                lecturaIniMes = filas[i].lecturaproyectada;
-                iniMes = filas[i].fecha;
-                mesanioActual = filas[i].fecha.substring(0, 7);
-            }
-            if ((!filas[i].fecha.substring(0, 7).equals(mesanioActual)) && i > 0 && i < filas.length - 1) {
-                finMes = filas[i - 1].fecha;
-                lecturaFinMes = filas[i - 1].lecturaproyectada;
-                Object[] fecha = new Object[4];
-                fecha[0] = mesanioActual;
-                fecha[1] = iniMes;
-                fecha[2] = finMes;
-                fecha[3] = (lecturaFinMes - lecturaIniMes);
-                fechasLecturas.add(fecha);
-                mesanioActual = filas[i].fecha.substring(0, 7);
-
-                iniMes = filas[i].fecha;
-                lecturaIniMes = filas[i].lecturaproyectada;
-            }
-            if (i == filas.length - 1) {
-                finMes = filas[i].fecha;
-                lecturaFinMes = filas[i].lecturaproyectada;
-                Object[] fecha = new Object[4];
-                fecha[0] = mesanioActual;
-                fecha[1] = iniMes;
-                fecha[2] = finMes;
-                fecha[3] = (lecturaFinMes - lecturaIniMes);
-                fechasLecturas.add(fecha);
-            }
-        }
-        for (int i = 0; i < fechas.size(); i++) {
-            for (int x = 0; x < fechasLecturas.size(); x++) {
-                if (fechas.get(i)[0].equals(fechasLecturas.get(x)[0])) {
-                    fechas.get(i)[3] = fechasLecturas.get(x)[3];
+        
+        String fechadesde = fechas.get(0)[1].toString();
+        String fechahasta = fechas.get(fechas.size() - 1)[2].toString();
+        LinkedList<Dia> dias = modelo.LecturaController.getDiasDesdeHastaRemarcadorNumremarcador(entrada.getInt("numremarcador"), fechadesde, fechahasta);
+        
+        LinkedList<ConsumoMes> meses = new LinkedList();
+        String mesanterior = "";
+        
+        ConsumoMes cm = new ConsumoMes();
+        Dia anterior = new Dia();
+        for(Dia d : dias){
+            //System.out.println(d.fecha + ";" + d.lecturainicial + ";" + d.lecturafinal + ";" + d.consumo);
+            
+            //System.out.println(d.fecha.substring(0, 7));
+            if(!d.fecha.substring(0, 7).equals(mesanterior)){//Es un nuevo mes
+                if(mesanterior.equals("")){//Es el primer mes
+                    cm = new ConsumoMes();
+                    cm.anio = Integer.parseInt(d.fecha.substring(0, 4));
+                    cm.mes = Integer.parseInt(d.fecha.substring(5, 7));
+                    cm.consumo = 0;
+                    cm.consumo = cm.consumo + d.consumo;
+                    cm.lecturaini = d.lecturainicial;
+                }else{//Es un cambio de mes
+                    cm.lecturafin = anterior.lecturafinal;
+                    cm.consumo = cm.consumo + anterior.consumo;
+                    meses.add(cm);
+                    
+                    cm = new ConsumoMes();
+                    cm.anio = Integer.parseInt(d.fecha.substring(0, 4));
+                    cm.mes = Integer.parseInt(d.fecha.substring(5, 7));
+                    cm.consumo = 0;
+                    cm.consumo = cm.consumo + d.consumo;
+                    cm.lecturaini = d.lecturainicial;
                 }
+            }else{//Es el mismo mes
+                cm.consumo = cm.consumo + d.consumo;
             }
+            anterior = d;
+            mesanterior = d.fecha.substring(0, 7);
         }
-
-        for (Object[] fecs : fechas) {
-            System.out.println(fecs[1] + " - " + fecs[2] + ": " + fecs[3]);
-            labels.put(Util.invertirFecha(fecs[2].toString()));
-            datasetData.put(Double.parseDouble(fecs[3].toString()));
+        
+        cm.lecturafin = anterior.lecturafinal;
+        meses.add(cm);
+        LinkedList<Object[]> fechasLecturas = new LinkedList();
+        
+        for(ConsumoMes ccmm : meses){
+            String aniomes = (ccmm.mes < 10 ? ccmm.anio + "-0" + ccmm.mes : ccmm.anio + "-" + ccmm.mes);
+            labels.put(aniomes);
+            datasetData.put(ccmm.consumo);
         }
 
         JSONObject dataset = new JSONObject();
@@ -246,6 +243,7 @@ public class ReportesController extends HttpServlet {
         data.put("datasets", datasets);
         salida.put("data", data);
         salida.put("estado", "ok");
+        System.out.println(salida);
         return salida;
     }
 

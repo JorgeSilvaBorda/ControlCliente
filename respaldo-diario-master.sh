@@ -1,3 +1,6 @@
+(
+IFS='
+'
 echo $(date '+%Y-%m-%d %H:%M:%S')" Respaldo iniciado"
 ## Detener la escritura mientras se realiza el export de los datos
 echo $(date '+%Y-%m-%d %H:%M:%S')" Se procede a bloquear las tablas de la base de datos"
@@ -22,13 +25,10 @@ mysql -u root -pBodenor848 -e "UNLOCK TABLES"
 echo $(date '+%Y-%m-%d %H:%M:%S')" Inicia la limpieza del directorio de respaldos"
 ## Se limpia el directorio de los respaldos para dejar sólo los últimos 3 generados
 
-cont=1
-for archivo in $(ls -t /respaldos | grep backup); 
-do
-    if((cont > 3)); then
-        rm /respaldos/$archivo;
-        echo "Archivo: "$archivo" eliminado";
-    fi;
-    ((cont=cont+1));
-done;
+bash eliminar-antiguos.sh
+
+## Copiar a las máquinas remotas
+rsync -ae ssh --progress /respaldos/$FILE_NAME remoto@192.168.100.218:/home/remoto/respaldos/
+#rsync -ae ssh --progress /respaldos/$FILE_NAME remarc@192.168.100.159:/share/homes/remarc/REMARCBD_BACKUP
 echo $(date '+%Y-%m-%d %H:%M:%S')" Respaldo finalizado"
+)

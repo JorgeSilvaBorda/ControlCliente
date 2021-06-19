@@ -19,6 +19,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="nombres">Nombres</label>
+                    <input type="hidden" id="iddestinatario" />
                     <input type="text" class="form-control form-control-sm small" maxlength="200" id="nombres" />
                 </div>
             </div>
@@ -39,6 +40,7 @@
             <div class="col-sm-2">
                 <div class="form-group">
                     <label for="btn-insert">&nbsp;</label>
+                    <button onclick="updDestinatario();" style="display:none;" type="button" class="btn btn-success btn-sm float-left" id="btn-update" >Guardar</button>
                     <button onclick="insDestinatario();" type="button" class="btn btn-primary btn-sm float-left" id="btn-insert" >Insertar</button>
                     <button onclick="limpiar();" type="button" class="btn btn-default btn-sm" id="btn-limpiar">Limpiar</button>
                 </div>

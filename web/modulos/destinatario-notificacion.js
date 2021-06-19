@@ -81,17 +81,16 @@ function validarCampos() {
 function insDestinatario() {
 
     if (validarCampos()) {
-        var idinstalacion = $('#select-instalacion').val();
-        var nombres = $('#nombres').val();
-        var email = $('#email').val();
 
-        var datos = {
-            tipo: 'ins-destinatario',
-            nombres: nombres,
-            email: email,
-            idinstalacion: idinstalacion
+        //Validar que no exista
+        var destinatario = {
+            nomdestinatario: $('#nombres').val(),
+            emaildestinatario: $('#email').val()
         };
-
+        var datos = {
+            tipo: 'existe-destinatario',
+            destinatario: destinatario
+        };
         $.ajax({
             url: 'DestinatarioController',
             type: 'post',
@@ -101,8 +100,133 @@ function insDestinatario() {
             success: function (res) {
                 var obj = JSON.parse(res);
                 if (obj.estado === 'ok') {
-                    limpiar();
-                    getDestinatarios();
+                    if (obj.cantidad === '0' || obj.cantidad === 0) {
+                        //Si no hay ninguno, se manda a crear
+                        var idinstalacion = $('#select-instalacion').val();
+                        var nombres = $('#nombres').val();
+                        var email = $('#email').val();
+
+                        datos = {
+                            tipo: 'ins-destinatario',
+                            nombres: nombres,
+                            email: email,
+                            idinstalacion: idinstalacion
+                        };
+
+                        $.ajax({
+                            url: 'DestinatarioController',
+                            type: 'post',
+                            data: {
+                                datos: JSON.stringify(datos)
+                            },
+                            success: function (res) {
+                                var obj = JSON.parse(res);
+                                if (obj.estado === 'ok') {
+                                    limpiar();
+                                    getDestinatarios();
+                                }
+                            },
+                            error: function (a, b, c) {
+                                console.log(a);
+                                console.log(b);
+                                console.log(c);
+                            }
+                        });
+                    } else {
+                        //No se inserta porque ya existe uno con nombre/email
+                        alert("No se puede insertar el destinatario con los datos escogidos porque ya existe. Por favor modifique el existente.");
+                    }
+                }
+            },
+            error: function (a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+            }
+        });
+    }
+}
+
+function editar(iddestinatario) {
+    var datos = {
+        tipo: "get-destinatario-iddestinatario",
+        iddestinatario: iddestinatario
+    };
+    $.ajax({
+        url: 'DestinatarioController',
+        type: 'post',
+        data: {
+            datos: JSON.stringify(datos)
+        },
+        success: function (res) {
+            var obj = JSON.parse(res);
+            if (obj.estado === 'ok') {
+                $('#iddestinatario').val(obj.destinatario.iddestinatario);
+                $('#nombres').val(obj.destinatario.nomdestinatario);
+                $('#email').val(obj.destinatario.emaildestinatario);
+                $('#select-instalacion').val(obj.destinatario.idinstalacion);
+                $('#btn-insert').hide();
+                $('#btn-update').show();
+            }
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+function updDestinatario() {
+    var nomdestinatario
+    if (validarCampos()) {
+        var destinatario = {
+            iddestinatario: $('#iddestinatario').val(),
+            nomdestinatario: $('#nombres').val(),
+            emaildestinatario: $('#email').val(),
+            idinstalacion: $('#select-instalacion').val()
+        };
+        var datos = {
+            tipo: 'existe-destinatario',
+            destinatario: destinatario
+        };
+        $.ajax({
+            url: 'DestinatarioController',
+            type: 'post',
+            data: {
+                datos: JSON.stringify(datos)
+            },
+            success: function (res) {
+                var obj = JSON.parse(res);
+                if (obj.estado === 'ok') {
+                    if (obj.cantidad === '0' || obj.cantidad === 0) {
+                        //Se actualiza el destinatario.
+                        datos = {
+                            tipo: 'upd-destinatario',
+                            destinatario: destinatario
+                        };
+                        $.ajax({
+                            url: 'DestinatarioController',
+                            type: 'post',
+                            data: {
+                                datos: JSON.stringify(datos)
+                            },
+                            success: function (res) {
+                                var obj = JSON.parse(res);
+                                if (obj.estado === 'ok') {
+                                    limpiar();
+                                    getDestinatarios();
+                                }
+                            },
+                            error: function (a, b, c) {
+                                console.log(a);
+                                console.log(b);
+                                console.log(c);
+                            }
+                        });
+                    } else {
+                        alert("No se puede insertar el destinatario con los datos escogidos porque ya existe. Por favor modifique el existente.");
+                    }
                 }
             },
             error: function (a, b, c) {
@@ -147,6 +271,9 @@ function eliminar(iddestinatario) {
 }
 
 function limpiar() {
+    $('#btn-insert').show();
+    $('#btn-update').hide();
+    $('#iddestinatario').removeAttr("value");
     $('#nombres').val('');
     $('#email').val('');
 }

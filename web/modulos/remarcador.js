@@ -355,7 +355,7 @@ function deshabilitarRemarcador(idremarcador) {
         idremarcador: idremarcador
     };
 
-    if (confirm("Está seguro de que desea eliminar el remarcador seleccionado?\nDejará de leerse y se eliminará de cualquier asignación exxistente a clientes.")) {
+    if (confirm("Está seguro de que desea eliminar el remarcador seleccionado?")) {
         $.ajax({
             url: 'RemarcadorController',
             type: 'post',

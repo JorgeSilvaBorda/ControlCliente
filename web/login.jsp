@@ -27,6 +27,16 @@
     </head>
 
     <body class="text-center">
+        <script type="text/javascript" >
+            $('#password').keypress(function (e) {
+                var s = String.fromCharCode(e.which);
+                if (s.toUpperCase() === s && s.toLowerCase() !== s && !e.shiftKey) {
+                    $('#cont-alerta').html("<br /><div id='div-alert' class='alert alert-warning' role='alert'>Bloqueo de Mayúsculas está activado!</div>");
+                }else{
+                    $('#cont-alerta').html("");
+                }
+            });
+        </script>
         <div class="container-fluid">
             <form name="form" id="form" action="Login" method="post" class="form-signin" >
                 <h1 class="mb-4 oi oi-lock-locked text-center d-flex justify-content-center"></h1>
@@ -36,14 +46,16 @@
                 <label for="password" class="sr-only">Password</label>
                 <input type="password" class="form-control" id="password" name="password"  maxlength="20" required placeholder="Password">
                 <button class="btn btn-lg btn-primary btn-block" id="btn-login" onclick="return validarCampos();" type="submit">Ingresar</button>
-                <%
-                    if (request.getParameterMap().containsKey("status")) {
-                        if (request.getParameter("status").equals("badpass")) {
-                            out.print("<br /><div id='div-alert' class='alert alert-danger' style='display:none;' role='alert'>Usuario o contraseña equivocados.</div>");
+                <div id="cont-alerta">
+                    <%
+                        if (request.getParameterMap().containsKey("status")) {
+                            if (request.getParameter("status").equals("badpass")) {
+                                out.print("<br /><div id='div-alert' class='alert alert-danger' style='display:none;' role='alert'>Usuario o contraseña equivocados.</div>");
+                            }
                         }
-                    }
-                %>
-                <p class="mt-5 mb-3 text-muted">Bodenor 2020</p>
+                    %>
+                </div>
+                <p class="mt-5 mb-3 text-muted">Bodenor FlexCenter</p>
             </form>
         </div>
     </body>

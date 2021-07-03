@@ -37,7 +37,7 @@ function validarCampos() {
     return true;
 }
 
-function setTest(){
+function setTest() {
     $('#rut').val('163556626');
     $('#rut').keyup();
     $('#rut').blur();

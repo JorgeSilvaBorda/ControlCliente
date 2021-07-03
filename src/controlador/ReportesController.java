@@ -349,6 +349,10 @@ public class ReportesController extends HttpServlet {
                 + "<thead>"
                 + "<tr>"
                 + "<th style='text-align:center;' >Remarcador</th>"
+                + "<th style='text-align:center;' >Bodega</th>"
+                + "<th style='text-align:center;' >Cliente</th>"
+                + "<th style='text-align:center;' >Módulos</th>"
+                + "<th style='text-align:center;' >Instalación</th>"
                 + "<th style='text-align:center;'>Lectura Inicial</th>"
                 + "<th style='text-align:center;'>Lectura Final</th>"
                 + "<th style='text-align:center;'>Consumo (kWh)</th>"
@@ -388,10 +392,20 @@ public class ReportesController extends HttpServlet {
             double maxdem6 = 0.0d;
             double maxdem12 = 0.0d;
             ResultSet resset = conn.ejecutarQuery(querydem);
+            String bodega = "";
+            String cliente = "";
+            String modulos = "";
+            String instalacion = "";
+            
             try {
                 while (resset.next()) {
                     maxdem6 = resset.getDouble("MAXDEM6");
                     maxdem12 = resset.getDouble("MAXDEM12");
+                    bodega = resset.getString("NOMPARQUE");
+                    cliente = resset.getString("NOMCLIENTE");
+                    modulos = resset.getString("MODULOS");
+                    instalacion = resset.getString("NOMINSTALACION");
+                    
                 }
             } catch (SQLException ex) {
                 System.out.println("No se pueden obtener las demandas máximas de los últimos 6 y 12 meses.");
@@ -403,6 +417,10 @@ public class ReportesController extends HttpServlet {
             DecimalFormat formato = new DecimalFormat("#.##");
             tablasalida += "<tr>";
             tablasalida += "<td style='text-align:center;'>" + idrem + "</td>";
+            tablasalida += "<td style='text-align:center;'>" + bodega + "</td>";
+            tablasalida += "<td style='text-align:center;'>" + cliente + "</td>";
+            tablasalida += "<td style='text-align:center;'>" + modulos + "</td>";
+            tablasalida += "<td style='text-align:center;'>" + instalacion + "</td>";
             tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(lecturaini) + " " + (inimanual ? "*" : "") + "</td>";
             tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(lecturafin) + " " + (finmanual ? "*" : "") + "</td>";
             tablasalida += "<td style='text-align:right;'>" + Util.formatMiles(consumo) + "</td>";

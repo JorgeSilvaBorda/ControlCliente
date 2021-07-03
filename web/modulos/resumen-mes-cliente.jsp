@@ -64,11 +64,8 @@
                 </div>
             </form>
         </div>
-        <div class="col-sm-1">
-
-        </div>
-        <div class="col-sm-3"></div>
-        <div class="col-sm-5 float-sm-right" id="div-tabla-resumen">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-8 float-sm-right" id="div-tabla-resumen">
 
         </div>
     </div>

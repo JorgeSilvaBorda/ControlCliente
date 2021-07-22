@@ -60,7 +60,7 @@ public class Conexion {
 	}
 	
     }
-    
+    /*
     public void setReplica() {
 	
 	String rutaProperties = System.getenv("RUTA_PROPERTIES"); //Habilitar para lectura desde variable de entorno
@@ -86,7 +86,7 @@ public class Conexion {
 	}
 	
     }
-
+    */
     /**
      * Abre la conexión para ejecutar consultas.
      * La conexión debe cerrarse manualmente luego de una operación.

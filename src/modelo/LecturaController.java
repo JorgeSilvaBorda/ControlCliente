@@ -33,7 +33,7 @@ public class LecturaController {
         String queryOrigen = "SELECT FN_GET_ORIGEN_NUMREMARCADOR(" + numremarcador + ") ORIGEN";
         System.out.println(queryOrigen);
         c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(queryOrigen);
         String origen = "";
@@ -58,7 +58,7 @@ public class LecturaController {
             query = "CALL SP_GET_LECTURAS_MES_PM5300(" + numremarcador + ", " + anio + ", " + mes + ")";
         }
         c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         System.out.println(query);
         rs = c.ejecutarQuery(query);
@@ -234,7 +234,7 @@ public class LecturaController {
         String queryOrigen = "SELECT FN_GET_ORIGEN_NUMREMARCADOR(" + numremarcador + ") ORIGEN";
         System.out.println(queryOrigen);
         c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(queryOrigen);
         String origen = "";
@@ -259,7 +259,7 @@ public class LecturaController {
             query = "CALL SP_GET_LECTURAS_DESDE_HASTA_PM5300(" + numremarcador + ", '" + fechaini + "', '" + fechafin + "')";
         }
         c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         System.out.println(query);
         rs = c.ejecutarQuery(query);
@@ -435,7 +435,7 @@ public class LecturaController {
         String queryOrigen = "SELECT FN_GET_ORIGEN_NUMREMARCADOR(" + numremarcador + ") ORIGEN";
         System.out.println(queryOrigen);
         c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(queryOrigen);
         String origen = "";
@@ -460,7 +460,7 @@ public class LecturaController {
             query = "CALL SP_GET_LECTURAS_DESDE_HASTA_PM5300(" + numremarcador + ", '" + fechaini + "', '" + fechafin + "')";
         }
         c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         System.out.println(query);
         rs = c.ejecutarQuery(query);
@@ -635,7 +635,7 @@ public class LecturaController {
         String queryOrigen = "SELECT FN_GET_ORIGEN_NUMREMARCADOR(" + numremarcador + ") ORIGEN";
         System.out.println(queryOrigen);
         c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(queryOrigen);
         String origen = "";
@@ -660,7 +660,7 @@ public class LecturaController {
             query = "CALL SP_GET_LECTURAS_DESDE_HASTA_PM5300(" + numremarcador + ", '" + fechadesde + "', '" + fechahasta + "')";
         }
         c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         System.out.println(query);
         rs = c.ejecutarQuery(query);
@@ -739,7 +739,7 @@ public class LecturaController {
         String queryOrigen = "SELECT FN_GET_ORIGEN_NUMREMARCADOR(" + numremarcador + ") ORIGEN";
         System.out.println(queryOrigen);
         c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(queryOrigen);
         String origen = "";
@@ -764,7 +764,7 @@ public class LecturaController {
             query = "CALL SP_GET_LECTURAS_MES_PM5300(" + numremarcador + ", " + anio + ", " + mes + ")";
         }
         c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         System.out.println(query);
         rs = c.ejecutarQuery(query);
@@ -843,7 +843,7 @@ public class LecturaController {
         String queryOrigen = "SELECT FN_GET_ORIGEN_NUMREMARCADOR(" + numremarcador + ") ORIGEN";
         System.out.println(queryOrigen);
         Conexion c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(queryOrigen);
         String origen = "";
@@ -870,7 +870,7 @@ public class LecturaController {
             query = "CALL SP_GET_POTENCIAS_MES_PM5300(" + numremarcador + ", " + anio + ", " + mes + ")";
         }
         c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         System.out.println(query);
         rs = c.ejecutarQuery(query);
@@ -1021,7 +1021,7 @@ public class LecturaController {
         String queryOrigen = "SELECT FN_GET_ORIGEN_NUMREMARCADOR(" + numremarcador + ") ORIGEN";
         System.out.println(queryOrigen);
         Conexion c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(queryOrigen);
         String origen = "";
@@ -1048,7 +1048,7 @@ public class LecturaController {
             query = "CALL SP_GET_POTENCIAS_MES_PM5300(" + numremarcador + ", " + anio + ", " + mes + ")";
         }
         c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         System.out.println(query);
         rs = c.ejecutarQuery(query);

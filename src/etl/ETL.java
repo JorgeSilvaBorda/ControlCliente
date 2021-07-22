@@ -21,7 +21,7 @@ public class ETL {
     private static String[][] getOrigenesRemarcador() {
         String query = "CALL SP_GET_ORIGEN_REMARCADORES()";
         Conexion c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         ResultSet rs = c.ejecutarQuery(query);
         System.out.println(query);
@@ -64,13 +64,16 @@ public class ETL {
      * transformados.
      */
     public static FilaNormal[] getDatasetRemarcador(int numremarcador, String fechaDesde, String fechaHasta) {
+        System.out.println("Entra a buscar por rango de fechas");
         String[][] origenes = getOrigenesRemarcador();
         String tabla = "";
         for (String[] fila : origenes) {
+            System.out.println("Comparando: " + Integer.parseInt(fila[1]) + " con: " + numremarcador);
             if (Integer.parseInt(fila[1]) == numremarcador) {
                 tabla = fila[0];
             }
         }
+        System.out.println(tabla);
         String query = "";
         int campos = 0;
         switch (tabla) {
@@ -90,7 +93,7 @@ public class ETL {
         LinkedList<String[]> filas = new LinkedList();
         int cont = 0;
         Conexion c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         System.out.println(query);
         ResultSet rs = c.ejecutarQuery(query);
@@ -166,7 +169,7 @@ public class ETL {
         LinkedList<String[]> filas = new LinkedList();
         int cont = 0;
         Conexion c = new Conexion();
-        c.setReplica();
+        //c.setReplica();
         c.abrir();
         System.out.println(query);
         ResultSet rs = c.ejecutarQuery(query);

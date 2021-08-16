@@ -81,7 +81,7 @@ public class LecturaController {
                         if (anterior.dia != null) { //Cuando existe un registro anterior
                             r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), anterior.lectura);
                             //r.esmanual = true;
-                            r.delta = 0f;
+                            r.delta = 0f; 
                         } else { //Cuando no existe un registro anterior, no se puede obtener lectura hacia atrás.
                             //Se deja la lectura y delta en cero.
                             r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), 0f);
@@ -98,6 +98,7 @@ public class LecturaController {
                             r.delta = 0f;
                         }
                     }
+                    r.existe = false;
                 } else { //La lectura que viene no es nula----------------------------------------------------------------------------------------------
                     r = new Registro(rs.getString("DIA"), rs.getInt("NUMREMARCADOR"), rs.getString("TIMESTAMP"), rs.getFloat("LECTURA"));
                     r.existe = true;
@@ -106,16 +107,14 @@ public class LecturaController {
                         r.esmanual = true;
                         r.lectura = rs.getFloat("LECTURAMANUAL");
                     }
-                    if (!anterior.existe) { //Si no existe anterior. es decir, ésta es la primera
-                        r.delta = 0;
-                    } else {//No es la primera
+                    if (anterior.dia != null) {
                         if(r.lectura >= anterior.lectura){
                             r.delta = r.lectura - anterior.lectura;
                         }else{
-                            //r.lectura = anterior.lectura;
-                            r.delta = 0f;
+                            
                         }
-                        
+                    }else{
+                        r.delta = 0f;
                     }
                 }
 
@@ -172,7 +171,7 @@ public class LecturaController {
         }
 
         consumodiario = consumodiario + r.delta;
-        consumototal = consumototal + r.delta;
+        //consumototal = consumototal + r.delta;
         if (r.esmanual) {
             d.esmanual = true;
         }
@@ -196,9 +195,9 @@ public class LecturaController {
         resumen.put("numremarcador", dias.get(0).numremarcador);
         resumen.put("fechainilectura", labels.get(0));
         resumen.put("fechafinlectura", labels.get(labels.length() - 1));
-        resumen.put("lecturaini", dias.get(0).lecturainicial);
+        resumen.put("lecturaini", registros.get(0).lectura);
         resumen.put("lecturainimanual", dias.get(0).esmanual);
-        resumen.put("lecturafin", dias.get(dias.size() - 1).lecturafinal);
+        resumen.put("lecturafin", registros.get(registros.size() - 1).lectura);
         resumen.put("lecturafinmanual", dias.get(dias.size() - 1).esmanual);
         resumen.put("consumototalmes", consumototal);
         resumen.put("timstampfin", formattertimestamp.format(timelastlectura).toString());

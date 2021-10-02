@@ -1,0 +1,91 @@
+    {
+        "lastLectura": {
+            "time": "2021-08-17 09:55:00",
+            "anio": 2021,
+            "mes": 8,
+            "dia": 17,
+            "hh": 9,
+            "mm": 55,
+            "ss": 0,
+            "fecha": "2021-08-17",
+            "lectura": 34600,
+            "potencia": 2.34
+        },
+        "lastLecturaValida": {
+            "time": "2021-08-17 09:55:00",
+            "anio": 2021,
+            "mes": 8,
+            "dia": 17,
+            "hh": 9,
+            "mm": 55,
+            "ss": 0,
+            "fecha": "2021-08-17",
+            "lectura": 34600,
+            "potencia": 2.34
+        },
+        "fecha": "2021-08-17",
+        "anio": 2021,
+        "mes": 8,
+        "dia": 17,
+        "lecturas": [
+            {
+                "time": "2021-08-17 09:55:00",
+                "anio": 2021,
+                "mes": 8,
+                "dia": 17,
+                "hh": 9,
+                "mm": 55,
+                "ss": 0,
+                "fecha": "2021-08-17",
+                "lectura": 34600,
+                "potencia": 2.34,
+                "delta": 8
+            }
+        ],
+        "energiaConsumidaTotal": 8192,
+        "demandaMaxima": 19.6,
+        "demandaMaximaHoraPunta": 19.6,
+        "promedioDemanda": 19.6,
+        "promedioDemandaHoraPunta": 19.6,
+        "idRemarcador": 81,
+        "numRemarcador": 21,
+        "modulos": "Of Admin",
+        "numserie": "1165210335",
+        "modelo": "CVM-C10",
+        "marca": "Circutor",
+        "estado": 1,
+        "cliente": {
+            "idCliente": 12,
+            "rutCliente": 99593200,
+            "dvCliente": "8",
+            "nomCliente": "BFC",
+            "razonCliente": "Bodenor FlexCenter S.A."
+        },
+        "empalme": {
+            "idempalme": 26,
+            "numempalme": "3185613-2",
+            "bodedga": {
+                "idBodega": 41,
+                "nomBodega": "Parque 10"
+            },
+            "instalacion": {
+                "idInstalacion": 2,
+                "nomInstalacion": "Fase 2",
+                "direccion": "Av. Boulevard Poniente 1313",
+                "comuna": {
+                    "idComuna": 95,
+                    "nomComuna": "Pudahuel",
+                    "provincia": {
+                        "idProvincia": "23",
+                        "nomProvincia": "Santiago",
+                        "region": {
+                            "idRegion": 7,
+                            "nomRegion": "Metropolitana de Santiago",
+                            "abreviatura": "RM",
+                            "capital": "Santiago"
+                        }
+                    }
+                }
+            }
+        }
+    }

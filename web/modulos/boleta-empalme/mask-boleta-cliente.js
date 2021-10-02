@@ -34,7 +34,11 @@ function getRemarcadorClienteIdRemarcador(idremarcador) {
                 var remcli = obj.remarcador;
                 console.log(remcli);
                 var aniomes = HASTA.split("-")[0] + "-" + HASTA.split("-")[1];
-                graficarDesde(remcli.idremarcador, aniomes);
+                if ($("#check-grafico").is(":checked")) {
+                    graficarDesde(remcli.idremarcador, aniomes);
+                }else{
+                    $('#loader-grafico').hide();
+                }
                 $('#rut-cliente').html($.formatRut(remcli.rutcliente + "-" + remcli.dvcliente));
                 $('#nom-cliente').html(remcli.razoncliente);
                 $('#direccion').html(remcli.direccion + ',&nbsp;' + remcli.nomcomuna);
@@ -306,7 +310,11 @@ function armarLastBoleta() {
                 $('#suministradas').html(obj.boleta.DEM_MAX_SUMINISTRADA_FACTURADA + "<br /><br />");
                 $('#horas-punta').html(obj.boleta.DEM_MAX_HORA_PUNTA_FACTURADA + "<br /><br />");
                 $('#detalle-tarifa-remarcador').html(obj.tabla);
-                graficarDesde(obj.boleta.IDREMARCADOR, aniomes);
+                if ($("#check-grafico").is(":checked")) {
+                    graficarDesde(obj.boleta.IDREMARCADOR, aniomes);
+                }else{
+                    $('#loader-grafico').hide();
+                }
             }
         },
         error: function (a, b, c) {

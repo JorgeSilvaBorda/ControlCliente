@@ -71,6 +71,10 @@
                     <input type="date" class="form-control form-control-sm small" id="fecha-hasta" />
                 </div>
                 <div class="form-group">
+                    <input type="checkbox" checked="checked" class="checkbox" id="check-grafico" />
+                    <label data-html2canvas-ignore="true" for="check-grafico">Incluir gráficos en boletas</label>
+                </div>
+                <div class="form-group">
                     <div class="form-group">
                         <table style="border: none; border-collapse: collapse">
                             <tr>

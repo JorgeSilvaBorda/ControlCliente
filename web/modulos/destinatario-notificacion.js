@@ -51,7 +51,7 @@ function getSelectInstalacion() {
         success: function (resp) {
             var obj = JSON.parse(resp);
             if (obj.estado === 'ok') {
-                $('#select-instalacion').html(obj.options);
+                $('#select-instalacion').html(obj.options.replace("Seleccione", "Todas"));
             }
         },
         error: function (a, b, c) {

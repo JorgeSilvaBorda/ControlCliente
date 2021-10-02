@@ -76,6 +76,10 @@
                     <label data-html2canvas-ignore="true" for="select-tarifa">Tarifa: </label>
                     <select data-html2canvas-ignore="true" class="form-control form-control-sm small" id="select-tarifa"></select>
                 </div>
+                <div class="form-group">
+                    <input type="checkbox" checked="checked" class="checkbox" id="check-grafico" />
+                    <label data-html2canvas-ignore="true" for="check-grafico">Incluir gráficos en boletas</label>
+                </div>
                 <div class="form-group" style="">
                     <div class="row">
                         <div class="col-sm-6">

@@ -17,39 +17,28 @@
         <div class="col-sm-3">
             <form class="form small"  role="form">
                 <div class="form-group">
-                    <label for="select-instalación">Instalación</label>
-                    <select onchange="getSelectBodegaIdInstalacion($(this).val());" class="form-control-sm form-control small" id="select-instalacion">
-                    </select>
+                    <label for="ip-conversor" >IP Conversor</label>
+                    <input type="text" class="form-control form-control-sm small" maxlength="15" id="ip-conversor" />
                 </div>
                 <div class="form-group">
-                    <label for="select-parque">Bodega</label>
-                    <select onchange="getSelectEmpalmeIdParque($(this).val());"class="form-control-sm form-control small" id="select-parque">
-                    </select>
+                    <label for="num-conversor" >Num. Conversor</label>
+                    <input type="number" class="form-control form-control-sm small" id="num-conversor" />
                 </div>
                 <div class="form-group">
-                    <label for="select-empalme">Empalme</label>
-                    <select class="form-control-sm form-control small" id="select-empalme">
-                    </select>
+                    <label for="num-puerto" >Puerto</label>
+                    <input type="number" class="form-control form-control-sm small" id="num-puerto" />
                 </div>
                 <div class="form-group">
                     <label for="num-remarcador" >ID Remarcador</label>
-                    <input type="text" class="form-control form-control-sm small" maxlength="11" id="num-remarcador" />
+                    <input type="text" class="form-control form-control-sm small" id="num-remarcador" />
                 </div>
                 <div class="form-group">
-                    <label for="marca" >Marca</label>
-                    <input type="text" class="form-control form-control-sm small" maxlength="400" id="marca" />
-                </div>
-                <div class="form-group">
-                    <label for="modelo" >Modelo</label>
-                    <input type="text" class="form-control form-control-sm small" maxlength="400" id="modelo" />
-                </div>
-                <div class="form-group">
-                    <label for="num-serie" >Nº Serie Equipo</label>
-                    <input type="text" class="form-control form-control-sm small" maxlength="50" id="num-serie" />
-                </div>
-                <div class="form-group">
-                    <label for="modulos" >Módulos</label>
-                    <input type="text" class="form-control form-control-sm small" maxlength="11" id="modulos" />
+                    <label for="marca" >Tipo Remarcador</label>
+                    <select class="form-control form-control-sm" id="select-tipo-remarcador">
+                        <option>circutorcvmc10</option>
+                        <option>schneiderpm710</option>
+                        <option>schneiderpm5300</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <button onclick="insRemarcador(getRemarcadores);" type="button" class="btn btn-primary btn-sm" id="btn-insert">Insertar</button>
@@ -60,17 +49,14 @@
         </div>
 
         <div class="col-sm-9">
-            <table id="tabla-remarcadores" class="table table-condensed table-borderless table-striped table-hover table-sm small">
+            <table id="tabla-conversores" class="table table-condensed table-borderless table-striped table-hover table-sm small">
                 <thead>
                     <tr>
+                        <th>IP Conversor</th>
+                        <th>Num. Conversor</th>
+                        <th>Num. Puerto</th>
                         <th>ID Remarcador</th>
-                        <th>Marca</th>
-                        <th>Modelo</th>
-                        <th>Nº Serie</th>
-                        <th># Empalme</th>
-                        <th>Bodega</th>
-                        <th>Módulos</th>
-                        <th>Acción</th>
+                        <th>Tipo Remarcador</th>
                     </tr>
                 </thead>
                 <tbody>

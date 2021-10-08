@@ -72,6 +72,10 @@
         <servlet-name>ApiTest</servlet-name>
         <servlet-class>controlador.ApiTest</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ConversorController</servlet-name>
+        <servlet-class>controlador.ConversorController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UsuarioController</servlet-name>
         <url-pattern>/UsuarioController</url-pattern>
@@ -143,6 +147,10 @@
     <servlet-mapping>
         <servlet-name>ApiTest</servlet-name>
         <url-pattern>/ApiTest</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ConversorController</servlet-name>
+        <url-pattern>/ConversorController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

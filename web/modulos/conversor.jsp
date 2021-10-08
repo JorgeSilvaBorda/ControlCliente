@@ -1,7 +1,7 @@
 <script src="modulos/conversor.js?=<% out.print(modelo.Util.generaRandom(10000, 99999)); %>" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        
+        getConversores();
     });
 
 </script>
@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <form class="form small"  role="form">
                 <div class="form-group">
                     <label for="ip-conversor" >IP Conversor</label>
@@ -48,7 +48,7 @@
             </form>
         </div>
 
-        <div class="col-sm-9">
+        <div class="col-sm-8">
             <table id="tabla-conversores" class="table table-condensed table-borderless table-striped table-hover table-sm small">
                 <thead>
                     <tr>
@@ -57,6 +57,7 @@
                         <th>Num. Puerto</th>
                         <th>ID Remarcador</th>
                         <th>Tipo Remarcador</th>
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
